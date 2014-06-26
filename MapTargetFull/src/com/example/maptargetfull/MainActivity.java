@@ -1,0 +1,72 @@
+package com.example.maptargetfull;
+
+import android.support.v4.app.Fragment;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+public class MainActivity extends AbstractNavDrawerActivity {
+    
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if ( savedInstanceState == null ) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new MainFragment()).commit();
+        }
+    }
+    
+    @Override
+    protected NavDrawerActivityConfiguration getNavDrawerConfiguration() {
+        
+        NavDrawerItem[] menu = new NavDrawerItem[] {
+                NavMenuSection.createMenuSection(100, R.string.text_mapsection),        
+                NavMenuItem.createMenuItem(101, R.string.text_googlemap, R.drawable.google_icon, true, false), 
+                NavMenuItem.createMenuItem(102, R.string.text_imagemap, R.drawable.image_map, true, false), 
+ };
+        
+        NavDrawerActivityConfiguration navDrawerActivityConfiguration = new NavDrawerActivityConfiguration();
+        navDrawerActivityConfiguration.setMainLayout(R.layout.activity_main);
+        navDrawerActivityConfiguration.setDrawerLayoutId(R.id.drawer_layout);
+        navDrawerActivityConfiguration.setLeftDrawerId(R.id.left_drawer);
+        navDrawerActivityConfiguration.setNavItems(menu);
+        navDrawerActivityConfiguration.setDrawerShadow(R.drawable.drawer_shadow);       
+        navDrawerActivityConfiguration.setDrawerOpenDesc(R.string.drawer_open);
+        navDrawerActivityConfiguration.setDrawerCloseDesc(R.string.drawer_close);
+        navDrawerActivityConfiguration.setDrawerIcon(R.drawable.ic_drawer);
+        navDrawerActivityConfiguration.setAdapter(
+            new NavDrawerAdapter(this, R.layout.navdrawer_item, menu));
+        return navDrawerActivityConfiguration;
+    }
+    
+    @Override
+    protected void onNavItemSelected(int id) {
+        switch (id) {
+        case 101:
+            getFragmentManager().beginTransaction().replace(R.id.content_frame, new GoogleMapFragment()).commit();
+            break;
+        case 102:
+//            getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new ImageMapFragment()).commit();
+            break;
+        }
+    }
+    
+    static public class MainFragment extends Fragment {
+
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+
+            View mainView = inflater
+                    .inflate(R.layout.fragment_main, container, false);
+
+            return mainView;
+        }
+    }
+    
+}
