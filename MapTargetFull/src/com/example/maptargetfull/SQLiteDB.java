@@ -41,5 +41,8 @@ public class SQLiteDB extends SQLiteOpenHelper{
 		db.execSQL("DROP TABLE IF EXISTS " + Points.table_name);
 		onCreate(db);
 	}
-
+	
+	static public int convertBoolean(Boolean bool){
+		return bool?1:0;
+	}
 }

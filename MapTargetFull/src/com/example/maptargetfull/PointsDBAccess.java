@@ -23,7 +23,7 @@ public class PointsDBAccess {
 		values.put(Points.Columns.last_name, lastName);
 		values.put(Points.Columns.longitude, longitude);
 		values.put(Points.Columns.langitude, langitude);
-		values.put(Points.Columns.is_google, is_google);
+		values.put(Points.Columns.is_google, SQLiteDB.convertBoolean(is_google));
 		return db.insert(SQLiteDB.Points.table_name, null, values);
 	}
 	
@@ -34,7 +34,7 @@ public class PointsDBAccess {
 		values.put(Points.Columns.last_name, lastName);
 		values.put(Points.Columns.longitude, longitude);
 		values.put(Points.Columns.langitude, langitude);
-		values.put(Points.Columns.is_google, is_google);
+		values.put(Points.Columns.is_google, SQLiteDB.convertBoolean(is_google));
 		values.put(Points.Columns.is_synched, false);
 		return db.update(Points.table_name, values, Points.Columns.row_id + " = ?", new String[]{ String.valueOf(rowID) }) == 1;
 	}
@@ -42,8 +42,8 @@ public class PointsDBAccess {
 	public Boolean deletePoint(long rowID){
 		SQLiteDatabase db = this.mDBHandler.getWritableDatabase();
 		ContentValues values = new ContentValues();
-		values.put(Points.Columns.is_synched, false);
-		values.put(Points.Columns.is_deleted, true);
+		values.put(Points.Columns.is_synched, SQLiteDB.convertBoolean(false));
+		values.put(Points.Columns.is_deleted, SQLiteDB.convertBoolean(true));
 		return db.update(Points.table_name, values, Points.Columns.row_id + " = ?", new String[]{ String.valueOf(rowID) }) == 1;
 	}
 	
@@ -60,7 +60,8 @@ public class PointsDBAccess {
 								    Points.Columns.langitude + " " +
 								    "FROM " + Points.table_name + " " +
 								    "WHERE " + Points.Columns.is_google + " = ? " +
-								    "AND " + Points.Columns.is_deleted + " = " + true, new String[]{ is_google.toString() });
+								    "AND " + Points.Columns.is_deleted + " = " + String.valueOf(SQLiteDB.convertBoolean(false)), new String[]{ String.valueOf(SQLiteDB.convertBoolean(is_google)) });
+	
 		while (cursor.moveToNext()) {
 			p = new Point();
 			p.rowID = cursor.getLong(cursor.getColumnIndex(Points.Columns.row_id));
