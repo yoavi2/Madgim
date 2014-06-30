@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.maptargetfull.AddTargetOnLocationDialog.AddTargetOnLocationListener;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdate;
@@ -30,8 +31,10 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class GoogleMapFragment extends Fragment {
+public class GoogleMapFragment extends Fragment implements AddTargetOnLocationListener {
 
+	public static String TAG = "google_map_fragment";
+	
 	private MapView mMapView;
 	private Bundle mBundle;
 	private GoogleMap mMap;
@@ -124,8 +127,6 @@ public class GoogleMapFragment extends Fragment {
 
 		} else { // Google Play Services are available
 
-//			this.mMap = ((MapFragment) getFragmentManager().findFragmentById(
-//					R.id.map)).getMap();
 			this.mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
 			this.mMap.setMyLocationEnabled(true);
 			this.mMarkers = new ArrayList<Marker>();
@@ -133,12 +134,10 @@ public class GoogleMapFragment extends Fragment {
 			this.mMap.setOnMapLongClickListener(new OnMapLongClickListener() {
 				@Override
 				public void onMapLongClick(LatLng loc) {
-					// android.support.v4.app.FragmentManager fm =
-					// getSupportFragmentManager();
-					// AddTargetOnLocationDialog addTargetDialog =
-					// AddTargetOnLocationDialog
-					// .newInstance("Add Target", loc);
-					// addTargetDialog.show(fm, AddTargetOnLocationDialog.TAG);
+					android.app.FragmentManager fm = getFragmentManager();
+					AddTargetOnLocationDialog addTargetDialog = AddTargetOnLocationDialog
+							.newInstance("Add Target", loc);
+					addTargetDialog.show(fm, AddTargetOnLocationDialog.TAG);
 				}
 			});
 
@@ -291,5 +290,5 @@ public class GoogleMapFragment extends Fragment {
 		}
 		super.onDestroyView();
 	}
-
+	
 }

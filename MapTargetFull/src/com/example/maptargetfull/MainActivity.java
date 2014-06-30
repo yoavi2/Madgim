@@ -14,7 +14,7 @@ public class MainActivity extends AbstractNavDrawerActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if ( savedInstanceState == null ) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new MainFragment()).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new MainFragment(), MainFragment.TAG).commit();
         }
     }
     
@@ -45,7 +45,7 @@ public class MainActivity extends AbstractNavDrawerActivity {
     protected void onNavItemSelected(int id) {
         switch (id) {
         case 101:
-            getFragmentManager().beginTransaction().replace(R.id.content_frame, new GoogleMapFragment()).commit();
+            getFragmentManager().beginTransaction().replace(R.id.content_frame, new GoogleMapFragment(), GoogleMapFragment.TAG).commit();
             break;
         case 102:
 //            getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new ImageMapFragment()).commit();
@@ -55,6 +55,8 @@ public class MainActivity extends AbstractNavDrawerActivity {
     
     static public class MainFragment extends Fragment {
 
+    	public static String TAG = "main_fragment";
+    	
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);

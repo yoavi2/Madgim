@@ -1,8 +1,8 @@
 package com.example.maptargetfull;
 
+import android.app.DialogFragment;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -77,8 +77,8 @@ public class AddTargetOnLocationDialog extends DialogFragment {
 								tt_type = GoogleMapFragment.target_type.ENEMY;
 							}
 							
-							 AddTargetOnLocationListener activity = (AddTargetOnLocationListener) getActivity();
-					            activity.addMarkerOnLocation(mETName.getText().toString(), tt_type, mLocation);
+							 AddTargetOnLocationListener fragment = (AddTargetOnLocationListener) getActivity().getFragmentManager().findFragmentByTag(GoogleMapFragment.TAG);
+					            fragment.addMarkerOnLocation(mETName.getText().toString(), tt_type, mLocation);
 					            		
 							dismiss();
 						}
