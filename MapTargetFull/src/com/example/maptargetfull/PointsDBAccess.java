@@ -24,6 +24,9 @@ public class PointsDBAccess {
 		values.put(Points.Columns.longitude, longitude);
 		values.put(Points.Columns.langitude, langitude);
 		values.put(Points.Columns.is_google, SQLiteDB.convertBoolean(is_google));
+		values.put(Points.Columns.is_deleted, SQLiteDB.convertBoolean(false));
+		values.put(Points.Columns.is_synched, SQLiteDB.convertBoolean(false));
+		
 		return db.insert(SQLiteDB.Points.table_name, null, values);
 	}
 	
@@ -35,7 +38,8 @@ public class PointsDBAccess {
 		values.put(Points.Columns.longitude, longitude);
 		values.put(Points.Columns.langitude, langitude);
 		values.put(Points.Columns.is_google, SQLiteDB.convertBoolean(is_google));
-		values.put(Points.Columns.is_synched, false);
+		values.put(Points.Columns.is_deleted, SQLiteDB.convertBoolean(false));
+		values.put(Points.Columns.is_synched, SQLiteDB.convertBoolean(false));
 		return db.update(Points.table_name, values, Points.Columns.row_id + " = ?", new String[]{ String.valueOf(rowID) }) == 1;
 	}
 	

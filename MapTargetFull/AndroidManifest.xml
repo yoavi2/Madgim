@@ -21,6 +21,9 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
+    <uses-permission android:name="android.permission.READ_SYNC_SETTINGS"/>
+    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS"/>
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS"/>
 
     <uses-feature
         android:glEsVersion="0x00020000"
@@ -50,6 +53,31 @@
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyCPy8gyNyDXRxTmdtHss3kl2L1fynz2smc" />
+        
+	    <service
+	            android:name="com.example.maptargetfull.AuthenticatorService">
+	        <intent-filter>
+	            <action android:name="android.accounts.AccountAuthenticator"/>
+	        </intent-filter>
+	        <meta-data
+	            android:name="android.accounts.AccountAuthenticator"
+	            android:resource="@xml/authenticator" />
+	    </service>
+        <service
+                android:name="com.example.maptargetfull.SyncService"
+                android:exported="true"
+                android:process=":sync">
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter"/>
+            </intent-filter>
+            <meta-data android:name="android.content.SyncAdapter"
+                    android:resource="@xml/syncadapter" />
+        </service>
+	    <provider
+        	android:name="com.example.maptargetfull.StubProvider"
+        	android:authorities="com.example.maptargetfull.provider"
+        	android:exported="false"
+        	android:syncable="true"/>
     </application>
 
 </manifest>
