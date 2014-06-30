@@ -1,7 +1,9 @@
 package com.example.maptargetfull;
 
+
+
+import android.app.Fragment;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +14,7 @@ public class MainActivity extends AbstractNavDrawerActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if ( savedInstanceState == null ) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new MainFragment(), MainFragment.TAG).commit();
+            getFragmentManager().beginTransaction().replace(R.id.content_frame, new FirstFragment()).commit();
         }
     }
     
@@ -21,8 +23,9 @@ public class MainActivity extends AbstractNavDrawerActivity {
         
         NavDrawerItem[] menu = new NavDrawerItem[] {
                 NavMenuSection.createMenuSection(100, R.string.text_mapsection),        
-                NavMenuItem.createMenuItem(101, R.string.text_googlemap, R.drawable.google_icon, true, false), 
-                NavMenuItem.createMenuItem(102, R.string.text_imagemap, R.drawable.image_map, true, false), 
+                NavMenuItem.createMenuItem(101, R.string.text_map, R.drawable.google_icon, true, false), 
+                NavMenuItem.createMenuItem(102, R.string.text_map, R.drawable.ic_action_locate, true, false),
+                NavMenuItem.createMenuItem(103, R.string.text_list, R.drawable.ic_action_paste, true, false)
  };
         
         NavDrawerActivityConfiguration navDrawerActivityConfiguration = new NavDrawerActivityConfiguration();
@@ -46,8 +49,11 @@ public class MainActivity extends AbstractNavDrawerActivity {
             getFragmentManager().beginTransaction().replace(R.id.content_frame, new GoogleMapFragment(), GoogleMapFragment.TAG).commit();
             break;
         case 102:
-//            getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new ImageMapFragment()).commit();
+            getFragmentManager().beginTransaction().replace(R.id.content_frame, new FirstFragment()).commit();
             break;
+        case 103:
+            getFragmentManager().beginTransaction().replace(R.id.content_frame, new SecondFragment()).commit();
+
         }
     }
     

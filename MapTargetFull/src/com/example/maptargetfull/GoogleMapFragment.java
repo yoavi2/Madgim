@@ -8,7 +8,6 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -271,6 +270,7 @@ public class GoogleMapFragment extends Fragment implements
 		}
 	}
 
+	@Override
 	public void addMarkerOnLocation(String name, target_type type, LatLng loc) {
 
 		Marker destMark = this.mMap.addMarker(new MarkerOptions().position(loc)
