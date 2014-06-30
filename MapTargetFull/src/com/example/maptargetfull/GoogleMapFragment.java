@@ -63,11 +63,12 @@ public class GoogleMapFragment extends Fragment {
 		
 		this.mLocationService = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 		
-		MapsInitializer.initialize(getActivity());
-
-		
 		mMapView = (MapView) view.findViewById(R.id.map);
 		mMapView.onCreate(mBundle);
+		 mMapView.onResume();//needed to get the map to display immediately
+		 
+		 MapsInitializer.initialize(getActivity());
+		 
 		setUpMapIfNeeded(view);
 
 		return view;
@@ -81,8 +82,8 @@ public class GoogleMapFragment extends Fragment {
 
 	@Override
 	public void onResume() {
-		super.onResume();
 		mMapView.onResume();
+		super.onResume();
 	}
 
 	@Override
@@ -96,11 +97,17 @@ public class GoogleMapFragment extends Fragment {
 		mMapView.onDestroy();
 		super.onDestroy();
 	}
+	
+	@Override
+	public void onLowMemory() {
+	    super.onLowMemory();
+	    mMapView.onLowMemory();
+	}
 
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
-
+		
 		// Getting Google Play availability status
 		int status = GooglePlayServicesUtil
 				.isGooglePlayServicesAvailable(getActivity().getBaseContext());

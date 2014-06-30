@@ -9,6 +9,6 @@ package com.example.maptargetfull;
 
 public final class Manifest {
     public static final class permission {
-        public static final String MAPS_RECEIVE="com.example.androidmapsv2.permission.MAPS_RECEIVE";
+        public static final String MAPS_RECEIVE="com.example.maptargetfull.permission.MAPS_RECEIVE";
     }
 }
