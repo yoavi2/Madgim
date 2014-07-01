@@ -194,15 +194,15 @@ public class SecondFragment extends Fragment implements OnTouchListener, OnItemL
 				try {
 					GlobalParams.getInstance().clearList();
 					
-//					ArrayList<Point> points =  GlobalParams.getInstance().PointsDBaccess.getPoints(false);
-//					for (Point point : points) {
-//						
-//						Double langitude = point.langitude;
-//						Double longitude = point.longitude;
-//
-//						GlobalParams.getInstance().addFriend(new Friend(point.first_name, 0, point.last_name,
-//																langitude.intValue(), longitude.intValue()));				
-//					}
+					ArrayList<Point> points =  GlobalParams.getInstance().PointsDBaccess.getPoints(false);
+					for (Point point : points) {
+						
+						Double langitude = point.langitude;
+						Double longitude = point.longitude;
+
+						GlobalParams.getInstance().addFriend(new Friend(point.first_name, 0, point.last_name,
+																langitude.intValue(), longitude.intValue()));				
+					}
 						
 					
 					httpResponse = httpclient.execute(new HttpGet(url));
@@ -242,8 +242,8 @@ public class SecondFragment extends Fragment implements OnTouchListener, OnItemL
 
 			case (ACTION_ADD_SOLDIER):
 				
-				//GlobalParams.getInstance().PointsDBaccess.createPoint("martin", "gordon", 150, 480, false);
-				//url with the post data
+				GlobalParams.getInstance().PointsDBaccess.createPoint("martin", "gordon", 150, 480, false);
+			//	url with the post data
 			    HttpPost httpost = new HttpPost(url);
 				
 			    //convert parameters into JSON object
