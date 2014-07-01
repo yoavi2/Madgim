@@ -2,11 +2,20 @@ package com.example.maptargetfull;
 
 // Lior The Magnificent
 
+import java.util.ArrayList;
+
+import com.example.maptargetfull.PointsDBAccess.Point;
+
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -35,6 +44,7 @@ public class MainActivity extends AbstractNavDrawerActivity {
 
 		// Create the dummy account
 		mAccount = CreateSyncAccount(this);
+		android.os.Debug.waitForDebugger();
 
 		GlobalParams.getInstance().PointsDBaccess = new PointsDBAccess(this);
 
@@ -146,6 +156,21 @@ public class MainActivity extends AbstractNavDrawerActivity {
 					.replace(R.id.content_frame, new SecondFragment()).commit();
 			currFragment = SecondFragment.TAG;
 			this.invalidateOptionsMenu();
+		} else if(id == R.id.action_refresh){
+			
+			// Pass the settings flags by inserting them in a bundle
+	        Bundle settingsBundle = new Bundle();
+	        settingsBundle.putBoolean(
+	                ContentResolver.SYNC_EXTRAS_MANUAL, true);
+	        settingsBundle.putBoolean(
+	                ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+	        /*
+	         * Request the sync for the default account, authority, and
+	         * manual sync settings
+	         */
+	        android.os.Debug.waitForDebugger();
+	        ContentResolver.requestSync(mAccount, AUTHORITY, settingsBundle);
+	        
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -160,6 +185,39 @@ public class MainActivity extends AbstractNavDrawerActivity {
 		}
 		return true;
 	}
+	@Override
+	protected void onResume() {
+	    super.onResume();
+	    registerReceiver(syncFinishedReceiver, new IntentFilter(GlobalParams.getInstance().syncFinished));
+	}
+
+	@Override
+	protected void onPause() {
+	    super.onPause();
+	    unregisterReceiver(syncFinishedReceiver);
+	}
+
+	private BroadcastReceiver syncFinishedReceiver = new BroadcastReceiver() {
+
+	    @Override
+	    public void onReceive(Context context, Intent intent) {
+	        Log.d("finish","Sync finished, should refresh nao!!");
+	        
+	        GlobalParams.getInstance().clearList();
+			
+			ArrayList<Point> points =  GlobalParams.getInstance().PointsDBaccess.getPoints(false);
+			for (Point point : points) {
+				
+				Double langitude = point.langitude;
+				Double longitude = point.longitude;
+
+				GlobalParams.getInstance().addFriend(new Friend(point.first_name, point.rowID, point.last_name,
+														langitude.intValue(), longitude.intValue()));				
+//			}
+			}
+	        
+	    }
+	};
 
 	static public class MainFragment extends Fragment {
 

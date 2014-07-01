@@ -100,7 +100,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		}
         
         //Sync server to device
-        
+        android.os.Debug.waitForDebugger();
+
         pointsDB.deletePointsForSync();
         HttpGet httpGet = new HttpGet(url);
         HttpResponse httpResponse;

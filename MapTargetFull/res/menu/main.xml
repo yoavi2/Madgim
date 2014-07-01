@@ -3,10 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.maptargetfull.MainActivity" >
     
-	 <item android:id="@+id/connectivity"
-        android:icon="@drawable/ic_action_error"
-        android:orderInCategory="1"
-        android:showAsAction="always"/>
+
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
@@ -16,6 +13,18 @@
         android:id="@+id/action_list"
         android:orderInCategory="100"
         android:icon="@drawable/ic_action_paste"
+        android:title="List"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/action_refresh"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_action_refresh"
+        app:showAsAction="always"/>
+    
+        <item
+        android:id="@+id/action_connect"
+        android:orderInCategory="1"
+        android:icon="@drawable/ic_action_error"
         app:showAsAction="always"/>
    
 

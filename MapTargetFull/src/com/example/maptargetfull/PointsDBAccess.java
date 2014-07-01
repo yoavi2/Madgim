@@ -101,9 +101,9 @@ public class PointsDBAccess {
 								    Points.Columns.first_name + ", " +
 								    Points.Columns.last_name + ", " +
 								    Points.Columns.longitude + ", " +
-								    Points.Columns.langitude + " " +
+								    Points.Columns.langitude + ", " +
 								    Points.Columns.server_id + ", " +
-								    Points.Columns.is_synched + ", " +
+								    Points.Columns.is_deleted + ", " +
 								    Points.Columns.is_google + " " +
 								    "FROM " + Points.table_name + " " +
 								    "WHERE " + Points.Columns.is_synched + " = " + String.valueOf(SQLiteDB.convertBoolean(false)), null);
