@@ -32,6 +32,8 @@ import android.widget.Toast;
 
 public class FirstFragment extends Fragment implements OnTouchListener,OnLongClickListener,android.content.DialogInterface.OnClickListener, OnClickListener{
     
+	public static String TAG = "Map";
+	
     private DrawSample surface = null;
     private Dialog dialog;
     private AlertDialog.Builder builder;
