@@ -1,14 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Map Target</string>
+    <string name="app_name">Martin</string>
+    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+
+    <string-array name="list">
+        <item>Friends</item>
+        <item>Enemies</item>
+    </string-array>
+
+    <string name="title_item_list">Items</string>
+    <string name="title_item_detail">item Detail</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
     <string name="yes">Yes</string>
-    <string name="text_mapsection">Maps</string>
-    <string name="text_googlemap">Google Map</string>
-    <string name="text_imagemap">Image Map</string>
+    <string name="text_mapsection">Menu</string>
+    <string name="text_map">Forces Map</string>
+    <string name="text_list">Forces details</string>
 
     <string name="text_enemy">Enemy</string>
     <string name="text_friend">Friend</string>
@@ -17,5 +26,5 @@
     <string name="action_edit_marker">Edit Marker</string>
     <string name="action_delete_marker">Delete Marker</string>
      <string name="text_name">Name</string>
-
+    
 </resources>

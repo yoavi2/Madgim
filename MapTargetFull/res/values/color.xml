@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">       
-    <color name="purple_light">#a276eb</color> 
-    <color name="purple_middle">#8658ce</color>
-    <color name="purple_dark">#6a3ab2</color>
+    <color name="purple_light">#65663E</color> 
+    <color name="purple_middle">#65663E</color>
+    <color name="purple_dark">#65663E</color>
+    <color name="friend">#199B60</color>
 </resources>

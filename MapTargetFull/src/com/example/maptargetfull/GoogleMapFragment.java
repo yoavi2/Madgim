@@ -2,12 +2,17 @@ package com.example.maptargetfull;
 
 import java.util.ArrayList;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,18 +36,19 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class GoogleMapFragment extends Fragment implements AddTargetOnLocationListener {
+public class GoogleMapFragment extends Fragment implements
+		AddTargetOnLocationListener {
 
 	public static String TAG = "google_map_fragment";
-	
+
+	private Dialog mGpsDialog;
+	private boolean mLocationSet = false;
 	private MapView mMapView;
 	private Bundle mBundle;
 	private GoogleMap mMap;
 	public View mViewInfoWindow;
 	private LocationManager mLocationService;
 	private ArrayList<Marker> mMarkers;
-	private boolean mLocationSet = false;
-	private Dialog mGpsDialog;
 
 	static public enum target_type {
 		FRIEND, ENEMY
@@ -51,9 +57,9 @@ public class GoogleMapFragment extends Fragment implements AddTargetOnLocationLi
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		mBundle = savedInstanceState;
-		
+
 		setRetainInstance(true);
 		setHasOptionsMenu(true);
 	}
@@ -63,20 +69,21 @@ public class GoogleMapFragment extends Fragment implements AddTargetOnLocationLi
 			Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_googlemap, container,
 				false);
-		
-		this.mLocationService = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-		
+
+		this.mLocationService = (LocationManager) getActivity()
+				.getSystemService(Context.LOCATION_SERVICE);
+
 		mMapView = (MapView) view.findViewById(R.id.map);
 		mMapView.onCreate(mBundle);
-		 mMapView.onResume();//needed to get the map to display immediately
-		 
-		 MapsInitializer.initialize(getActivity());
-		 
+		mMapView.onResume();// needed to get the map to display immediately
+
+		MapsInitializer.initialize(getActivity());
+
 		setUpMapIfNeeded(view);
 
 		return view;
 	}
-	
+
 	private void setUpMapIfNeeded(View inflatedView) {
 		if (mMap == null) {
 			mMap = ((MapView) inflatedView.findViewById(R.id.map)).getMap();
@@ -100,17 +107,48 @@ public class GoogleMapFragment extends Fragment implements AddTargetOnLocationLi
 		mMapView.onDestroy();
 		super.onDestroy();
 	}
-	
+
 	@Override
 	public void onLowMemory() {
-	    super.onLowMemory();
-	    mMapView.onLowMemory();
+		super.onLowMemory();
+		mMapView.onLowMemory();
 	}
 
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
+
+		// Build gps alert
+		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+		builder.setTitle("Location Services Not Active");
+		builder.setMessage("It is recommended enable Location Services and GPS");
+		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialogInterface, int i) {
+				// Show location settings when the user acknowledges
+				// the alert dialog
+				Intent intent = new Intent(
+						Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+				startActivity(intent);
+			}
+		});
+		builder.setNegativeButton("Cancel",
+				new DialogInterface.OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialogInterface, int i) {
+						// Exit Application
+						dialogInterface.dismiss();
+					}
+				});
+		this.mGpsDialog = builder.create();
 		
+		// Check if enabled and if not send user to the GPS settings
+		if (!this.mLocationService
+				.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+			this.mGpsDialog.show();
+		}
+
 		// Getting Google Play availability status
 		int status = GooglePlayServicesUtil
 				.isGooglePlayServicesAvailable(getActivity().getBaseContext());
@@ -153,19 +191,17 @@ public class GoogleMapFragment extends Fragment implements AddTargetOnLocationLi
 
 			this.mLocationService.requestLocationUpdates(
 					LocationManager.GPS_PROVIDER, 0, 0,
-					new android.location.LocationListener() {
+					new LocationListener() {
 						@Override
 						public void onProviderEnabled(String provider) {
 							if (mGpsDialog.isShowing()) {
-//								mGpsDialog.dismiss();
+								mGpsDialog.dismiss();
 							}
 						}
 
 						@Override
 						public void onProviderDisabled(String provider) {
-							if (!mLocationSet) {
-//								mGpsDialog.show();
-							}
+
 						}
 
 						@Override
@@ -174,6 +210,7 @@ public class GoogleMapFragment extends Fragment implements AddTargetOnLocationLi
 
 								adjustMap();
 								mLocationSet = true;
+								mLocationService.removeUpdates(this);
 								getActivity().invalidateOptionsMenu();
 							}
 						}
@@ -184,6 +221,7 @@ public class GoogleMapFragment extends Fragment implements AddTargetOnLocationLi
 						}
 					});
 
+			this.adjustMap();
 		}
 
 	}
@@ -194,16 +232,30 @@ public class GoogleMapFragment extends Fragment implements AddTargetOnLocationLi
 				.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
 		if (location == null) {
-			location = this.mMap.getMyLocation();
+			
+			location = this.mLocationService
+					.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 		}
 
-		LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
-		mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 16.0f));
+		// Last resort 
+		if (location == null) {
+			location = this.mMap.getMyLocation();
+		}
+		
+		LatLng loc = null;
+
+		if (location != null) {
+			loc = new LatLng(location.getLatitude(), location.getLongitude());
+			mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 16.0f));
+
+		}
 
 		if (this.mMarkers.size() > 0) {
 
 			LatLngBounds.Builder builder = new LatLngBounds.Builder();
-			builder.include(loc);
+			if (location != null) {
+				builder.include(loc);
+			}
 
 			for (Marker marker : this.mMarkers) {
 				builder.include(marker.getPosition());
@@ -215,10 +267,10 @@ public class GoogleMapFragment extends Fragment implements AddTargetOnLocationLi
 					getResources().getDisplayMetrics().heightPixels,
 					getResources().getDisplayMetrics().heightPixels / 6);
 			this.mMap.animateCamera(cu);
-
 		}
 	}
 
+	@Override
 	public void addMarkerOnLocation(String name, target_type type, LatLng loc) {
 
 		Marker destMark = this.mMap.addMarker(new MarkerOptions().position(loc)
@@ -290,5 +342,5 @@ public class GoogleMapFragment extends Fragment implements AddTargetOnLocationLi
 		}
 		super.onDestroyView();
 	}
-	
+
 }
