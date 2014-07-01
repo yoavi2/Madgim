@@ -4,10 +4,10 @@ package com.example.maptargetfull;
 
 import java.util.ArrayList;
 
-import com.example.maptargetfull.PointsDBAccess.Point;
-
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -22,6 +22,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.maptargetfull.PointsDBAccess.Point;
+
 public class MainActivity extends AbstractNavDrawerActivity {
 	// Constants
 	// The authority for the sync adapter's content provider
@@ -32,6 +34,8 @@ public class MainActivity extends AbstractNavDrawerActivity {
 	public static final String ACCOUNT = "dummyaccount";
 
 	private DialogDetails dialog = new DialogDetails();
+	
+	private Dialog pdialog;
 
 	public static String currFragment;
 
@@ -92,15 +96,19 @@ public class MainActivity extends AbstractNavDrawerActivity {
 							GoogleMapFragment.TAG).commit();
 			break;
 		case 102:
+			FirstFragment first = new FirstFragment();
 			getFragmentManager().beginTransaction()
-					.replace(R.id.content_frame, new FirstFragment()).commit();
+					.replace(R.id.content_frame, first).commit();
 			currFragment = FirstFragment.TAG;
+			GlobalParams.getInstance().setProgress(first);
 			this.invalidateOptionsMenu();
 			break;
 		case 103:
+			SecondFragment second  =  new SecondFragment();
 			getFragmentManager().beginTransaction()
-					.replace(R.id.content_frame, new SecondFragment()).commit();
+					.replace(R.id.content_frame, second).commit();
 			currFragment = SecondFragment.TAG;
+			GlobalParams.getInstance().setProgress(second);
 			this.invalidateOptionsMenu();
 			break;
 		}
@@ -169,6 +177,11 @@ public class MainActivity extends AbstractNavDrawerActivity {
 	         * manual sync settings
 	         */
 	        android.os.Debug.waitForDebugger();
+	        
+	        pdialog = new ProgressDialog(this);
+    		pdialog.setTitle("Refreshing data...");
+    		pdialog.show();
+	        
 	        ContentResolver.requestSync(mAccount, AUTHORITY, settingsBundle);
 	        
 		}
@@ -212,7 +225,12 @@ public class MainActivity extends AbstractNavDrawerActivity {
 				Double longitude = point.longitude;
 
 				GlobalParams.getInstance().addFriend(new Friend(point.first_name, point.rowID, point.last_name,
-														langitude.intValue(), longitude.intValue()));				
+														langitude.intValue(), longitude.intValue()));
+				
+				pdialog.hide();
+				GlobalParams.getInstance().getf().getView().postInvalidate();
+				
+				
 //			}
 			}
 	        
