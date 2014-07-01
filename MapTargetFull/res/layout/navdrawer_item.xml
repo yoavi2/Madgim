@@ -17,6 +17,7 @@
         android:id="@+id/navmenuitem_label"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:textColor="#FFF"
         android:gravity="center_vertical" />
 
 </LinearLayout>

@@ -3,10 +3,13 @@ package com.example.maptargetfull;
 import java.util.HashMap;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class FriendListAdapter extends BaseAdapter {
@@ -27,8 +30,15 @@ public class FriendListAdapter extends BaseAdapter {
 		    }
 		TextView firstName = (TextView) rowView.findViewById(R.id.FirstName);
 		TextView lastName = (TextView) rowView.findViewById(R.id.LastName);
+		TextView location = (TextView) rowView.findViewById(R.id.position);
+		ImageView img     = (ImageView) rowView.findViewById(R.id.type_pict);
+
 		Friend currFriend =  GlobalParams.getInstance().getFriends().get(position);
+		
 		firstName.setText(currFriend.getName());
+		lastName.setText("last name");
+		img.setImageResource(R.drawable.friend);
+		location.setText(Integer.toString(currFriend.getWidth()) + " ; " + Integer.toString(currFriend.getHeight()));
 		return rowView;    
 	}
 	@Override
