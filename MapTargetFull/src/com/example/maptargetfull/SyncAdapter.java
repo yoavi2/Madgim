@@ -4,12 +4,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -25,16 +22,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.example.maptargetfull.PointsDBAccess.Point;
-import com.example.maptargetfull.PointsDBAccess.PointForSync;
-import com.example.maptargetfull.SQLiteDB.Points;
-
 import android.accounts.Account;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SyncResult;
 import android.os.Bundle;
+
+import com.example.maptargetfull.PointsDBAccess.PointForSync;
+import com.example.maptargetfull.SQLiteDB.Points;
 
 public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	private final String url = "http://172.20.19.192:3000/friends";
@@ -140,6 +137,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+        
+        getContext().sendBroadcast(new Intent(GlobalParams.getInstance().syncFinished));
         
 	}
 	

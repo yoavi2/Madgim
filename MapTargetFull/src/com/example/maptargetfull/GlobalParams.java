@@ -13,6 +13,7 @@ public class GlobalParams {
 	public PointsDBAccess PointsDBaccess;
 	public int selectedItem;
     public  ProgressDialog pdialog;
+    public String syncFinished = "com.example.maptargetfull.sync_finished"; 
 
 	public SecondFragment listFriends;
     private Fragment frag;
