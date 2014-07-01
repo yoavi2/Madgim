@@ -122,7 +122,7 @@ public class FirstFragment extends Fragment implements OnTouchListener,OnLongCli
 		    	
 		    	Window window = dialog.getWindow();
 		    	
-		   	window.setLayout(600,500);
+//		   	window.setLayout(600,500);
 //		    	final NotificationManager mgr=
 //		                (NotificationManager)getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
 //		       //     Notification note=new Notification(R.drawable.red_little,

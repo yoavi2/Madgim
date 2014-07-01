@@ -18,6 +18,7 @@ public class MainActivity extends AbstractNavDrawerActivity {
         }
     }
     
+    
     @Override
     protected NavDrawerActivityConfiguration getNavDrawerConfiguration() {
         

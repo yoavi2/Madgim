@@ -3,98 +3,88 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    
-     
-        
-    <LinearLayout android:id="@+id/bottom" android:layout_width="fill_parent"
-   		 android:layout_height="wrap_content" android:orientation="horizontal"
-    	android:layout_alignParentBottom="true" >"
-	</LinearLayout>
-
-	 <ImageView
-	     android:id="@+id/image"
-	     android:layout_width="wrap_content"
-	     android:layout_height="wrap_content"
-	     android:layout_alignParentLeft="true"
-	     android:layout_alignParentTop="true"
-	     android:layout_toLeftOf="@+id/First"
-	     android:src="@drawable/nophoto2" />
-
-	 <EditText
-	     android:id="@+id/FirstName"
-	     android:layout_width="wrap_content"
-	     android:layout_height="wrap_content"
-	     android:layout_alignParentRight="true"
-	      android:layout_alignParentTop="true"
-	     android:layout_centerVertical="true"
-	     android:layout_toRightOf="@+id/First"
-	     >
-
-	     <requestFocus />
-	 </EditText>
-
-	 <TextView
-	     android:id="@+id/First"
-	     android:layout_width="wrap_content"
-	     android:layout_height="wrap_content"
-	     android:layout_alignBottom="@+id/FirstName"
-	     android:layout_centerHorizontal="true"
-	     android:text="First Name:"
-	     android:textSize="15sp"
-	     android:textStyle="bold" />
-
-<LinearLayout
-    android:id="@+id/buttons"
-    android:layout_width="fill_parent"
-    android:layout_height="32dp"
-    android:layout_alignParentLeft="true"
-    android:layout_below="@+id/Last"
-    android:layout_marginTop="22dp"
-    android:orientation="horizontal" >
-
-    <Button
-        android:id="@+id/DeleteButton"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="fill_parent"
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/image"
-        android:layout_weight="1"
-        android:text="Delete" />
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/First"
+        android:src="@drawable/nophoto2" />
 
-    <Button
-        android:id="@+id/EditButton"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="fill_parent"
+    <EditText
+        android:id="@+id/FirstName"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/image"
-        android:layout_toRightOf="@+id/DeleteButton"
-        android:layout_weight="1"
-        android:text="Edit" />
-
-    <Button
-        android:id="@+id/saveButton"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/EditButton"
-        android:layout_alignBottom="@+id/EditButton"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="18dp"
-        android:layout_weight="1"
-        android:text="Save" />
-</LinearLayout>
+        android:layout_alignParentTop="true"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/First" >
 
-<TextView
-    android:id="@+id/Last"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_below="@+id/FirstName"
-    android:layout_marginTop="26dp"
-    android:layout_toLeftOf="@+id/FirstName"
-    android:text="Last Name:"
-    android:textSize="15sp"
-    android:textStyle="bold" />
+        <requestFocus />
+    </EditText>
 
+    <TextView
+        android:id="@+id/First"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/FirstName"
+        android:layout_centerHorizontal="true"
+        android:text="First Name:"
+        android:textSize="15sp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:id="@+id/buttons"
+        android:layout_width="fill_parent"
+        android:layout_height="32dp"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/Last"
+        android:layout_marginTop="22dp"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/DeleteButton"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/image"
+            android:layout_weight="1"
+            android:text="Delete" />
+
+        <Button
+            android:id="@+id/EditButton"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/image"
+            android:layout_toRightOf="@+id/DeleteButton"
+            android:layout_weight="1"
+            android:text="Edit" />
+
+        <Button
+            android:id="@+id/saveButton"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/EditButton"
+            android:layout_alignBottom="@+id/EditButton"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="18dp"
+            android:layout_weight="1"
+            android:text="Save" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/Last"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/FirstName"
+        android:layout_marginTop="26dp"
+        android:layout_toLeftOf="@+id/FirstName"
+        android:text="Last Name:"
+        android:textSize="15sp"
+        android:textStyle="bold" />
 
 </RelativeLayout>
