@@ -6,6 +6,7 @@ import java.util.Collection;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 
+
 public class GlobalParams {
 	private boolean ShowEenemy;
 	private boolean ShowFriend;
