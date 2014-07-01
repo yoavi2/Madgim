@@ -37,6 +37,13 @@ public class PointsDBAccess {
 		return db.update(Points.table_name, values, Points.Columns.row_id + " = ?", new String[]{ String.valueOf(rowID) }) == 1;
 	}
 	
+	public Boolean SetSynched(long rowID){
+		SQLiteDatabase db = this.mDBHandler.getWritableDatabase();
+		ContentValues values = new ContentValues();
+		values.put(Points.Columns.is_synched, SQLiteDB.convertBoolean(true));
+		return db.update(Points.table_name, values, Points.Columns.row_id + " = ?", new String[]{ String.valueOf(rowID) }) == 1;
+	}
+	
 	public Boolean updatePoint(long rowID, String firstName, String lastName, double longitude, double langitude, Boolean is_google){
 		SQLiteDatabase db = this.mDBHandler.getWritableDatabase();
 		ContentValues values = new ContentValues();
