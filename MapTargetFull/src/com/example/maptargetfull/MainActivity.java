@@ -1,20 +1,40 @@
 package com.example.maptargetfull;
 
+// Lior The Magnificent
 
+import java.util.ArrayList;
 
-import android.app.Fragment;
+import com.example.maptargetfull.SQLiteDB.Points;
+
+import android.accounts.Account;
+import android.accounts.AccountManager;
+import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 public class MainActivity extends AbstractNavDrawerActivity {
+    // Constants
+    // The authority for the sync adapter's content provider
+    public static final String AUTHORITY = "com.example.maptargetfull.provider";
+    // An account type, in the form of a domain name
+    public static final String ACCOUNT_TYPE = "example.com";
+    // The account name
+    public static final String ACCOUNT = "dummyaccount";
+    // Instance fields
+    Account mAccount;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        // Create the dummy account
+        mAccount = CreateSyncAccount(this);
+        
         if ( savedInstanceState == null ) {
-            getFragmentManager().beginTransaction().replace(R.id.content_frame, new FirstFragment()).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new MainFragment(), MainFragment.TAG).commit();
         }
     }
     
@@ -23,9 +43,8 @@ public class MainActivity extends AbstractNavDrawerActivity {
         
         NavDrawerItem[] menu = new NavDrawerItem[] {
                 NavMenuSection.createMenuSection(100, R.string.text_mapsection),        
-                NavMenuItem.createMenuItem(101, R.string.text_map, R.drawable.google_icon, true, false), 
-                NavMenuItem.createMenuItem(102, R.string.text_map, R.drawable.ic_action_locate, true, false),
-                NavMenuItem.createMenuItem(103, R.string.text_list, R.drawable.ic_action_paste, true, false)
+                NavMenuItem.createMenuItem(101, R.string.text_googlemap, R.drawable.google_icon, true, false), 
+                NavMenuItem.createMenuItem(102, R.string.text_imagemap, R.drawable.image_map, true, false), 
  };
         
         NavDrawerActivityConfiguration navDrawerActivityConfiguration = new NavDrawerActivityConfiguration();
@@ -49,12 +68,38 @@ public class MainActivity extends AbstractNavDrawerActivity {
             getFragmentManager().beginTransaction().replace(R.id.content_frame, new GoogleMapFragment(), GoogleMapFragment.TAG).commit();
             break;
         case 102:
-            getFragmentManager().beginTransaction().replace(R.id.content_frame, new FirstFragment()).commit();
+//            getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new ImageMapFragment()).commit();
             break;
-        case 103:
-            getFragmentManager().beginTransaction().replace(R.id.content_frame, new SecondFragment()).commit();
-
         }
+    }
+    
+    public static Account CreateSyncAccount(Context context){
+        // Create the account type and default account
+        Account newAccount = new Account(
+                ACCOUNT, ACCOUNT_TYPE);
+        // Get an instance of the Android account manager
+        AccountManager accountManager =
+                (AccountManager) context.getSystemService(
+                        ACCOUNT_SERVICE);
+        /*
+         * Add the account and account type, no password or user data
+         * If successful, return the Account object, otherwise report an error.
+         */
+        if (accountManager.addAccountExplicitly(newAccount, null, null)) {
+            /*
+             * If you don't set android:syncable="true" in
+             * in your <provider> element in the manifest,
+             * then call context.setIsSyncable(account, AUTHORITY, 1)
+             * here.
+             */
+        } else {
+            /*
+             * The account exists or some other error occurred. Log this, report it,
+             * or handle it internally.
+             */
+        }
+        
+        return newAccount;
     }
     
     static public class MainFragment extends Fragment {

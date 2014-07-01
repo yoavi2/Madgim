@@ -9,7 +9,7 @@ public class SQLiteDB extends SQLiteOpenHelper{
 	static class Points{
 		static final String table_name = "POINTS";
 		static class Columns{
-			static final String row_id		= "ROWID";
+			static final String row_id		= "rowid";
 			static final String first_name 	= "FIRST_NAME";
 			static final String last_name 	= "LAST_NAME";
 			static final String longitude 	= "LONGITUDE";
