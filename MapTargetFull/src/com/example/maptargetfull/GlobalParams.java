@@ -15,7 +15,7 @@ public class GlobalParams {
 	public int selectedItem;
     public  ProgressDialog pdialog;
     public String syncFinished = "com.example.maptargetfull.sync_finished";
-    public Boolean syncSucceeded = false;
+    public String syncSucceeded = "SUCCEEDED";
 
 	public SecondFragment listFriends;
     private Fragment frag;

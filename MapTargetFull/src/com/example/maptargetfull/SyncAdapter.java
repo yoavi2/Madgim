@@ -51,10 +51,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	@Override
 	public void onPerformSync(Account account, Bundle extras, String authority,
 			ContentProviderClient provider, SyncResult syncResult) {
+		Boolean succeeded = true;
 		PointsDBAccess pointsDB = new PointsDBAccess(getContext());
 		ArrayList<PointForSync> arrayPoint = pointsDB.getPointsForSync();
-		
-		GlobalParams.getInstance().syncSucceeded =false;
 		
 		// create HttpClient
         HttpClient httpclient = new DefaultHttpClient();
@@ -100,23 +99,24 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				succeeded = false;
 			} catch (UnsupportedEncodingException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				succeeded = false;
 			} catch (ClientProtocolException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				succeeded = false;
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-				return;
+				succeeded = false;
 			}
 		}
         
         //Sync server to device
         android.os.Debug.waitForDebugger();
-
-        pointsDB.deletePointsForSync();
         HttpGet httpGet = new HttpGet(url);
         HttpResponse httpResponse;
         
@@ -132,33 +132,53 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             
             JSONArray friends = json.getJSONArray("friends");
             
+            arrayPoint.clear();
+            
             // Run over all the friends, create an instance and add them to the array in global class
             for(int i = 0; i < friends.length(); i++){
             	if(friends.getJSONObject(i).getInt(Points.Columns.is_deleted) == SQLiteDB.convertBoolean(false))
             	{
-	            	long rowID = pointsDB.createPoint(friends.getJSONObject(i).getString(Points.Columns.first_name), 
-				            			              friends.getJSONObject(i).getString(Points.Columns.last_name), 
-				            			              friends.getJSONObject(i).getDouble(Points.Columns.longitude), 
-				            			              friends.getJSONObject(i).getDouble(Points.Columns.langitude), 
-				            			              friends.getJSONObject(i).getInt(Points.Columns.is_google) == 1?true:false);
-	            	pointsDB.SetServerID(rowID, friends.getJSONObject(i).getString("_id"));
-	            	pointsDB.SetSynched(rowID);
+            		PointForSync ps = pointsDB.new PointForSync();
+            		ps.first_name = friends.getJSONObject(i).getString(Points.Columns.first_name);
+            		ps.last_name = friends.getJSONObject(i).getString(Points.Columns.last_name);
+            		ps.longitude = friends.getJSONObject(i).getDouble(Points.Columns.longitude);
+            		ps.langitude = friends.getJSONObject(i).getDouble(Points.Columns.langitude);
+            		ps.is_google = friends.getJSONObject(i).getInt(Points.Columns.is_google);
+            		ps.server_id = friends.getJSONObject(i).getString("_id");
+            		arrayPoint.add(ps);
             	}
             }
 
 		} catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			succeeded = false;
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			succeeded = false;
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			succeeded = false;
 		}
         
-        GlobalParams.getInstance().syncSucceeded = true;
-        getContext().sendBroadcast(new Intent(GlobalParams.getInstance().syncFinished));
+        if (succeeded = true){
+	        pointsDB.deletePointsForSync();
+	        
+	        for (int i = 0; i < arrayPoint.size(); i++) {
+	        	long rowID = pointsDB.createPoint(arrayPoint.get(i).first_name, 
+	        									  arrayPoint.get(i).last_name, 
+									              arrayPoint.get(i).longitude, 
+									              arrayPoint.get(i).langitude, 
+									              arrayPoint.get(i).is_google == 1?true:false);
+				pointsDB.SetServerID(rowID, arrayPoint.get(i).server_id);
+				pointsDB.SetSynched(rowID);
+			}
+        }
+        
+        getContext().sendBroadcast(new Intent(GlobalParams.getInstance().syncFinished).putExtra(GlobalParams.getInstance().syncSucceeded, succeeded));
         
 	}
 	
