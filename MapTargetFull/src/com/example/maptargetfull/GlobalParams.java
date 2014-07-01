@@ -1,12 +1,19 @@
 package com.example.maptargetfull;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import com.example.maptargetfull.PointsDBAccess.Point;
+
+import android.app.Fragment;
 import android.app.ProgressDialog;
-import android.support.v4.app.Fragment;
+import android.net.Uri;
+import android.os.Environment;
+import android.util.Log;
 
 public class GlobalParams {
+
 	private boolean ShowEenemy;
 	private boolean ShowFriend;
 	private DrawSample mydraw;
@@ -75,4 +82,32 @@ public class GlobalParams {
 	
 	static final private GlobalParams INSTANCE = new GlobalParams(true,true);
     static public GlobalParams getInstance() { return INSTANCE; }
+    
+	/** Create a file Uri for saving an image or video */
+    public static Uri getOutputMediaFileUri(Point point){
+          return Uri.fromFile(getOutputMediaFile(point));
+          
+    }
+	
+	 /** Create a File for saving an image or video */
+    public static File getOutputMediaFile(Point point){
+        // To be safe, you should check that the SDCard is mounted
+        // using Environment.getExternalStorageState() before doing this.
+        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
+                  Environment.DIRECTORY_PICTURES), "MyCameraApp");
+        
+        // This location works best if you want the created images to be shared
+        // between applications and persist after your app has been uninstalled.
+
+        // Create the storage directory if it does not exist
+        if (! mediaStorageDir.exists()){
+            if (! mediaStorageDir.mkdirs()){
+                Log.d("MyCameraApp", "failed to create directory");
+                return null;
+            }
+        }
+            File mediaFile = new File(mediaStorageDir.getPath() + File.separator
+                                   + point.rowID + ".jpg");
+        return mediaFile;
+    }
 }

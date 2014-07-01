@@ -17,23 +17,28 @@ import com.google.android.gms.maps.model.LatLng;
 
 public class AddTargetOnLocationDialog extends DialogFragment {
 
-	private EditText mETName;
 	public static String TAG = "set_target_on_location_dialog";
-	private LatLng mLocation;
+	private String mCallerTag;
+	private EditText mETName;
+	private double mLatitude;
+	private double mLongitude;
+	
 
 	 public interface AddTargetOnLocationListener {
-	        void addMarkerOnLocation(String name, GoogleMapFragment.target_type type, LatLng loc);
+		 void addMarkerOnLocation(String name, GoogleMapFragment.target_type type, double latitude, double longitude);
 	    }
 	
 	public AddTargetOnLocationDialog() {
 		// Empty constructor required for DialogFragment
 	}
 
-	public static AddTargetOnLocationDialog newInstance(String title, LatLng loc) {
+	public static AddTargetOnLocationDialog newInstance(String title, double latitude, double longitude,  String callertag) {
 		AddTargetOnLocationDialog frag = new AddTargetOnLocationDialog();
 		Bundle args = new Bundle();
 		args.putString("title", title);
-		args.putParcelable("location", loc);
+		args.putDouble("latitude", latitude);
+		args.putDouble("longitude", longitude);
+		args.putString("callertag", callertag);
 		frag.setArguments(args);
 		return frag;
 	}
@@ -44,6 +49,10 @@ public class AddTargetOnLocationDialog extends DialogFragment {
 		View view = inflater.inflate(R.layout.fragment_set_target_on_location,
 				container);
 
+		this.mCallerTag = getArguments().getString("callertag");
+		this.mLatitude = getArguments().getDouble("latitude");
+		this.mLongitude = getArguments().getDouble("longitude");
+		
 		this.mETName = (EditText) view.findViewById(R.id.et_name);
 		this.mETName.setOnClickListener(new OnClickListener() {
 			@Override
@@ -77,8 +86,8 @@ public class AddTargetOnLocationDialog extends DialogFragment {
 								tt_type = GoogleMapFragment.target_type.ENEMY;
 							}
 							
-							 AddTargetOnLocationListener fragment = (AddTargetOnLocationListener) getActivity().getFragmentManager().findFragmentByTag(GoogleMapFragment.TAG);
-					            fragment.addMarkerOnLocation(mETName.getText().toString(), tt_type, mLocation);
+							 AddTargetOnLocationListener fragment = (AddTargetOnLocationListener) getActivity().getFragmentManager().findFragmentByTag(mCallerTag);
+					            fragment.addMarkerOnLocation(mETName.getText().toString(), tt_type, mLatitude, mLongitude);
 					            		
 							dismiss();
 						}
@@ -95,7 +104,6 @@ public class AddTargetOnLocationDialog extends DialogFragment {
 
 		String title = getArguments().getString("title", "Add Target");
 		getDialog().setTitle(title);
-		this.mLocation = getArguments().getParcelable("location");
 		// Show soft keyboard automatically
 		this.mETName.requestFocus();
 		getDialog().getWindow().setSoftInputMode(
