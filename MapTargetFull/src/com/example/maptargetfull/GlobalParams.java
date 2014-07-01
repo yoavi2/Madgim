@@ -4,8 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import com.example.maptargetfull.PointsDBAccess.Point;
-
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.net.Uri;
@@ -21,7 +19,6 @@ public class GlobalParams {
 	public ProgressDialog pdialog;
 	public String syncFinished = "com.example.maptargetfull.sync_finished";
 	public String syncSucceeded = "SUCCEEDED";
-
 	public SecondFragment listFriends;
 	private Fragment frag;
 	private ArrayList<Friend> MyFriends = new ArrayList<Friend>();
