@@ -87,4 +87,13 @@
         android:textSize="15sp"
         android:textStyle="bold" />
 
+    <EditText
+        android:id="@+id/LastName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/buttons"
+        android:layout_alignLeft="@+id/FirstName"
+        android:layout_alignParentRight="true"
+        android:ems="10" />
+
 </RelativeLayout>

@@ -18,6 +18,8 @@
     <string name="text_mapsection">Menu</string>
     <string name="text_map">Forces Map</string>
     <string name="text_list">Forces details</string>
+    <string name="text_googlemap">Google Map</string>
+    <string name="text_imagemap">Image Map</string>
 
     <string name="text_enemy">Enemy</string>
     <string name="text_friend">Friend</string>

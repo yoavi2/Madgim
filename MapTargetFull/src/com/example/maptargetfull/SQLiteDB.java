@@ -9,7 +9,8 @@ public class SQLiteDB extends SQLiteOpenHelper{
 	static class Points{
 		static final String table_name = "POINTS";
 		static class Columns{
-			static final String row_id		= "ROWID";
+			static final String row_id		= "rowid";
+			static final String server_id	= "SERVER_ID";
 			static final String first_name 	= "FIRST_NAME";
 			static final String last_name 	= "LAST_NAME";
 			static final String longitude 	= "LONGITUDE";
@@ -21,12 +22,13 @@ public class SQLiteDB extends SQLiteOpenHelper{
 	}
 	
 	public SQLiteDB(Context context) {
-		super(context, "MAPTARGET.db", null, 1);
+		super(context, "MAPTARGET.db", null, 2);
 	}
 	
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		db.execSQL("CREATE TABLE " + Points.table_name + " (" +
+				   Points.Columns.server_id + " TEXT," +
 				   Points.Columns.first_name + " TEXT, " +
 				   Points.Columns.last_name + " TEXT, " +
 				   Points.Columns.longitude + " DOUBLE, " +

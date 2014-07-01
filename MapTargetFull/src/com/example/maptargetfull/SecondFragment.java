@@ -50,6 +50,8 @@ import com.example.maptargetfull.PointsDBAccess.Point;
 
 public class SecondFragment extends Fragment implements OnTouchListener, OnItemLongClickListener {
 	
+	public static String TAG = "List";
+	
     private ProgressDialog pdialog;
     private final int ACTION_GET = 1;
 	private final int ACTION_ADD_SOLDIER = 2;
@@ -65,6 +67,7 @@ public class SecondFragment extends Fragment implements OnTouchListener, OnItemL
     public void update(){
     	new callservice(ACTION_GET).execute();
     }
+ 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
@@ -191,99 +194,101 @@ public class SecondFragment extends Fragment implements OnTouchListener, OnItemL
             HttpResponse httpResponse;
             switch (action) {
 			case (ACTION_GET):
-				try {
+//				try {
 					GlobalParams.getInstance().clearList();
 					
-//					ArrayList<Point> points =  GlobalParams.getInstance().PointsDBaccess.getPoints(false);
-//					for (Point point : points) {
-//						
-//						Double langitude = point.langitude;
-//						Double longitude = point.longitude;
-//
-//						GlobalParams.getInstance().addFriend(new Friend(point.first_name, 0, point.last_name,
-//																langitude.intValue(), longitude.intValue()));				
+					ArrayList<Point> points =  GlobalParams.getInstance().PointsDBaccess.getPoints(false);
+					for (Point point : points) {
+						
+						Double langitude = point.langitude;
+						Double longitude = point.longitude;
+
+						GlobalParams.getInstance().addFriend(new Friend(point.first_name, point.rowID, point.last_name,
+																langitude.intValue(), longitude.intValue()));				
 //					}
+					}
 						
 					
-					httpResponse = httpclient.execute(new HttpGet(url));
-					
-		            // receive response as inputStream
-		            InputStream inputStream = httpResponse.getEntity().getContent();
-		            
-		            String result = convertInputStreamToString(inputStream);
-		            
-		            JSONObject json = new JSONObject(result);
-		            
-		            JSONArray friends = json.getJSONArray("friends");
-		            
-		            // Run over all the friends, create an instance and add them to the array in global class
-		            for(int i = 0; i < friends.length(); i++){
-		            GlobalParams.getInstance().addFriend(new Friend(friends.getJSONObject(i).getString("firstname"),
-		            												90,
-		            												friends.getJSONObject(i).getString("_id"),
-		            												friends.getJSONObject(i).getInt("locationX"),
-		            												friends.getJSONObject(i).getInt("locationY")));
-		            }
-		            
-				} catch (ClientProtocolException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					//pdialog.hide();
-					//showError();
-					isTimeOut = true;
-					e.printStackTrace();
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+//					httpResponse = httpclient.execute(new HttpGet(url));
+//					
+//		            // receive response as inputStream
+//		            InputStream inputStream = httpResponse.getEntity().getContent();
+//		            
+//		            String result = convertInputStreamToString(inputStream);
+//		            
+//		            JSONObject json = new JSONObject(result);
+//		            
+//		            JSONArray friends = json.getJSONArray("friends");
+//		            
+//		            // Run over all the friends, create an instance and add them to the array in global class
+//		            for(int i = 0; i < friends.length(); i++){
+//		            GlobalParams.getInstance().addFriend(new Friend(friends.getJSONObject(i).getString("firstname"),
+//		            												90,
+//		            												friends.getJSONObject(i).getString("_id"),
+//		            												friends.getJSONObject(i).getInt("locationX"),
+//		            												friends.getJSONObject(i).getInt("locationY")));
+//		            }
+//		            
+//				} catch (ClientProtocolException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				} catch (IOException e) {
+//					// TODO Auto-generated catch block
+//					//pdialog.hide();
+//					//showError();
+//					isTimeOut = true;
+//					e.printStackTrace();
+//				} catch (JSONException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+				
 				break;
 
 			case (ACTION_ADD_SOLDIER):
 				
-				//GlobalParams.getInstance().PointsDBaccess.createPoint("martin", "gordon", 150, 480, false);
-				//url with the post data
-			    HttpPost httpost = new HttpPost(url);
-				
-			    //convert parameters into JSON object
-			    JSONObject newSoldier = new JSONObject();
-			    
-			    try {
-					newSoldier.put("firstname", "300");
-					newSoldier.put("locationX", 200);
-					newSoldier.put("locationY", 300);
-					//passes the results to a string builder/entity
-				    StringEntity se = new StringEntity(newSoldier.toString());
-
-				    //sets the post request as the resulting string
-				    httpost.setEntity(se);
-				    //sets a request header so the page receving the request
-				    //will know what to do with it
-				    httpost.setHeader("Accept", "application/json");
-				    httpost.setHeader("Content-type", "application/json");
-
-				    //Handles what is returned from the page 
-				    ResponseHandler responseHandler = new BasicResponseHandler();
-				    httpclient.execute(httpost, responseHandler);
-				    
-				    GlobalParams.getInstance().clearList();
+				GlobalParams.getInstance().PointsDBaccess.createPoint("martin", "gordon", 150, 480, false);
+			//	url with the post data
+//			    HttpPost httpost = new HttpPost(url);
+//				
+//			    //convert parameters into JSON object
+//			    JSONObject newSoldier = new JSONObject();
+//			    
+//			    try {
+//					newSoldier.put("firstname", "300");
+//					newSoldier.put("locationX", 200);
+//					newSoldier.put("locationY", 300);
+//					//passes the results to a string builder/entity
+//				    StringEntity se = new StringEntity(newSoldier.toString());
+//
+//				    //sets the post request as the resulting string
+//				    httpost.setEntity(se);
+//				    //sets a request header so the page receving the request
+//				    //will know what to do with it
+//				    httpost.setHeader("Accept", "application/json");
+//				    httpost.setHeader("Content-type", "application/json");
+//
+//				    //Handles what is returned from the page 
+//				    ResponseHandler responseHandler = new BasicResponseHandler();
+//				    httpclient.execute(httpost, responseHandler);
+//				    
+//				    GlobalParams.getInstance().clearList();
 				    new callservice(ACTION_GET).execute();
-					break;
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (UnsupportedEncodingException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (ClientProtocolException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					
-					e.printStackTrace();
-				} 
+//					break;
+//				} catch (JSONException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				} catch (UnsupportedEncodingException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				} catch (ClientProtocolException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				} catch (IOException e) {
+//					// TODO Auto-generated catch block
+//					
+//					e.printStackTrace();
+//				} 
 			    
 			}
 			 

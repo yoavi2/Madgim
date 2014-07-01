@@ -5,7 +5,7 @@ import android.graphics.Rect;
 
 public class Friend {
 	private String name;
-	private int    Distance;
+	private long    rowId;
 	private Rect   space;
 	private Bitmap mBitmap;
 	private int    width;
@@ -13,10 +13,10 @@ public class Friend {
 	
 	private String nickName;
 	
-	public Friend(String name, int Distance, String nick, int width, int height)
+	public Friend(String name, long Distance, String nick, int width, int height)
 	{
 		this.name = name;
-		this.Distance = Distance;
+		this.rowId = Distance;
 		this.nickName = nick;
 		this.width = width;
 		this.height= height;
@@ -31,6 +31,9 @@ public class Friend {
 		
 	//	 mBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.red_little);
 	//	space = new Rect(0,200,0 + mBitmap.getWidth(),200 + mBitmap.getHeight());
+	}
+	public long getRowId(){
+		return this.rowId;
 	}
 	public String getName(){
 		return this.name;
