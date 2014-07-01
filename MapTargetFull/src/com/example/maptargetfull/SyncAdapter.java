@@ -54,6 +54,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		PointsDBAccess pointsDB = new PointsDBAccess(getContext());
 		ArrayList<PointForSync> arrayPoint = pointsDB.getPointsForSync();
 		
+		GlobalParams.getInstance().syncSucceeded =false;
+		
 		// create HttpClient
         HttpClient httpclient = new DefaultHttpClient();
         int timeout = 5; // seconds
@@ -107,6 +109,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				return;
 			}
 		}
         
@@ -154,6 +157,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			e.printStackTrace();
 		}
         
+        GlobalParams.getInstance().syncSucceeded = true;
         getContext().sendBroadcast(new Intent(GlobalParams.getInstance().syncFinished));
         
 	}

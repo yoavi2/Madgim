@@ -3,8 +3,8 @@ package com.example.maptargetfull;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import android.app.Fragment;
 import android.app.ProgressDialog;
-import android.support.v4.app.Fragment;
 
 public class GlobalParams {
 	private boolean ShowEenemy;
@@ -13,7 +13,8 @@ public class GlobalParams {
 	public PointsDBAccess PointsDBaccess;
 	public int selectedItem;
     public  ProgressDialog pdialog;
-    public String syncFinished = "com.example.maptargetfull.sync_finished"; 
+    public String syncFinished = "com.example.maptargetfull.sync_finished";
+    public Boolean syncSucceeded = false;
 
 	public SecondFragment listFriends;
     private Fragment frag;
