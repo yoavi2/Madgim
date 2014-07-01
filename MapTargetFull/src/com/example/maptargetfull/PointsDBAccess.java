@@ -30,6 +30,13 @@ public class PointsDBAccess {
 		return db.insert(SQLiteDB.Points.table_name, null, values);
 	}
 	
+	public Boolean SetServerID(long rowID, String serverID){
+		SQLiteDatabase db = this.mDBHandler.getWritableDatabase();
+		ContentValues values = new ContentValues();
+		values.put(Points.Columns.server_id, serverID);
+		return db.update(Points.table_name, values, Points.Columns.row_id + " = ?", new String[]{ String.valueOf(rowID) }) == 1;
+	}
+	
 	public Boolean updatePoint(long rowID, String firstName, String lastName, double longitude, double langitude, Boolean is_google){
 		SQLiteDatabase db = this.mDBHandler.getWritableDatabase();
 		ContentValues values = new ContentValues();
@@ -79,11 +86,58 @@ public class PointsDBAccess {
 		return arrayPoint;
 	}
 	
+	public Boolean deletePointsForSync(){
+		SQLiteDatabase db = this.mDBHandler.getWritableDatabase();
+		return db.delete(Points.table_name, "1", null) != -1;
+	}
+	
+	public ArrayList<PointForSync> getPointsForSync(){
+		ArrayList<PointForSync> arrayPoint = new ArrayList<PointForSync>();
+		PointForSync p;
+		SQLiteDatabase db = this.mDBHandler.getReadableDatabase();
+		
+		Cursor cursor = db.rawQuery("SELECT " +
+								    Points.Columns.row_id + ", " +
+								    Points.Columns.first_name + ", " +
+								    Points.Columns.last_name + ", " +
+								    Points.Columns.longitude + ", " +
+								    Points.Columns.langitude + " " +
+								    Points.Columns.server_id + ", " +
+								    Points.Columns.is_synched + ", " +
+								    Points.Columns.is_google + " " +
+								    "FROM " + Points.table_name + " " +
+								    "WHERE " + Points.Columns.is_synched + " = " + String.valueOf(SQLiteDB.convertBoolean(false)), null);
+	
+		while (cursor.moveToNext()) {
+			p = new PointForSync();
+			p.rowID = cursor.getLong(cursor.getColumnIndex(Points.Columns.row_id));
+			p.first_name = cursor.getString(cursor.getColumnIndex(Points.Columns.first_name));
+			p.last_name = cursor.getString(cursor.getColumnIndex(Points.Columns.last_name));
+			p.longitude = cursor.getLong(cursor.getColumnIndex(Points.Columns.longitude));
+			p.langitude = cursor.getLong(cursor.getColumnIndex(Points.Columns.langitude));
+			p.server_id = cursor.getString(cursor.getColumnIndex(Points.Columns.server_id));
+			p.is_deleted = cursor.getInt(cursor.getColumnIndex(Points.Columns.is_deleted));
+			arrayPoint.add(p);
+		}
+		
+		return arrayPoint;
+	}
+	
 	class Point{
 		public long rowID;
 		public String first_name;
 		public String last_name;
 		public double longitude;
 		public double langitude;
+	}
+	class PointForSync{
+		public long rowID;
+		public String first_name;
+		public String last_name;
+		public double longitude;
+		public double langitude;
+		public String server_id;
+		public int is_deleted;
+		public int is_google;
 	}
 }
