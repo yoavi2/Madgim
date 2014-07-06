@@ -88,8 +88,8 @@ public class PointsDBAccess {
 			p.rowID = cursor.getLong(cursor.getColumnIndex(Points.Columns.row_id));
 			p.first_name = cursor.getString(cursor.getColumnIndex(Points.Columns.first_name));
 			p.last_name = cursor.getString(cursor.getColumnIndex(Points.Columns.last_name));
-			p.longitude = cursor.getLong(cursor.getColumnIndex(Points.Columns.longitude));
-			p.langitude = cursor.getLong(cursor.getColumnIndex(Points.Columns.langitude));
+			p.longitude = cursor.getDouble(cursor.getColumnIndex(Points.Columns.longitude));
+			p.langitude = cursor.getDouble(cursor.getColumnIndex(Points.Columns.langitude));
 			p.pointType = cursor.getInt(cursor.getColumnIndex(Points.Columns.point_type));
 			arrayPoint.add(p);
 		}
