@@ -25,7 +25,7 @@ public class AddTargetOnLocationDialog extends DialogFragment {
 	
 
 	 public interface AddTargetOnLocationListener {
-		 void addMarkerOnLocation(String name, GoogleMapFragment.target_type type, double latitude, double longitude);
+		 void createPointOnLocation(String name, GoogleMapFragment.target_type type, double latitude, double longitude);
 	    }
 	
 	public AddTargetOnLocationDialog() {
@@ -87,7 +87,7 @@ public class AddTargetOnLocationDialog extends DialogFragment {
 							}
 							
 							 AddTargetOnLocationListener fragment = (AddTargetOnLocationListener) getActivity().getFragmentManager().findFragmentByTag(mCallerTag);
-					            fragment.addMarkerOnLocation(mETName.getText().toString(), tt_type, mLatitude, mLongitude);
+					            fragment.createPointOnLocation(mETName.getText().toString(), tt_type, mLatitude, mLongitude);
 					            		
 							dismiss();
 						}

@@ -21,9 +21,9 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
-    <uses-permission android:name="android.permission.READ_SYNC_SETTINGS"/>
-    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS"/>
-    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
+    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <uses-feature
@@ -34,18 +34,18 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/CustomActionBarTheme"  >
+        android:theme="@style/CustomActionBarTheme" >
         <activity
             android:name="com.example.maptargetfull.Menu"
             android:label="@string/app_name"
-             android:theme="@android:style/Theme.Black.NoTitleBar" >
+            android:theme="@android:style/Theme.Black.NoTitleBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
- <activity
+        <activity
             android:name="com.example.maptargetfull.MainActivity"
             android:label="@string/app_name" >
         </activity>
@@ -61,40 +61,44 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.MapTargetFull.itemListActivity" />
         </activity>
+
+        <service android:name="com.example.maptargetfull.AuthenticatorService" >
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/authenticator" />
+        </service>
+        <service
+            android:name="com.example.maptargetfull.SyncService"
+            android:exported="true"
+            android:process=":sync" >
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.content.SyncAdapter"
+                android:resource="@xml/syncadapter" />
+        </service>
+
+        <provider
+            android:name="com.example.maptargetfull.StubProvider"
+            android:authorities="com.example.maptargetfull.provider"
+            android:exported="false"
+            android:syncable="true" />
+
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyCOp-TiREOcIUaqeKeK799jqFf2csm8vxY" />
-        <meta-data
+<!--         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyCPy8gyNyDXRxTmdtHss3kl2L1fynz2smc" />
-        
-	    <service
-	            android:name="com.example.maptargetfull.AuthenticatorService">
-	        <intent-filter>
-	            <action android:name="android.accounts.AccountAuthenticator"/>
-	        </intent-filter>
-	        <meta-data
-	            android:name="android.accounts.AccountAuthenticator"
-	            android:resource="@xml/authenticator" />
-	    </service>
-        <service
-                android:name="com.example.maptargetfull.SyncService"
-                android:exported="true"
-                android:process=":sync">
-            <intent-filter>
-                <action android:name="android.content.SyncAdapter"/>
-            </intent-filter>
-            <meta-data android:name="android.content.SyncAdapter"
-                    android:resource="@xml/syncadapter" />
-        </service>
-	    <provider
-        	android:name="com.example.maptargetfull.StubProvider"
-        	android:authorities="com.example.maptargetfull.provider"
-        	android:exported="false"
-        	android:syncable="true"/>
+            android:value="AIzaSyCPy8gyNyDXRxTmdtHss3kl2L1fynz2smc" /> -->
     </application>
 
 </manifest>

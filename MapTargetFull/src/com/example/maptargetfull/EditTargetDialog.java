@@ -103,8 +103,8 @@ public class EditTargetDialog extends DialogFragment implements OnClickListener{
 		Bitmap resizedBitmap = Bitmap
 				.createScaledBitmap(bitmap, 200, 200, true);
 		image.setImageBitmap(resizedBitmap);
-		tvFirstName.setText(mPoint.first_name);
-		tvFirstName.setText(mPoint.last_name);
+		etFirstName.setText(mPoint.first_name);
+		etFirstName.setText(mPoint.last_name);
 		btnSave.setVisibility(View.GONE);
 
 		String title = getArguments().getString("title", "Add Target");
