@@ -94,9 +94,8 @@ public class GoogleMapFragment extends Fragment implements
 			ArrayList<Point> points = this.mDbHandler.getPoints(true);
 			
 			if (points.size() != 0) {
-				for (Point point : points) {
-					mGooglePoints.put(point.rowID, point);
-					this.addMarkerOnLocation(point.first_name + " " + point.last_name, (point.pointType == 1?target_type.FRIEND:target_type.ENEMY), point.langitude, point.longitude);
+				for (Point point : points) {		
+					this.createPointOnLocation(point.first_name + " " + point.last_name, (point.pointType == 1?target_type.FRIEND:target_type.ENEMY), point.langitude, point.longitude);
 				}
 			}
 			
@@ -216,7 +215,7 @@ public class GoogleMapFragment extends Fragment implements
 									.newInstance("Edit Target", rowid, TAG);
 							addTargetDialog.show(fm, AddTargetOnLocationDialog.TAG);
 						} else {
-							Toast.makeText(getActivity(), "Error occured. marker not found?", Toast.LENGTH_LONG).show();
+							Toast.makeText(getActivity(), "Error occured. point not found?", Toast.LENGTH_LONG).show();
 						}
 					}
 				});
@@ -300,7 +299,7 @@ public class GoogleMapFragment extends Fragment implements
 	}
 
 	@Override
-	public void addMarkerOnLocation(String name, target_type type, double latitude, double longitude) {
+	public void createPointOnLocation(String name, target_type type, double latitude, double longitude) {
 		int pointType = 0;
 		
 		switch (type) {
@@ -313,13 +312,19 @@ public class GoogleMapFragment extends Fragment implements
 		default:
 			break;
 		}
-		
 		long rowid = this.mDbHandler.createPoint("yoav", name, longitude, latitude, true, pointType);
 		
 		if (rowid == -1) {
 			Toast.makeText(getActivity(), "Error creating marker",
 					Toast.LENGTH_LONG).show();
 		} else {
+		
+			addMarkerOnLocation(rowid, name, type, latitude, longitude);
+		
+		}
+	}
+	
+	public void addMarkerOnLocation(long rowid, String name, target_type type, double latitude, double longitude) {
 
 			Marker destMark = this.mMap.addMarker(new MarkerOptions()
 					.position(new LatLng(latitude, longitude)).title(name)
@@ -341,10 +346,8 @@ public class GoogleMapFragment extends Fragment implements
 			point.last_name = name;
 			point.langitude = latitude;
 			point.longitude = longitude;
-			point.pointType = pointType;
-			this.mGooglePoints.put(rowid, point);
+			mGooglePoints.put(rowid, point);
 		}
-	}
 
 	private class CustomInfoWindowAdapter implements InfoWindowAdapter {
 
@@ -404,19 +407,19 @@ public class GoogleMapFragment extends Fragment implements
 	public void deletePoint(long rowid) {
 		if (this.mDbHandler.deletePoint(rowid)) {
 			mGooglePoints.remove(rowid);
-			this.mMarkers.get(mMap).remove();
+			this.mMarkers.get(rowid).remove();
 			this.mMarkers.remove(rowid);
 		}
 		
 	}
-
+	
 	@Override
 	public void savePoint(Point point) {
 		if (this.mDbHandler.updatePoint(point.rowID, point.first_name, point.last_name, point.longitude, point.langitude, true, point.pointType)) {
 			mGooglePoints.remove(point.rowID);
-			this.mMarkers.get(mMap).remove();
+			this.mMarkers.get(point.rowID).remove();
 			this.mMarkers.remove(point.rowID);
-			this.addMarkerOnLocation(point.first_name + " " + point.last_name, target_type.FRIEND, point.langitude, point.longitude);
+			this.createPointOnLocation(point.first_name + " " + point.last_name, target_type.FRIEND, point.langitude, point.longitude);
 			
 		}
 		
