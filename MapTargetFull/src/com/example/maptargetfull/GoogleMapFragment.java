@@ -88,16 +88,6 @@ public class GoogleMapFragment extends Fragment implements
 			dialog.show();
 
 		} else { // Google Play Services are available
-
-			this.mDbHandler = new PointsDBAccess(getActivity());
-			mGooglePoints = new HashMap<Long, PointsDBAccess.Point>();
-			ArrayList<Point> points = this.mDbHandler.getPoints(true);
-			
-			if (points.size() != 0) {
-				for (Point point : points) {		
-					this.createPointOnLocation(point.first_name + " " + point.last_name, (point.pointType == 1?target_type.FRIEND:target_type.ENEMY), point.langitude, point.longitude);
-				}
-			}
 			
 			this.mLocationService = (LocationManager) getActivity()
 					.getSystemService(Context.LOCATION_SERVICE);
@@ -109,6 +99,21 @@ public class GoogleMapFragment extends Fragment implements
 			MapsInitializer.initialize(getActivity());
 
 			setUpMapIfNeeded(view);
+			
+			this.mMarkers = new HashMap<Long, Marker>();
+			this.mDbHandler = new PointsDBAccess(getActivity());
+			mGooglePoints = new HashMap<Long, PointsDBAccess.Point>();
+			ArrayList<Point> points = this.mDbHandler.getPoints(true);
+			
+			this.mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter());
+			this.mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+			this.mMap.setMyLocationEnabled(true);
+			
+			if (points.size() != 0) {
+				for (Point point : points) {		
+					this.addMarkerOnLocation(point.rowID, point.first_name, (point.pointType == 1?target_type.FRIEND:target_type.ENEMY), point.langitude, point.longitude);
+				}
+			}
 			
 			// Build gps alert
 			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -179,10 +184,6 @@ public class GoogleMapFragment extends Fragment implements
 			this.mGpsDialog.show();
 		}
 
-		this.mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-		this.mMap.setMyLocationEnabled(true);
-		this.mMarkers = new HashMap<Long, Marker>();
-
 		this.mMap.setOnMapLongClickListener(new OnMapLongClickListener() {
 			@Override
 			public void onMapLongClick(LatLng loc) {
@@ -192,8 +193,6 @@ public class GoogleMapFragment extends Fragment implements
 				addTargetDialog.show(fm, AddTargetOnLocationDialog.TAG);
 			}
 		});
-
-		this.mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter());
 
 		this.mMap
 				.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
@@ -211,9 +210,9 @@ public class GoogleMapFragment extends Fragment implements
 						}
 						
 						if (rowid != -1) {
-							EditTargetDialog addTargetDialog = EditTargetDialog
+							EditTargetDialog editTargetDialog = EditTargetDialog
 									.newInstance("Edit Target", rowid, TAG);
-							addTargetDialog.show(fm, AddTargetOnLocationDialog.TAG);
+							editTargetDialog.show(fm, AddTargetOnLocationDialog.TAG);
 						} else {
 							Toast.makeText(getActivity(), "Error occured. point not found?", Toast.LENGTH_LONG).show();
 						}
@@ -312,7 +311,7 @@ public class GoogleMapFragment extends Fragment implements
 		default:
 			break;
 		}
-		long rowid = this.mDbHandler.createPoint("yoav", name, longitude, latitude, true, pointType);
+		long rowid = this.mDbHandler.createPoint(name, "", longitude, latitude, true, pointType);
 		
 		if (rowid == -1) {
 			Toast.makeText(getActivity(), "Error creating marker",
@@ -342,8 +341,8 @@ public class GoogleMapFragment extends Fragment implements
 			this.mMarkers.put(rowid, destMark);
 			Point point = this.mDbHandler.new Point();
 			point.rowID = rowid;
-			point.first_name = "yoav";
-			point.last_name = name;
+			point.first_name = name;
+			point.last_name = "";
 			point.langitude = latitude;
 			point.longitude = longitude;
 			mGooglePoints.put(rowid, point);
@@ -419,7 +418,7 @@ public class GoogleMapFragment extends Fragment implements
 			mGooglePoints.remove(point.rowID);
 			this.mMarkers.get(point.rowID).remove();
 			this.mMarkers.remove(point.rowID);
-			this.createPointOnLocation(point.first_name + " " + point.last_name, target_type.FRIEND, point.langitude, point.longitude);
+			this.addMarkerOnLocation(point.rowID, point.first_name, (point.pointType == 1?target_type.FRIEND:target_type.ENEMY) , point.langitude, point.longitude);
 			
 		}
 		
