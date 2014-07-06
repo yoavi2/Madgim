@@ -328,18 +328,22 @@ public class GoogleMapFragment extends Fragment implements
 			Marker destMark = this.mMap.addMarker(new MarkerOptions()
 					.position(new LatLng(latitude, longitude)).title(name)
 					.snippet(type.toString()));
-
+			
+			Point point = this.mDbHandler.new Point();
+			
 			if (type == target_type.FRIEND) {
 				destMark.setIcon(BitmapDescriptorFactory
 						.fromResource(R.drawable.friend));
+				point.pointType = 1;
 			} else {
 				destMark.setIcon(BitmapDescriptorFactory
 						.fromResource(R.drawable.enemy));
+				point.pointType = 2;
 			}
 
 			destMark.showInfoWindow();
 			this.mMarkers.put(rowid, destMark);
-			Point point = this.mDbHandler.new Point();
+			
 			point.rowID = rowid;
 			point.first_name = name;
 			point.last_name = "";
