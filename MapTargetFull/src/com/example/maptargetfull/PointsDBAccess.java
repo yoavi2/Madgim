@@ -16,7 +16,7 @@ public class PointsDBAccess {
 		this.mDBHandler = new SQLiteDB(context);
 	}
 	
-	public long createPoint(String firstName, String lastName, double longitude, double langitude, Boolean is_google){
+	public long createPoint(String firstName, String lastName, double longitude, double langitude, Boolean is_google, int pointType){
 		SQLiteDatabase db = this.mDBHandler.getWritableDatabase();
 		ContentValues values = new ContentValues();
 		values.put(Points.Columns.first_name, firstName);
@@ -26,6 +26,7 @@ public class PointsDBAccess {
 		values.put(Points.Columns.is_google, SQLiteDB.convertBoolean(is_google));
 		values.put(Points.Columns.is_deleted, SQLiteDB.convertBoolean(false));
 		values.put(Points.Columns.is_synched, SQLiteDB.convertBoolean(false));
+		values.put(Points.Columns.point_type, pointType);
 		
 		return db.insert(SQLiteDB.Points.table_name, null, values);
 	}
@@ -44,7 +45,7 @@ public class PointsDBAccess {
 		return db.update(Points.table_name, values, Points.Columns.row_id + " = ?", new String[]{ String.valueOf(rowID) }) == 1;
 	}
 	
-	public Boolean updatePoint(long rowID, String firstName, String lastName, double longitude, double langitude, Boolean is_google){
+	public Boolean updatePoint(long rowID, String firstName, String lastName, double longitude, double langitude, Boolean is_google, int pointType){
 		SQLiteDatabase db = this.mDBHandler.getWritableDatabase();
 		ContentValues values = new ContentValues();
 		values.put(Points.Columns.first_name, firstName);
@@ -54,6 +55,7 @@ public class PointsDBAccess {
 		values.put(Points.Columns.is_google, SQLiteDB.convertBoolean(is_google));
 		values.put(Points.Columns.is_deleted, SQLiteDB.convertBoolean(false));
 		values.put(Points.Columns.is_synched, SQLiteDB.convertBoolean(false));
+		values.put(Points.Columns.point_type, pointType);
 		return db.update(Points.table_name, values, Points.Columns.row_id + " = ?", new String[]{ String.valueOf(rowID) }) == 1;
 	}
 	
@@ -75,7 +77,8 @@ public class PointsDBAccess {
 								    Points.Columns.first_name + ", " +
 								    Points.Columns.last_name + ", " +
 								    Points.Columns.longitude + ", " +
-								    Points.Columns.langitude + " " +
+								    Points.Columns.langitude + ", " +
+								    Points.Columns.point_type + " " +
 								    "FROM " + Points.table_name + " " +
 								    "WHERE " + Points.Columns.is_google + " = ? " +
 								    "AND " + Points.Columns.is_deleted + " = " + String.valueOf(SQLiteDB.convertBoolean(false)), new String[]{ String.valueOf(SQLiteDB.convertBoolean(is_google)) });
@@ -87,6 +90,7 @@ public class PointsDBAccess {
 			p.last_name = cursor.getString(cursor.getColumnIndex(Points.Columns.last_name));
 			p.longitude = cursor.getLong(cursor.getColumnIndex(Points.Columns.longitude));
 			p.langitude = cursor.getLong(cursor.getColumnIndex(Points.Columns.langitude));
+			p.pointType = cursor.getInt(cursor.getColumnIndex(Points.Columns.point_type));
 			arrayPoint.add(p);
 		}
 		
@@ -111,7 +115,8 @@ public class PointsDBAccess {
 								    Points.Columns.langitude + ", " +
 								    Points.Columns.server_id + ", " +
 								    Points.Columns.is_deleted + ", " +
-								    Points.Columns.is_google + " " +
+								    Points.Columns.is_google + ", " +
+								    Points.Columns.point_type + " " +
 								    "FROM " + Points.table_name + " " +
 								    "WHERE " + Points.Columns.is_synched + " = " + String.valueOf(SQLiteDB.convertBoolean(false)), null);
 	
@@ -124,6 +129,7 @@ public class PointsDBAccess {
 			p.langitude = cursor.getLong(cursor.getColumnIndex(Points.Columns.langitude));
 			p.server_id = cursor.getString(cursor.getColumnIndex(Points.Columns.server_id));
 			p.is_deleted = cursor.getInt(cursor.getColumnIndex(Points.Columns.is_deleted));
+			p.pointType = cursor.getInt(cursor.getColumnIndex(Points.Columns.point_type));
 			arrayPoint.add(p);
 		}
 		
@@ -136,6 +142,7 @@ public class PointsDBAccess {
 		public String last_name;
 		public double longitude;
 		public double langitude;
+		public int pointType;
 	}
 	class PointForSync{
 		public long rowID;
@@ -146,5 +153,6 @@ public class PointsDBAccess {
 		public String server_id;
 		public int is_deleted;
 		public int is_google;
+		public int pointType;
 	}
 }

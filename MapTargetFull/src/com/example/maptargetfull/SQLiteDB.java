@@ -17,12 +17,13 @@ public class SQLiteDB extends SQLiteOpenHelper{
 			static final String langitude 	= "LANGITUDE";
 			static final String is_google 	= "IS_GOOGLE";
 			static final String is_deleted 	= "IS_DELETED";
-			static final String is_synched	= "IS_SYNCHED"; 	
+			static final String is_synched	= "IS_SYNCHED";
+			static final String point_type	= "POINT_TYPE";
 		}
 	}
 	
 	public SQLiteDB(Context context) {
-		super(context, "MAPTARGET.db", null, 2);
+		super(context, "MAPTARGET.db", null, 3);
 	}
 	
 	@Override
@@ -35,7 +36,8 @@ public class SQLiteDB extends SQLiteOpenHelper{
 				   Points.Columns.langitude + " DOUBLE, " +
 				   Points.Columns.is_google + " BOOLEAN, " +
 				   Points.Columns.is_deleted + " BOOLEAN, " +
-				   Points.Columns.is_synched + " BOOLEAN);");
+				   Points.Columns.is_synched + " BOOLEAN, " + 
+				   Points.Columns.point_type + " INTEGER );");
 	}
 
 	@Override

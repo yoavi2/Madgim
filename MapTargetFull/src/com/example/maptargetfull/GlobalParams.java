@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import com.example.maptargetfull.PointsDBAccess.Point;
+
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.net.Uri;

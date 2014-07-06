@@ -72,6 +72,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 				json.put(Points.Columns.langitude, arrayPoint.get(i).langitude);
 				json.put(Points.Columns.is_deleted, arrayPoint.get(i).is_deleted);
 				json.put(Points.Columns.is_google, arrayPoint.get(i).is_google);
+				json.put(Points.Columns.point_type, arrayPoint.get(i).pointType);
 				
 				if (arrayPoint.get(i).server_id == null){
 					HttpPost httpPost = new HttpPost(url);
@@ -145,6 +146,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             		ps.langitude = friends.getJSONObject(i).getDouble(Points.Columns.langitude);
             		ps.is_google = friends.getJSONObject(i).getInt(Points.Columns.is_google);
             		ps.server_id = friends.getJSONObject(i).getString("_id");
+            		ps.pointType = friends.getJSONObject(i).getInt(Points.Columns.point_type);
             		arrayPoint.add(ps);
             	}
             }
@@ -172,7 +174,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	        									  arrayPoint.get(i).last_name, 
 									              arrayPoint.get(i).longitude, 
 									              arrayPoint.get(i).langitude, 
-									              arrayPoint.get(i).is_google == 1?true:false);
+									              arrayPoint.get(i).is_google == 1?true:false,
+									              arrayPoint.get(i).pointType);
 				pointsDB.SetServerID(rowID, arrayPoint.get(i).server_id);
 				pointsDB.SetSynched(rowID);
 			}

@@ -96,7 +96,7 @@ public class GoogleMapFragment extends Fragment implements
 			if (points.size() != 0) {
 				for (Point point : points) {
 					mGooglePoints.put(point.rowID, point);
-					this.addMarkerOnLocation(point.first_name + " " + point.last_name, target_type.FRIEND, point.langitude, point.longitude);
+					this.addMarkerOnLocation(point.first_name + " " + point.last_name, (point.pointType == 1?target_type.FRIEND:target_type.ENEMY), point.langitude, point.longitude);
 				}
 			}
 			
@@ -301,8 +301,20 @@ public class GoogleMapFragment extends Fragment implements
 
 	@Override
 	public void addMarkerOnLocation(String name, target_type type, double latitude, double longitude) {
-
-		long rowid = this.mDbHandler.createPoint("yoav", name, longitude, latitude, true);
+		int pointType = 0;
+		
+		switch (type) {
+		case FRIEND:
+			pointType = 1;
+			break;
+		case ENEMY:
+			pointType = 2;
+			break;
+		default:
+			break;
+		}
+		
+		long rowid = this.mDbHandler.createPoint("yoav", name, longitude, latitude, true, pointType);
 		
 		if (rowid == -1) {
 			Toast.makeText(getActivity(), "Error creating marker",
@@ -329,6 +341,7 @@ public class GoogleMapFragment extends Fragment implements
 			point.last_name = name;
 			point.langitude = latitude;
 			point.longitude = longitude;
+			point.pointType = pointType;
 			this.mGooglePoints.put(rowid, point);
 		}
 	}
@@ -399,7 +412,7 @@ public class GoogleMapFragment extends Fragment implements
 
 	@Override
 	public void savePoint(Point point) {
-		if (this.mDbHandler.updatePoint(point.rowID, point.first_name, point.last_name, point.longitude, point.langitude, true)) {
+		if (this.mDbHandler.updatePoint(point.rowID, point.first_name, point.last_name, point.longitude, point.langitude, true, point.pointType)) {
 			mGooglePoints.remove(point.rowID);
 			this.mMarkers.get(mMap).remove();
 			this.mMarkers.remove(point.rowID);

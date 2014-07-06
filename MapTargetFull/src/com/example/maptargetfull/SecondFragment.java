@@ -247,7 +247,7 @@ public class SecondFragment extends Fragment implements OnTouchListener, OnItemL
 
 			case (ACTION_ADD_SOLDIER):
 				
-				GlobalParams.getInstance().PointsDBaccess.createPoint("martin", "gordon", 150, 480, false);
+				GlobalParams.getInstance().PointsDBaccess.createPoint("martin", "gordon", 150, 480, false, 0);
 			//	url with the post data
 //			    HttpPost httpost = new HttpPost(url);
 //				
