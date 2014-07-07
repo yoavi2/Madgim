@@ -126,7 +126,7 @@ public class GlobalParams {
 			}
 		}
 		File mediaFile = new File(mediaStorageDir.getPath() + File.separator
-				+ point.first_name + "_" + point.last_name + "_" + point.rowID
+				+ point.rowID
 				+ ".jpg");
 		return mediaFile;
 	}

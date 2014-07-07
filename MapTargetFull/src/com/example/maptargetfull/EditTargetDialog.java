@@ -6,6 +6,7 @@ import com.example.maptargetfull.AddTargetOnLocationDialog.AddTargetOnLocationLi
 import com.example.maptargetfull.PointsDBAccess.Point;
 import com.google.android.gms.maps.model.LatLng;
 
+import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.Intent;
@@ -31,6 +32,7 @@ import android.widget.Toast;
 public class EditTargetDialog extends DialogFragment implements OnClickListener {
 
 	public static String TAG = "edit_target_dialog";
+	private static final int CAMERA_REQUEST = 1888;
 
 	private String mCallerTag;
 	private Point mPoint;
@@ -92,7 +94,7 @@ public class EditTargetDialog extends DialogFragment implements OnClickListener 
 				.getLong("rowid"));
 
 		String imageInSD = Environment.getExternalStorageDirectory().getPath()
-				+ "/Pictures/MyCameraApp/" + mPoint.first_name + ".jpg";
+				+ "/Pictures/MyCameraApp/" + mPoint.rowID + ".jpg";
 		Bitmap bitmap = BitmapFactory.decodeFile(imageInSD);
 		if (bitmap == null) {
 			bitmap = BitmapFactory.decodeResource(getResources(),
@@ -134,7 +136,7 @@ public class EditTargetDialog extends DialogFragment implements OnClickListener 
 																// file name
 
 			// start the image capture Intent
-			getActivity().startActivityForResult(intent, 100);
+			startActivityForResult(intent, CAMERA_REQUEST);
 			break;
 
 		case R.id.EditButton:
@@ -168,6 +170,30 @@ public class EditTargetDialog extends DialogFragment implements OnClickListener 
 
 		}
 
+	}
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+
+		if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
+
+			String imageInSD = Environment.getExternalStorageDirectory()
+					.getPath()
+					+ "/Pictures/MyCameraApp/"
+					+ mPoint.rowID
+					+ ".jpg";
+			Bitmap bitmap = BitmapFactory.decodeFile(imageInSD);
+			if (bitmap == null) {
+				Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
+			} else {
+
+				Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, 200,
+						200, true);
+				image.setImageBitmap(resizedBitmap);
+
+			}
+		}
 	}
 
 }
