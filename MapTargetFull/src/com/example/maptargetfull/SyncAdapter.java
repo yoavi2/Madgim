@@ -57,7 +57,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		
 		// create HttpClient
         HttpClient httpclient = new DefaultHttpClient();
-        int timeout = 5; // seconds
+        int timeout = 1; // seconds
         HttpParams httpParams = httpclient.getParams();
         HttpConnectionParams.setConnectionTimeout(httpParams, timeout * 1000); // http.connection.timeout
         HttpConnectionParams.setSoTimeout(httpParams, timeout * 1000); // http.socket.timeout
@@ -117,7 +117,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		}
         
         //Sync server to device
-        android.os.Debug.waitForDebugger();
         HttpGet httpGet = new HttpGet(url);
         HttpResponse httpResponse;
         
@@ -166,7 +165,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			succeeded = false;
 		}
         
-        if (succeeded = true){
+        if (succeeded == true){
 	        pointsDB.deletePointsForSync();
 	        
 	        for (int i = 0; i < arrayPoint.size(); i++) {

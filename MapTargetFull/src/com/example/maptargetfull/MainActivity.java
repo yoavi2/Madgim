@@ -1,8 +1,5 @@
 package com.example.maptargetfull;
 
-// Lior The Magnificent
-
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 import android.accounts.Account;
@@ -14,18 +11,10 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageView;
 import com.example.maptargetfull.PointsDBAccess.Point;
 
 public class MainActivity extends AbstractNavDrawerActivity {
@@ -53,16 +42,19 @@ public class MainActivity extends AbstractNavDrawerActivity {
 
 		// Create the dummy account
 		mAccount = CreateSyncAccount(this);
-		android.os.Debug.waitForDebugger();
 
 		GlobalParams.getInstance().PointsDBaccess = new PointsDBAccess(this);
-        
+		
 		if (savedInstanceState == null) {
+			FirstFragment first = new FirstFragment();
 			getFragmentManager().beginTransaction()
-					.replace(R.id.content_frame, new FirstFragment(), FirstFragment.TAG).commit();
+					.replace(R.id.content_frame, first, FirstFragment.TAG).commit();
+			GlobalParams.getInstance().setProgress(first);
 			this.currFragment = FirstFragment.TAG; 
 			originFragment = FirstFragment.TAG;
 		}
+		
+		this.refresh(true);
 	}
 
 	@Override
@@ -104,7 +96,7 @@ public class MainActivity extends AbstractNavDrawerActivity {
 		case 102:
 			FirstFragment first = new FirstFragment();
 			getFragmentManager().beginTransaction()
-					.replace(R.id.content_frame, first).commit();
+					.replace(R.id.content_frame, first, FirstFragment.TAG).commit();
 			this.currFragment = FirstFragment.TAG;
 			originFragment = FirstFragment.TAG;
 			GlobalParams.getInstance().setProgress(first);
@@ -147,6 +139,7 @@ public class MainActivity extends AbstractNavDrawerActivity {
 		return newAccount;
 	}
 
+	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -154,6 +147,7 @@ public class MainActivity extends AbstractNavDrawerActivity {
 		return true;
 	}
 
+	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle action bar item clicks here. The action bar will
 		// automatically handle clicks on the Home/Up button, so long
@@ -162,38 +156,45 @@ public class MainActivity extends AbstractNavDrawerActivity {
 		// SecondFragment fragment = (SecondFragment)
 		// getFragmentManager().findFragmentBy
 		int id = item.getItemId();
-		if (id == R.id.action_settings) {
+		switch (id) {
+		case R.id.action_settings:
 			dialog.show(getFragmentManager(), "test");
-
 			return true;
-		} else if (id == R.id.action_list) {
-			int i = getFragmentManager().beginTransaction().addToBackStack(null)
-					.replace(R.id.content_frame, new SecondFragment(),SecondFragment.TAG).commit();
+		case R.id.action_list:
+			getFragmentManager().beginTransaction().addToBackStack(null)
+			.replace(R.id.content_frame, new SecondFragment(),SecondFragment.TAG).commit();
 			this.currFragment = SecondFragment.TAG;
 			this.invalidateOptionsMenu();
-		} else if (id == R.id.action_refresh) {
-
-			// Pass the settings flags by inserting them in a bundle
-			Bundle settingsBundle = new Bundle();
-			settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
-			settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED,
-					true);
-			/*
-			 * Request the sync for the default account, authority, and manual
-			 * sync settings
-			 */
-			android.os.Debug.waitForDebugger();
-
-			pdialog = new ProgressDialog(this);
-			pdialog.setTitle("Refreshing data...");
-			pdialog.show();
-
-			ContentResolver.requestSync(mAccount, AUTHORITY, settingsBundle);
-
+			break;
+		case R.id.action_refresh:
+			this.refresh( true );
+			break;
 		}
 		return super.onOptionsItemSelected(item);
 	}
+	
+	public void refresh( Boolean withDialog )
+	{
+		// Pass the settings flags by inserting them in a bundle
+        Bundle settingsBundle = new Bundle();
+		settingsBundle.putBoolean(
+                ContentResolver.SYNC_EXTRAS_MANUAL, true);
+		settingsBundle.putBoolean(
+                ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+		/*
+         * Request the sync for the default account, authority, and
+         * manual sync settings
+         */
+        if (withDialog){
+    		pdialog = new ProgressDialog(this);
+    		pdialog.setTitle("Refreshing data...");
+    		pdialog.show();        	
+        }
 
+		ContentResolver.requestSync(mAccount, AUTHORITY, settingsBundle);
+	}
+	
+	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		if (currFragment.equals(FirstFragment.TAG)) {
 			menu.findItem(R.id.action_settings).setVisible(true);
@@ -224,31 +225,44 @@ public class MainActivity extends AbstractNavDrawerActivity {
 
 	private BroadcastReceiver syncFinishedReceiver = new BroadcastReceiver() {
 
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			Log.d("finish", "Sync finished, should refresh nao!!");
-
-			GlobalParams.getInstance().clearList();
-
-			ArrayList<Point> points = GlobalParams.getInstance().PointsDBaccess
-					.getPoints(false);
-			for (Point point : points) {
-
-				Double langitude = point.langitude;
-				Double longitude = point.longitude;
-
-				GlobalParams.getInstance().addFriend(
-						new Friend(point.first_name, point.rowID,
-								point.last_name, langitude.intValue(),
-								longitude.intValue()));
-
-				pdialog.hide();
-				GlobalParams.getInstance().getf().getView().postInvalidate();
-			}
-
-		}
+	    @Override
+	    public void onReceive(Context context, Intent intent) {
+			new refreshAsync().execute(pdialog);
+	    }
 	};
-
+	
+	static public class refreshAsync extends AsyncTask<Dialog, Void, Void>
+	{
+		Dialog pdialog;
+		
+		@Override
+		protected Void doInBackground(Dialog... params) {
+	        GlobalParams.getInstance().clearList();
+			
+			ArrayList<Point> points =  GlobalParams.getInstance().PointsDBaccess.getPoints(false);
+			for (Point point : points) {
+				GlobalParams.getInstance().addPoint(point);
+			}
+			
+			pdialog = params[0];
+			
+			return null;
+		}
+		
+		@Override
+		protected void onPostExecute(Void result) {
+			
+//			if (GlobalParams.getInstance().getf() != null)
+//			{
+//				GlobalParams.getInstance().getf().getView().invalidate();
+//			}
+			
+			GlobalParams.getInstance().getView().invalidate();
+			
+			pdialog.hide();
+		}
+	}
+	
 	@Override
 	public void onBackPressed() {
 		this.currFragment = originFragment;

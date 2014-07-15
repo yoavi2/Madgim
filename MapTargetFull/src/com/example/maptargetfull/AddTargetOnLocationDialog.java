@@ -13,8 +13,6 @@ import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.model.LatLng;
-
 public class AddTargetOnLocationDialog extends DialogFragment {
 
 	public static String TAG = "set_target_on_location_dialog";

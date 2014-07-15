@@ -4,34 +4,20 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.app.Fragment;
 import android.app.ProgressDialog;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -46,7 +32,6 @@ import android.widget.AbsListView.MultiChoiceModeListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -123,16 +108,16 @@ public class SecondFragment extends Fragment implements OnItemLongClickListener,
 			public boolean onActionItemClicked(ActionMode mode, MenuItem arg1) {
 				
 				Iterator<Integer> iterator = adapter.getSelection().keySet().iterator();
-				Collection<Friend> friendsToRemove = new ArrayList<Friend>();
+				Collection<Point> friendsToRemove = new ArrayList<Point>();
 				
 				while(iterator.hasNext())
 				{
 					int key = iterator.next();
-					Friend currFriend = GlobalParams.getInstance().getSpecificFriend(key);
+					Point currFriend = GlobalParams.getInstance().getSpecificPoint(key);
 					friendsToRemove.add(currFriend);
 					new DeleteObject(currFriend).execute();
 				}
-				GlobalParams.getInstance().deleteFriends(friendsToRemove);
+				GlobalParams.getInstance().deletePoints(friendsToRemove);
 				adapter.clearSelection();
 				adapter = new FriendListAdapter(getActivity());
 				list.setAdapter(adapter);	
@@ -215,9 +200,8 @@ public class SecondFragment extends Fragment implements OnItemLongClickListener,
 
 					Double longitude = point.longitude;
 					longitude = Double.valueOf(df.format(longitude));
-
-					GlobalParams.getInstance().addFriend(new Friend(point.first_name, point.rowID, point.last_name,
-							langitude, longitude));
+					
+					GlobalParams.getInstance().addPoint(point);
 					// }
 				}
 						

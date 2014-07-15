@@ -8,6 +8,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import com.example.maptargetfull.PointsDBAccess.Point;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -22,8 +23,6 @@ import android.os.Environment;
 import android.util.Log;
 import android.widget.ImageView;
 
-import com.example.maptargetfull.PointsDBAccess.Point;
-
 public class GlobalParams {
 	private boolean ShowEenemy;
 	private boolean ShowFriend;
@@ -35,7 +34,7 @@ public class GlobalParams {
 	public String syncSucceeded = "SUCCEEDED";
 	public SecondFragment listFriends;
 	private Fragment frag;
-	private ArrayList<Friend> MyFriends = new ArrayList<Friend>();
+	private ArrayList<Point> mPoints = new ArrayList<Point>();
 
 	public void setProgress(Fragment p) {
 		this.frag = p;
@@ -54,7 +53,7 @@ public class GlobalParams {
 	}
 
 	public void clearList() {
-		this.MyFriends.clear();
+		this.mPoints.clear();
 	}
 
 	public boolean getEenemy() {
@@ -78,33 +77,60 @@ public class GlobalParams {
 		return this.mydraw;
 	}
 
-	public void addFriend(Friend newFriend) {
-		MyFriends.add(newFriend);
+	public void addPoint(Point newPoint) {
+		mPoints.add(newPoint);
+	}
+	
+	public void updatePoint(Point updPoint){
+		for (int i = 0; i < mPoints.size(); i++) {
+			if (mPoints.get(i).rowID == updPoint.rowID) {
+				mPoints.set(i, updPoint);
+			}
+		}
+	}
+	
+	public void deletePointByRowid(long rowid)
+	{
+		for (int i = 0; i < mPoints.size(); i++) {
+			if (mPoints.get(i).rowID == rowid) {
+				mPoints.remove(i);
+			}
+		}
+	}
+	
+	public Point getPointByRowid(long rowid)
+	{
+		for (int i = 0; i < mPoints.size(); i++) {
+			if (mPoints.get(i).rowID == rowid) {
+				return mPoints.get(i);
+			}
+		}
+		return null;
+	}
+	
+	public Point getSpecificPoint(int position) {
+		return this.mPoints.get(position);
 	}
 
-	public Friend getSpecificFriend(int position) {
-		return this.MyFriends.get(position);
+	public ArrayList<Point> getPoints() {
+		return this.mPoints;
 	}
 
-	public ArrayList<Friend> getFriends() {
-		return this.MyFriends;
-	}
-
-	public void DeleteFriend(String name) {
-		for (Friend iterable : MyFriends) {
-			if (iterable.getName().equals(name)) {
-				MyFriends.remove(iterable);
+	public void DeletePoint(String name) {
+		for (Point iterable : mPoints) {
+			if (iterable.first_name.equals(name)) {
+				mPoints.remove(iterable);
 				break;
 			}
 		}
 	}
 
-	public void deleteFriend(int position) {
-		this.MyFriends.remove(position);
+	public void deletePoints(int position) {
+		this.mPoints.remove(position);
 	}
 
-	public void deleteFriends(Collection<Friend> collection) {
-		this.MyFriends.removeAll(collection);
+	public void deletePoints(Collection<Point> collection) {
+		this.mPoints.removeAll(collection);
 	}
 
 	static final private GlobalParams INSTANCE = new GlobalParams(true, true);

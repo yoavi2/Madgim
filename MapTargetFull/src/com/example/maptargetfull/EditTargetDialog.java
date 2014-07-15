@@ -1,23 +1,13 @@
 package com.example.maptargetfull;
 
-import java.io.File;
-
-import com.example.maptargetfull.AddTargetOnLocationDialog.AddTargetOnLocationListener;
 import com.example.maptargetfull.PointsDBAccess.Point;
-import com.google.android.gms.maps.model.LatLng;
-
 import android.app.Activity;
 import android.app.DialogFragment;
-import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -26,7 +16,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class EditTargetDialog extends DialogFragment implements OnClickListener {
@@ -86,8 +75,17 @@ public class EditTargetDialog extends DialogFragment implements OnClickListener 
 		image.setOnClickListener(this);
 
 		this.mCallerTag = getArguments().getString("callertag");
-		this.mPoint = GoogleMapFragment.mGooglePoints.get(getArguments()
-				.getLong("rowid"));
+		
+		if (this.mCallerTag == GoogleMapFragment.TAG)
+		{
+			this.mPoint = GoogleMapFragment.mGooglePoints.get(getArguments()
+					.getLong("rowid"));
+		}
+		else
+		{
+			this.mPoint = GlobalParams.getInstance().getPointByRowid(getArguments()
+					.getLong("rowid"));
+		}
 
 		GlobalParams.loadBitmap(mPoint.rowID, image, getActivity());
 		
