@@ -3,6 +3,8 @@ package com.example.maptargetfull;
 import java.util.HashMap;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +21,6 @@ public class FriendListAdapter extends BaseAdapter {
 
 	public FriendListAdapter(Context context) {
 		this.context = context;
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -43,6 +44,12 @@ public class FriendListAdapter extends BaseAdapter {
 			if (currFriend != null) {
 				firstName.setText(currFriend.first_name);
 				lastName.setText("last name");
+				
+//				if (currFriend.pointType == 1) {
+//					img.setColorFilter(Color.BLUE, PorterDuff.Mode.LIGHTEN);
+//				} else {
+//					img.setColorFilter(Color.RED, PorterDuff.Mode.LIGHTEN);
+//				}
 				
 			    GlobalParams.loadBitmap(currFriend.rowID, img, this.context);
 				

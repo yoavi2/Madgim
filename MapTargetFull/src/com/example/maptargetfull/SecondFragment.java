@@ -195,11 +195,14 @@ public class SecondFragment extends Fragment implements OnItemLongClickListener,
 					ArrayList<Point> points =  GlobalParams.getInstance().PointsDBaccess.getPoints(MainActivity.originFragment.equals(GoogleMapFragment.TAG));
 					for (Point point : points) {
 					DecimalFormat df = new DecimalFormat("#.####");
+					
 					Double langitude = point.langitude;
 					langitude = Double.valueOf(df.format(langitude));
+					point.langitude = langitude;
 
 					Double longitude = point.longitude;
 					longitude = Double.valueOf(df.format(longitude));
+					point.longitude = longitude;
 					
 					GlobalParams.getInstance().addPoint(point);
 					// }
