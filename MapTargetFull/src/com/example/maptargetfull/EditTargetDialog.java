@@ -36,8 +36,6 @@ public class EditTargetDialog extends DialogFragment implements OnClickListener 
 
 	private String mCallerTag;
 	private Point mPoint;
-	private TextView tvFirstName;
-	private TextView tvLastName;
 	private ImageView image;
 	private Button btnSave;
 	private Button btnEdit;
@@ -51,8 +49,8 @@ public class EditTargetDialog extends DialogFragment implements OnClickListener 
 
 	public interface EditTargetListener {
 		void deletePoint(long rowid);
-
 		void savePoint(Point point);
+		void imageUpdated(long rowid);
 	}
 
 	public static EditTargetDialog newInstance(String title, long rowid,
@@ -71,8 +69,6 @@ public class EditTargetDialog extends DialogFragment implements OnClickListener 
 			Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.customdialog, container);
 
-		tvFirstName = (TextView) view.findViewById(R.id.First);
-		tvLastName = (TextView) view.findViewById(R.id.Last);
 		image = (ImageView) view.findViewById(R.id.image);
 		btnSave = (Button) view.findViewById(R.id.saveButton);
 		btnEdit = (Button) view.findViewById(R.id.EditButton);
@@ -93,17 +89,8 @@ public class EditTargetDialog extends DialogFragment implements OnClickListener 
 		this.mPoint = GoogleMapFragment.mGooglePoints.get(getArguments()
 				.getLong("rowid"));
 
-		String imageInSD = Environment.getExternalStorageDirectory().getPath()
-				+ "/Pictures/MyCameraApp/" + mPoint.rowID + ".jpg";
-		Bitmap bitmap = BitmapFactory.decodeFile(imageInSD);
-		if (bitmap == null) {
-			bitmap = BitmapFactory.decodeResource(getResources(),
-					R.drawable.nophoto2);
-		}
-
-		Bitmap resizedBitmap = Bitmap
-				.createScaledBitmap(bitmap, 200, 200, true);
-		image.setImageBitmap(resizedBitmap);
+		GlobalParams.loadBitmap(mPoint.rowID, image, getActivity());
+		
 		etFirstName.setText(mPoint.first_name);
 		etLastName.setText(mPoint.last_name);
 		btnSave.setVisibility(View.GONE);
@@ -132,7 +119,7 @@ public class EditTargetDialog extends DialogFragment implements OnClickListener 
 																		// save
 																		// the
 																		// image
-			intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri); // set the image
+			intent.putExtra(MediaStore.ACTION_IMAGE_CAPTURE, fileUri); // set the image
 																// file name
 
 			// start the image capture Intent
@@ -178,12 +165,8 @@ public class EditTargetDialog extends DialogFragment implements OnClickListener 
 
 		if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
 
-			String imageInSD = Environment.getExternalStorageDirectory()
-					.getPath()
-					+ "/Pictures/MyCameraApp/"
-					+ mPoint.rowID
-					+ ".jpg";
-			Bitmap bitmap = BitmapFactory.decodeFile(imageInSD);
+			Bitmap bitmap = (Bitmap) data.getExtras().get("data"); 
+			
 			if (bitmap == null) {
 				Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
 			} else {
@@ -191,7 +174,12 @@ public class EditTargetDialog extends DialogFragment implements OnClickListener 
 				Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, 200,
 						200, true);
 				image.setImageBitmap(resizedBitmap);
-
+				
+				GlobalParams.storeImage(resizedBitmap, mPoint);
+				
+				EditTargetListener frag = (EditTargetListener) getActivity()
+						.getFragmentManager().findFragmentByTag(mCallerTag);
+				frag.imageUpdated(mPoint.rowID);
 			}
 		}
 	}

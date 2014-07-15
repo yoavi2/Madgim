@@ -5,12 +5,16 @@ import java.util.HashMap;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.maptargetfull.GlobalParams.AsyncDrawable;
+import com.example.maptargetfull.GlobalParams.BitmapWorkerTask;
 
 public class FriendListAdapter extends BaseAdapter {
 
@@ -44,9 +48,11 @@ public class FriendListAdapter extends BaseAdapter {
 			if (currFriend != null) {
 				firstName.setText(currFriend.getName());
 				lastName.setText("last name");
-				img.setImageResource(R.drawable.friend);
-				location.setText(Integer.toString(currFriend.getWidth())
-						+ " ; " + Integer.toString(currFriend.getHeight()));
+				
+			    GlobalParams.loadBitmap(currFriend.getRowId(), img, this.context);
+				
+				location.setText(Double.toString(currFriend.getWidth())
+						+ " ; " + Double.toString(currFriend.getHeight()));
 			}
 		}
 if (GlobalParams.getInstance().getEenemy()) {

@@ -75,10 +75,9 @@ public class FirstFragment extends Fragment implements OnTouchListener,OnLongCli
     		Bitmap mBitmap = null;
 			mBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.enemy);
     		for (Friend iter : GlobalParams.getInstance().getFriends()) {
-				
-			
-    		Rect guess = new Rect(iter.getWidth(),iter.getHeight(),iter.getWidth() +
-    				mBitmap.getWidth(),iter.getHeight() + mBitmap.getHeight());
+    			 
+    		Rect guess = new Rect(((Double)iter.getWidth()).intValue(), ((Double)iter.getHeight()).intValue(),((Double)iter.getWidth()).intValue() +
+    				mBitmap.getWidth(),((Double)iter.getHeight()).intValue() + mBitmap.getHeight());
 			if (guess.contains((int)event.getX(),(int)event.getY()))
 			{
 			//  Set the selected friend in the global parameter	

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -26,8 +27,11 @@ import org.json.JSONObject;
 
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -42,13 +46,14 @@ import android.widget.AbsListView.MultiChoiceModeListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.maptargetfull.PointsDBAccess.Point;
 
 
-public class SecondFragment extends Fragment implements OnTouchListener, OnItemLongClickListener {
+public class SecondFragment extends Fragment implements OnItemLongClickListener, OnTouchListener {
 	
 	public static String TAG = "List";
 	
@@ -69,8 +74,22 @@ public class SecondFragment extends Fragment implements OnTouchListener, OnItemL
     }
  
     @Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+        //  Set loading dialog until the datais received from server
+  	     pdialog =new ProgressDialog(getActivity());
+  	     pdialog.setMessage("loading list from json rest service :)");
+	     pdialog.show();  
+//	 
+	//  call the server to get the data
+       new callservice(ACTION_GET).execute();
+    	
+		super.onActivityCreated(savedInstanceState);
+	}
+
+	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
+		super.onCreateView(inflater, container, savedInstanceState);
         View rootView = inflater.inflate(R.layout.secondfragment, container, false);
         GlobalParams.getInstance().listFriends = this;
         rootView.setOnTouchListener(this);
@@ -138,21 +157,11 @@ public class SecondFragment extends Fragment implements OnTouchListener, OnItemL
 
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-		// TODO Auto-generated method stub
 		Object o = list.getItemAtPosition(arg2);
 		String s = (String) o;
 		Toast.makeText(getActivity(), s, Toast.LENGTH_SHORT).show();
 	}
 });
-       
-
-    //  Set loading dialog until the datais received from server
-   	     pdialog =new ProgressDialog(getActivity());
-   	     pdialog.setMessage("loading list from json rest service :)");
-	     pdialog.show();  
-	 
-	//  call the server to get the data
-        new callservice(ACTION_GET).execute();
 
         return rootView;
     }
@@ -197,16 +206,20 @@ public class SecondFragment extends Fragment implements OnTouchListener, OnItemL
 //				try {
 					GlobalParams.getInstance().clearList();
 					
-					ArrayList<Point> points =  GlobalParams.getInstance().PointsDBaccess.getPoints(false);
+					// Check which fragment called us
+					ArrayList<Point> points =  GlobalParams.getInstance().PointsDBaccess.getPoints(MainActivity.originFragment.equals(GoogleMapFragment.TAG));
 					for (Point point : points) {
-						
-						Double langitude = point.langitude;
-						Double longitude = point.longitude;
+					DecimalFormat df = new DecimalFormat("#.####");
+					Double langitude = point.langitude;
+					langitude = Double.valueOf(df.format(langitude));
 
-						GlobalParams.getInstance().addFriend(new Friend(point.first_name, point.rowID, point.last_name,
-																langitude.intValue(), longitude.intValue()));				
-//					}
-					}
+					Double longitude = point.longitude;
+					longitude = Double.valueOf(df.format(longitude));
+
+					GlobalParams.getInstance().addFriend(new Friend(point.first_name, point.rowID, point.last_name,
+							langitude, longitude));
+					// }
+				}
 						
 					
 //					httpResponse = httpclient.execute(new HttpGet(url));
@@ -310,7 +323,7 @@ public class SecondFragment extends Fragment implements OnTouchListener, OnItemL
 		 }
     	
     }
-
+    
     private static String convertInputStreamToString(InputStream inputStream) throws IOException{
         BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
         String line = "";
@@ -345,5 +358,7 @@ public class SecondFragment extends Fragment implements OnTouchListener, OnItemL
 		Toast.makeText(getActivity(), "connection failed", Toast.LENGTH_SHORT).show();
 
 	}
+	
+	
 }
 

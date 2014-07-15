@@ -93,8 +93,8 @@ public class DrawSample extends View {
 
 			for (Friend iterable : GlobalParams.getInstance().getFriends()) {
 
-				canvas.drawBitmap(mBitmap, iterable.getWidth(),
-						iterable.getHeight(), mPaint);
+				canvas.drawBitmap(mBitmap, ((Double)iterable.getWidth()).intValue(),
+						((Double)iterable.getHeight()).intValue(), mPaint);
 				// iterable.setWidth(iterable.getWidth() + 1);
 
 			}
