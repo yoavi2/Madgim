@@ -1,28 +1,23 @@
 package com.example.maptargetfull;
 
-import java.io.IOException;
 import java.util.ArrayList;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.os.AsyncTask;
 
+import com.example.maptargetfull.PointsDBAccess.Point;
+
 public class DeleteObject  extends AsyncTask<Void, Void, ArrayList<String>>{
 	
-	private Friend friend;
+	private Point friend;
 	
-	public DeleteObject(Friend f){
+	public DeleteObject(Point f){
 		this.friend = f;
 	}
 	
 	@Override
 	protected ArrayList<String> doInBackground(Void... params) {
 
-		GlobalParams.getInstance().PointsDBaccess.deletePoint(friend.getRowId());
+		GlobalParams.getInstance().PointsDBaccess.deletePoint(friend.rowID);
 		
 //		// create HttpClient
 //        HttpClient httpclient = new DefaultHttpClient();

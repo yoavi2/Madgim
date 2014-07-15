@@ -3,14 +3,14 @@ package com.example.maptargetfull;
 import java.util.HashMap;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.maptargetfull.PointsDBAccess.Point;
 
 public class FriendListAdapter extends BaseAdapter {
 
@@ -38,15 +38,16 @@ public class FriendListAdapter extends BaseAdapter {
 
 		if (GlobalParams.getInstance().getFriend()) {
 			
-			Friend currFriend = GlobalParams.getInstance().getFriends()
-					.get(position);
+			Point currFriend = GlobalParams.getInstance().getSpecificPoint(position);
 			
 			if (currFriend != null) {
-				firstName.setText(currFriend.getName());
+				firstName.setText(currFriend.first_name);
 				lastName.setText("last name");
-				img.setImageResource(R.drawable.friend);
-				location.setText(Integer.toString(currFriend.getWidth())
-						+ " ; " + Integer.toString(currFriend.getHeight()));
+				
+			    GlobalParams.loadBitmap(currFriend.rowID, img, this.context);
+				
+				location.setText(Double.toString(currFriend.langitude)
+						+ " ; " + Double.toString(currFriend.longitude));
 			}
 		}
 if (GlobalParams.getInstance().getEenemy()) {
@@ -69,13 +70,13 @@ if (GlobalParams.getInstance().getEenemy()) {
 	@Override
 	public int getCount() {
 		// TODO Auto-generated method stub
-		return GlobalParams.getInstance().getFriends().size();
+		return GlobalParams.getInstance().getPoints().size();
 
 	}
 
 	@Override
 	public Object getItem(int position) {
-		return GlobalParams.getInstance().getFriends().get(position).getName();
+		return GlobalParams.getInstance().getSpecificPoint(position).first_name;
 		// TODO Auto-generated method stub
 		// return position;
 	}

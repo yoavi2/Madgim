@@ -10,10 +10,13 @@ import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -105,13 +108,9 @@ public class GoogleMapFragment extends Fragment implements
 			mGooglePoints = new HashMap<Long, PointsDBAccess.Point>();
 			ArrayList<Point> points = this.mDbHandler.getPoints(true);
 			
-			this.mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter());
-			this.mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-			this.mMap.setMyLocationEnabled(true);
-			
 			if (points.size() != 0) {
 				for (Point point : points) {		
-					this.addMarkerOnLocation(point.rowID, point.first_name, (point.pointType == 1?target_type.FRIEND:target_type.ENEMY), point.langitude, point.longitude);
+					this.addMarkerOnLocation(point.rowID, point.first_name, (point.pointType == 1?target_type.FRIEND:target_type.ENEMY), point.langitude, point.longitude, false);
 				}
 			}
 			
@@ -152,7 +151,13 @@ public class GoogleMapFragment extends Fragment implements
 
 	@Override
 	public void onResume() {
+		
 		mMapView.onResume();
+		
+		this.mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter());
+		this.mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+		this.mMap.setMyLocationEnabled(true);
+		
 		super.onResume();
 	}
 
@@ -200,19 +205,13 @@ public class GoogleMapFragment extends Fragment implements
 					public void onInfoWindowClick(Marker marker) {
 						
 						FragmentManager fm = getFragmentManager();
-						long rowid = -1;
-						
-						for (int i = 0; i <= mMarkers.size(); i++){
-							if (mMarkers.values().toArray()[i].equals(marker)) {
-								rowid = (Long) mMarkers.keySet().toArray()[i];
-								break;
-							}
-						}
+
+						long rowid = getRowIdByMarker(marker);
 						
 						if (rowid != -1) {
 							EditTargetDialog editTargetDialog = EditTargetDialog
 									.newInstance("Edit Target", rowid, TAG);
-							editTargetDialog.show(fm, AddTargetOnLocationDialog.TAG);
+							editTargetDialog.show(fm, EditTargetDialog.TAG);
 						} else {
 							Toast.makeText(getActivity(), "Error occured. point not found?", Toast.LENGTH_LONG).show();
 						}
@@ -318,12 +317,12 @@ public class GoogleMapFragment extends Fragment implements
 					Toast.LENGTH_LONG).show();
 		} else {
 		
-			addMarkerOnLocation(rowid, name, type, latitude, longitude);
+			addMarkerOnLocation(rowid, name, type, latitude, longitude, true);
 		
 		}
 	}
 	
-	public void addMarkerOnLocation(long rowid, String name, target_type type, double latitude, double longitude) {
+	public void addMarkerOnLocation(long rowid, String name, target_type type, double latitude, double longitude, boolean showInfoWindow) {
 
 			Marker destMark = this.mMap.addMarker(new MarkerOptions()
 					.position(new LatLng(latitude, longitude)).title(name)
@@ -341,8 +340,12 @@ public class GoogleMapFragment extends Fragment implements
 				point.pointType = 2;
 			}
 
-			destMark.showInfoWindow();
+			// Put in marker hashtable before showinfowwindow (for image loading purposes)
 			this.mMarkers.put(rowid, destMark);
+			
+			if (showInfoWindow) {
+				destMark.showInfoWindow();
+			}
 			
 			point.rowID = rowid;
 			point.first_name = name;
@@ -370,7 +373,19 @@ public class GoogleMapFragment extends Fragment implements
 		public View getInfoWindow(final Marker marker) {
 
 			final ImageView image = ((ImageView) view.findViewById(R.id.badge));
-			image.setImageResource(R.drawable.ic_launcher);
+			long rowid = getRowIdByMarker(marker);
+			
+			String imageInSD = Environment.getExternalStorageDirectory().getPath()
+					+ "/Pictures/MyCameraApp/" + rowid + ".jpg";
+			Bitmap bitmap = BitmapFactory.decodeFile(imageInSD);
+			if (bitmap == null) {
+				bitmap = BitmapFactory.decodeResource(getResources(),
+						R.drawable.nophoto2);
+			}
+			Bitmap resizedBitmap = Bitmap
+					.createScaledBitmap(bitmap, 200, 200, true);
+			image.setImageBitmap(resizedBitmap);
+			
 			final String title = marker.getTitle();
 			final TextView titleUi = ((TextView) view.findViewById(R.id.title));
 			if (title != null) {
@@ -422,10 +437,30 @@ public class GoogleMapFragment extends Fragment implements
 			mGooglePoints.remove(point.rowID);
 			this.mMarkers.get(point.rowID).remove();
 			this.mMarkers.remove(point.rowID);
-			this.addMarkerOnLocation(point.rowID, point.first_name, (point.pointType == 1?target_type.FRIEND:target_type.ENEMY) , point.langitude, point.longitude);
+			this.addMarkerOnLocation(point.rowID, point.first_name, (point.pointType == 1?target_type.FRIEND:target_type.ENEMY) , point.langitude, point.longitude, true);
 			
 		}
 		
+	}
+	
+	private long getRowIdByMarker(Marker marker){
+		long rowid = -1;
+		
+		if (this.mMarkers != null) {
+			for (int i = 0; i <= this.mMarkers.size(); i++) {
+				if (this.mMarkers.values().toArray()[i].equals(marker)) {
+					rowid = (Long) this.mMarkers.keySet().toArray()[i];
+					break;
+				}
+			}
+		}
+		return rowid;
+	}
+
+	@Override
+	public void imageUpdated(long rowid) {
+		this.mMarkers.get(rowid).hideInfoWindow();
+		this.mMarkers.get(rowid).showInfoWindow();
 	}
 
 

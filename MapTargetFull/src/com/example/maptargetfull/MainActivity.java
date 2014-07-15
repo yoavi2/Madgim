@@ -1,7 +1,5 @@
 package com.example.maptargetfull;
 
-// Lior The Magnificent
-
 import java.util.ArrayList;
 
 import android.accounts.Account;
@@ -13,15 +11,10 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-
 import com.example.maptargetfull.PointsDBAccess.Point;
 
 public class MainActivity extends AbstractNavDrawerActivity {
@@ -34,10 +27,11 @@ public class MainActivity extends AbstractNavDrawerActivity {
 	public static final String ACCOUNT = "dummyaccount";
 
 	private DialogDetails dialog = new DialogDetails();
-	
+
 	private Dialog pdialog;
 
-	public static String currFragment;
+	public String currFragment;
+	public static String originFragment;
 
 	// Instance fields
 	Account mAccount;
@@ -48,27 +42,29 @@ public class MainActivity extends AbstractNavDrawerActivity {
 
 		// Create the dummy account
 		mAccount = CreateSyncAccount(this);
-		android.os.Debug.waitForDebugger();
 
 		GlobalParams.getInstance().PointsDBaccess = new PointsDBAccess(this);
-
+		
 		if (savedInstanceState == null) {
+			FirstFragment first = new FirstFragment();
 			getFragmentManager().beginTransaction()
-					.replace(R.id.content_frame, new FirstFragment()).commit();
+					.replace(R.id.content_frame, first, FirstFragment.TAG).commit();
+			GlobalParams.getInstance().setProgress(first);
+			this.currFragment = FirstFragment.TAG; 
+			originFragment = FirstFragment.TAG;
 		}
+		
+		this.refresh(true);
 	}
 
 	@Override
 	protected NavDrawerActivityConfiguration getNavDrawerConfiguration() {
 
 		NavDrawerItem[] menu = new NavDrawerItem[] {
-				NavMenuSection.createMenuSection(100, R.string.text_mapsection),
 				NavMenuItem.createMenuItem(101, R.string.text_googlemap,
-						R.drawable.google_icon, true, false),
+						R.drawable.google_map_icon, true, false),
 				NavMenuItem.createMenuItem(102, R.string.text_map,
-						R.drawable.ic_action_locate, true, false),
-				NavMenuItem.createMenuItem(103, R.string.text_list,
-						R.drawable.ic_action_paste, true, false) };
+						R.drawable.image_map_icon, true, false) };
 
 		NavDrawerActivityConfiguration navDrawerActivityConfiguration = new NavDrawerActivityConfiguration();
 		navDrawerActivityConfiguration.setMainLayout(R.layout.activity_main);
@@ -94,23 +90,26 @@ public class MainActivity extends AbstractNavDrawerActivity {
 					.beginTransaction()
 					.replace(R.id.content_frame, new GoogleMapFragment(),
 							GoogleMapFragment.TAG).commit();
+			this.currFragment = GoogleMapFragment.TAG;
+			originFragment = GoogleMapFragment.TAG;
 			break;
 		case 102:
 			FirstFragment first = new FirstFragment();
 			getFragmentManager().beginTransaction()
-					.replace(R.id.content_frame, first).commit();
-			currFragment = FirstFragment.TAG;
+					.replace(R.id.content_frame, first, FirstFragment.TAG).commit();
+			this.currFragment = FirstFragment.TAG;
+			originFragment = FirstFragment.TAG;
 			GlobalParams.getInstance().setProgress(first);
 			this.invalidateOptionsMenu();
 			break;
-		case 103:
-			SecondFragment second  =  new SecondFragment();
-			getFragmentManager().beginTransaction()
-					.replace(R.id.content_frame, second).commit();
-			currFragment = SecondFragment.TAG;
-			GlobalParams.getInstance().setProgress(second);
-			this.invalidateOptionsMenu();
-			break;
+		// case 103:
+		// SecondFragment second = new SecondFragment();
+		// getFragmentManager().beginTransaction()
+		// .replace(R.id.content_frame, second).commit();
+		// currFragment = SecondFragment.TAG;
+		// GlobalParams.getInstance().setProgress(second);
+		// this.invalidateOptionsMenu();
+		// break;
 		}
 	}
 
@@ -140,6 +139,7 @@ public class MainActivity extends AbstractNavDrawerActivity {
 		return newAccount;
 	}
 
+	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -147,6 +147,7 @@ public class MainActivity extends AbstractNavDrawerActivity {
 		return true;
 	}
 
+	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle action bar item clicks here. The action bar will
 		// automatically handle clicks on the Home/Up button, so long
@@ -155,106 +156,122 @@ public class MainActivity extends AbstractNavDrawerActivity {
 		// SecondFragment fragment = (SecondFragment)
 		// getFragmentManager().findFragmentBy
 		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			dialog.show(getSupportFragmentManager(), "test");
-
+		switch (id) {
+		case R.id.action_settings:
+			dialog.show(getFragmentManager(), "test");
 			return true;
-		} else if(id == R.id.action_list) {
-			getFragmentManager().beginTransaction()
-					.replace(R.id.content_frame, new SecondFragment()).commit();
-			currFragment = SecondFragment.TAG;
+		case R.id.action_list:
+			getFragmentManager().beginTransaction().addToBackStack(null)
+			.replace(R.id.content_frame, new SecondFragment(),SecondFragment.TAG).commit();
+			this.currFragment = SecondFragment.TAG;
 			this.invalidateOptionsMenu();
-		} else if(id == R.id.action_refresh){
-			
-			// Pass the settings flags by inserting them in a bundle
-	        Bundle settingsBundle = new Bundle();
-	        settingsBundle.putBoolean(
-	                ContentResolver.SYNC_EXTRAS_MANUAL, true);
-	        settingsBundle.putBoolean(
-	                ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
-	        /*
-	         * Request the sync for the default account, authority, and
-	         * manual sync settings
-	         */
-	        android.os.Debug.waitForDebugger();
-	        
-	        pdialog = new ProgressDialog(this);
-    		pdialog.setTitle("Refreshing data...");
-    		pdialog.show();
-	        
-	        ContentResolver.requestSync(mAccount, AUTHORITY, settingsBundle);
-	        
+			break;
+		case R.id.action_refresh:
+			this.refresh( true );
+			break;
 		}
 		return super.onOptionsItemSelected(item);
 	}
+	
+	public void refresh( Boolean withDialog )
+	{
+		// Pass the settings flags by inserting them in a bundle
+        Bundle settingsBundle = new Bundle();
+		settingsBundle.putBoolean(
+                ContentResolver.SYNC_EXTRAS_MANUAL, true);
+		settingsBundle.putBoolean(
+                ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+		/*
+         * Request the sync for the default account, authority, and
+         * manual sync settings
+         */
+        if (withDialog){
+    		pdialog = new ProgressDialog(this);
+    		pdialog.setTitle("Refreshing data...");
+    		pdialog.show();        	
+        }
 
+		ContentResolver.requestSync(mAccount, AUTHORITY, settingsBundle);
+	}
+	
+	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		if (currFragment == FirstFragment.TAG || currFragment == null) {
+		if (currFragment.equals(FirstFragment.TAG)) {
 			menu.findItem(R.id.action_settings).setVisible(true);
 			menu.findItem(R.id.action_list).setVisible(true);
-		} else {
+		}else if(currFragment.equals(GoogleMapFragment.TAG)){
+			menu.findItem(R.id.action_settings).setVisible(false);
+			menu.findItem(R.id.action_list).setVisible(true);
+		}
+		else {
 			menu.findItem(R.id.action_settings).setVisible(false);
 			menu.findItem(R.id.action_list).setVisible(false);
 		}
 		return true;
 	}
+
 	@Override
 	protected void onResume() {
-	    super.onResume();
-	    registerReceiver(syncFinishedReceiver, new IntentFilter(GlobalParams.getInstance().syncFinished));
+		super.onResume();
+		registerReceiver(syncFinishedReceiver,
+				new IntentFilter(GlobalParams.getInstance().syncFinished));
 	}
 
 	@Override
 	protected void onPause() {
-	    super.onPause();
-	    unregisterReceiver(syncFinishedReceiver);
+		super.onPause();
+		unregisterReceiver(syncFinishedReceiver);
 	}
 
 	private BroadcastReceiver syncFinishedReceiver = new BroadcastReceiver() {
 
 	    @Override
 	    public void onReceive(Context context, Intent intent) {
-	        Log.d("finish","Sync finished, should refresh nao!!");
-	        
+			new refreshAsync().execute(pdialog);
+	    }
+	};
+	
+	static public class refreshAsync extends AsyncTask<Dialog, Void, Void>
+	{
+		Dialog pdialog;
+		
+		@Override
+		protected Void doInBackground(Dialog... params) {
 	        GlobalParams.getInstance().clearList();
 			
 			ArrayList<Point> points =  GlobalParams.getInstance().PointsDBaccess.getPoints(false);
 			for (Point point : points) {
-				
-				Double langitude = point.langitude;
-				Double longitude = point.longitude;
-
-				GlobalParams.getInstance().addFriend(new Friend(point.first_name, point.rowID, point.last_name,
-														langitude.intValue(), longitude.intValue()));
-				
-				pdialog.hide();
-				GlobalParams.getInstance().getf().getView().postInvalidate();
-				
-				
-//			}
+				GlobalParams.getInstance().addPoint(point);
 			}
-	        
-	    }
-	};
-
-	static public class MainFragment extends Fragment {
-
-		public static String TAG = "main_fragment";
-
-		@Override
-		public void onCreate(Bundle savedInstanceState) {
-			super.onCreate(savedInstanceState);
+			
+			pdialog = params[0];
+			
+			return null;
 		}
-
+		
 		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-
-			View mainView = inflater.inflate(R.layout.fragment_main, container,
-					false);
-
-			return mainView;
+		protected void onPostExecute(Void result) {
+			
+//			if (GlobalParams.getInstance().getf() != null)
+//			{
+//				GlobalParams.getInstance().getf().getView().invalidate();
+//			}
+			
+			GlobalParams.getInstance().getView().invalidate();
+			
+			pdialog.hide();
 		}
 	}
+	
+	@Override
+	public void onBackPressed() {
+		this.currFragment = originFragment;
+		invalidateOptionsMenu();
+		super.onBackPressed();
+	}
 
+
+
+	
+	
 }

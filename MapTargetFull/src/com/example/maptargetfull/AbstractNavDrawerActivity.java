@@ -1,12 +1,11 @@
 package com.example.maptargetfull;
 
+import android.app.Activity;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,7 +13,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-public abstract class AbstractNavDrawerActivity extends ActionBarActivity {
+public abstract class AbstractNavDrawerActivity extends Activity {
 
 	private DrawerLayout mDrawerLayout;
 	private ActionBarDrawerToggle mDrawerToggle;
@@ -56,8 +55,8 @@ public abstract class AbstractNavDrawerActivity extends ActionBarActivity {
         
 		this.initDrawerShadow();
 		
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setHomeButtonEnabled(true);
         
         mDrawerToggle = new ActionBarDrawerToggle(
                 this,
@@ -68,21 +67,21 @@ public abstract class AbstractNavDrawerActivity extends ActionBarActivity {
                 ) {
             @Override
 			public void onDrawerClosed(View view) {
-                getSupportActionBar().setTitle(mTitle);
-                ActivityCompat.invalidateOptionsMenu(AbstractNavDrawerActivity.this);
+            	getActionBar().setTitle(mTitle);
+            	invalidateOptionsMenu();
             }
 
             @Override
 			public void onDrawerOpened(View drawerView) {
-                getSupportActionBar().setTitle(mDrawerTitle);
-                ActivityCompat.invalidateOptionsMenu(AbstractNavDrawerActivity.this);
+            	getActionBar().setTitle(mDrawerTitle);
+            	invalidateOptionsMenu();
             }
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 	}
 	
 	protected void initDrawerShadow() {
-        mDrawerLayout.setDrawerShadow(navConf.getDrawerShadow(), GravityCompat.START);
+        mDrawerLayout.setDrawerShadow(navConf.getDrawerShadow(), Gravity.START);
 	}
 
     @Override
@@ -162,7 +161,6 @@ public abstract class AbstractNavDrawerActivity extends ActionBarActivity {
                 mDrawerList.setItemChecked(lastItemChecked, true);
             }
         }
-
         if ( selectedItem.updateActionBarTitle()) {
         	setTitle(selectedItem.getLabel());
         }
@@ -175,7 +173,7 @@ public abstract class AbstractNavDrawerActivity extends ActionBarActivity {
     @Override
     public void setTitle(CharSequence title) {
         mTitle = title;
-        getSupportActionBar().setTitle(mTitle);
+        getActionBar().setTitle(mTitle);
     }
 
     public void setTitleWithDrawerTitle() {

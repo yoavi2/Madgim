@@ -5,15 +5,15 @@ import android.graphics.Rect;
 
 public class Friend {
 	private String name;
-	private long    rowId;
-	private Rect   space;
+	private long rowId;
+	private Rect space;
 	private Bitmap mBitmap;
-	private int    width;
-	private int    height;
-	
+	private double width;
+	private double height;
+
 	private String nickName;
 	
-	public Friend(String name, long Distance, String nick, int width, int height)
+	public Friend(String name, long Distance, String nick, double width, double height)
 	{
 		this.name = name;
 		this.rowId = Distance;
@@ -21,6 +21,17 @@ public class Friend {
 		this.width = width;
 		this.height= height;
 	}
+	
+	public Friend(String name, long Distance, String nick, double width, double height, Bitmap bitmap)
+	{
+		this.name = name;
+		this.rowId = Distance;
+		this.nickName = nick;
+		this.width = width;
+		this.height= height;
+		this.setBitmap(bitmap);
+	}
+	
 	public String getnick(){
 		return this.nickName;
 	}
@@ -38,16 +49,24 @@ public class Friend {
 	public String getName(){
 		return this.name;
 	}
-	public int getWidth(){
+	public double getWidth(){
 		return this.width;
 	}
-	public int getHeight(){
+	public double getHeight(){
 		return this.height;
 	}
-	public void setWidth(int w){
+	public void setWidth(double w){
 		this.width = w;
 	}
-	public void setHeight(int h){
+	public void setHeight(double h){
 		this.height = h;
+	}
+
+	public Bitmap getBitmap() {
+		return mBitmap;
+	}
+
+	public void setBitmap(Bitmap mBitmap) {
+		this.mBitmap = mBitmap;
 	}
 }

@@ -1,19 +1,15 @@
 package com.example.maptargetfull;
 
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
-import android.hardware.Camera.Size;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.view.SurfaceHolder;
 import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+
+import com.example.maptargetfull.PointsDBAccess.Point;
 
 public class DrawSample extends View {
 
@@ -67,6 +63,7 @@ public class DrawSample extends View {
 	// }
 	@Override
 	public void onDraw(Canvas canvas) {
+		Bitmap friendBitmap, enemyBitmap;
 		canvas.drawPaint(mPaint);
 
 		mBitmap = BitmapFactory.decodeResource(getResources(),
@@ -82,30 +79,46 @@ public class DrawSample extends View {
 		canvas.drawBitmap(mBitmap, (getWidth() / 2) - (mBitmap.getWidth() / 2),
 				(getHeight() / 2) - (mBitmap.getHeight() / 2), mPaint);
 
-		if (GlobalParams.getInstance().getEenemy() == true) {
-			mBitmap = BitmapFactory.decodeResource(getResources(),
-					R.drawable.enemy);
-			canvas.drawBitmap(mBitmap, 50, 403, mPaint);
-		}
-		if (GlobalParams.getInstance().getFriend() == true) {
-			mBitmap = BitmapFactory.decodeResource(getResources(),
-					R.drawable.friend);
+		friendBitmap = BitmapFactory.decodeResource(getResources(),
+				R.drawable.friend);
 
-			for (Friend iterable : GlobalParams.getInstance().getFriends()) {
-
-				canvas.drawBitmap(mBitmap, iterable.getWidth(),
-						iterable.getHeight(), mPaint);
-				// iterable.setWidth(iterable.getWidth() + 1);
-
+		enemyBitmap = BitmapFactory.decodeResource(getResources(),
+				R.drawable.enemy);
+		
+		for (Point point : GlobalParams.getInstance().getPoints()) {
+			switch (point.pointType) {
+			case 1:
+				if (GlobalParams.getInstance().getFriend() == true)
+				{
+					canvas.drawBitmap(friendBitmap, (float) point.langitude,
+							(float) point.longitude, mPaint);
+				}
+				break;
+			case 2:
+				if (GlobalParams.getInstance().getEenemy() == true)
+				{
+					canvas.drawBitmap(enemyBitmap, (float) point.langitude,
+							(float) point.longitude, mPaint);
+				}			
+				break;
+			default:
+				break;
 			}
 		}
+		
 		if (GlobalParams.getInstance().pdialog != null) {
 			GlobalParams.getInstance().pdialog.hide();
 		}
 
 
 	}
-
+	
+	@Override
+	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+		// TODO Auto-generated method stub
+		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+	}
+	
 	public void Dr22() {
 
 	}
