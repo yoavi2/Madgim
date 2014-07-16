@@ -17,7 +17,7 @@ public class DialogDetails extends DialogFragment {
 
 		// mSelectedItems = new ArrayList(); // Where we track the selected
 		// items
-
+		
 		// Use the Builder class for convenient dialog construction
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		builder.setTitle("Choose what you want to see")

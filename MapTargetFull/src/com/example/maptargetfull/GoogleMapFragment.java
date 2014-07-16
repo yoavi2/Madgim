@@ -115,7 +115,7 @@ public class GoogleMapFragment extends Fragment implements
 			}
 			
 			// Build gps alert
-			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.cust_dialog);
 			builder.setTitle("Location Services Not Active");
 			builder.setMessage("It is recommended enable Location Services and GPS");
 			builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -195,6 +195,7 @@ public class GoogleMapFragment extends Fragment implements
 				FragmentManager fm = getFragmentManager();
 				AddTargetOnLocationDialog addTargetDialog = AddTargetOnLocationDialog
 						.newInstance("Add Target", loc.latitude, loc.longitude, TAG);
+				addTargetDialog.setStyle(R.style.cust_dialog,addTargetDialog.getTheme());
 				addTargetDialog.show(fm, AddTargetOnLocationDialog.TAG);
 			}
 		});
@@ -211,6 +212,7 @@ public class GoogleMapFragment extends Fragment implements
 						if (rowid != -1) {
 							EditTargetDialog editTargetDialog = EditTargetDialog
 									.newInstance("Edit Target", rowid, TAG);
+							editTargetDialog.setStyle(R.style.cust_dialog, editTargetDialog.getTheme());
 							editTargetDialog.show(fm, EditTargetDialog.TAG);
 						} else {
 							Toast.makeText(getActivity(), "Error occured. point not found?", Toast.LENGTH_LONG).show();
@@ -261,11 +263,6 @@ public class GoogleMapFragment extends Fragment implements
 
 			location = this.mLocationService
 					.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-		}
-
-		// Last resort
-		if (location == null) {
-			location = this.mMap.getMyLocation();
 		}
 
 		LatLng loc = null;
