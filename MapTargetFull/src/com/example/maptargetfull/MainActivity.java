@@ -161,6 +161,7 @@ public class MainActivity extends AbstractNavDrawerActivity {
 			dialog.show(getFragmentManager(), "test");
 			return true;
 		case R.id.action_list:
+//			getFragmentManager().beginTransaction().hide(getFragmentManager().findFragmentByTag(currFragment));
 			getFragmentManager().beginTransaction().addToBackStack(null)
 			.replace(R.id.content_frame, new SecondFragment(),SecondFragment.TAG).commit();
 			this.currFragment = SecondFragment.TAG;
@@ -265,8 +266,21 @@ public class MainActivity extends AbstractNavDrawerActivity {
 	
 	@Override
 	public void onBackPressed() {
-		this.currFragment = originFragment;
-		invalidateOptionsMenu();
+		
+		if (this.currFragment.equals(SecondFragment.TAG)) {
+			// Reload google map + Popbackstack
+			if (originFragment.equals(GoogleMapFragment.TAG)) {
+				getFragmentManager().popBackStackImmediate();
+				this.onNavItemSelected(101);
+			// Super
+			} else {
+				this.currFragment = originFragment;
+				super.onBackPressed();
+			}
+			
+			//		getFragmentManager().beginTransaction().show(getFragmentManager().findFragmentByTag(currFragment)).commit();
+			invalidateOptionsMenu();
+		}
 		super.onBackPressed();
 	}
 

@@ -45,11 +45,11 @@ public class FriendListAdapter extends BaseAdapter {
 				firstName.setText(currFriend.first_name);
 				lastName.setText("last name");
 				
-//				if (currFriend.pointType == 1) {
-//					img.setColorFilter(Color.BLUE, PorterDuff.Mode.LIGHTEN);
-//				} else {
-//					img.setColorFilter(Color.RED, PorterDuff.Mode.LIGHTEN);
-//				}
+				if (currFriend.pointType == 1) {
+					img.setBackgroundResource(R.color.friend);
+				} else {
+					img.setBackgroundResource(R.color.red);
+				}
 				
 			    GlobalParams.loadBitmap(currFriend.rowID, img, this.context);
 				
