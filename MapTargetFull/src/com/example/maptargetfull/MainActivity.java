@@ -39,7 +39,7 @@ public class MainActivity extends AbstractNavDrawerActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		
 		// Create the dummy account
 		mAccount = CreateSyncAccount(this);
 
