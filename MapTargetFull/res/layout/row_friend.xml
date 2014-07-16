@@ -2,40 +2,41 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
-    <LinearLayout  android:id="@+id/thumbnail"
+
+    <LinearLayout
+        android:id="@+id/thumbnail"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-        
-            <ImageView 
-    android:id="@+id/type_pict"
-    android:layout_width="50dip"
-    android:layout_height="50dip"
-    android:layout_alignParentLeft="true"
-    android:layout_alignParentTop="true"
-    />
-        
+        android:layout_height="wrap_content" >
+
+        <ImageView
+            android:id="@+id/type_pict"
+            android:layout_width="50dip"
+            android:layout_height="50dip"
+            android:background="#000000"
+            android:padding="2dp" />
     </LinearLayout>
 
-<TextView 
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:id="@+id/FirstName"
-    android:textSize="16sp"
-    android:layout_toRightOf="@id/thumbnail"
-    android:layout_alignParentTop="true"
-    android:textStyle="bold"/>
-<TextView 
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:id="@+id/LastName"
-    android:layout_toRightOf="@id/thumbnail"
-    android:layout_below="@id/FirstName"/>
+    <TextView
+        android:id="@+id/FirstName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@id/thumbnail"
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
-<TextView 
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:id="@+id/position"
-    android:layout_alignParentRight="true"
-    android:layout_alignParentTop="true"
-    />
+    <TextView
+        android:id="@+id/LastName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/FirstName"
+        android:layout_toRightOf="@id/thumbnail" />
+
+    <TextView
+        android:id="@+id/position"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true" />
+
 </RelativeLayout>
