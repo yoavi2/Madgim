@@ -277,11 +277,12 @@ public class MainActivity extends AbstractNavDrawerActivity {
 				this.currFragment = originFragment;
 				super.onBackPressed();
 			}
-			
-			//		getFragmentManager().beginTransaction().show(getFragmentManager().findFragmentByTag(currFragment)).commit();
+
+			// getFragmentManager().beginTransaction().show(getFragmentManager().findFragmentByTag(currFragment)).commit();
 			invalidateOptionsMenu();
+		} else {
+			super.onBackPressed();
 		}
-		super.onBackPressed();
 	}
 
 
