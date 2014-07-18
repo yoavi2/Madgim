@@ -11,10 +11,13 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+
 import com.example.maptargetfull.PointsDBAccess.Point;
 
 public class MainActivity extends AbstractNavDrawerActivity {
@@ -193,6 +196,14 @@ public class MainActivity extends AbstractNavDrawerActivity {
         }
 
 		ContentResolver.requestSync(mAccount, AUTHORITY, settingsBundle);
+		
+		ConnectivityManager connectivityManager = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
+		
+		if ( activeNetwork == null || !activeNetwork.isConnected() )
+		{
+			new refreshAsync().execute(pdialog);
+		}
 	}
 	
 	@Override
