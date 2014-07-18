@@ -42,48 +42,49 @@ import android.widget.Toast;
 
 import com.example.maptargetfull.PointsDBAccess.Point;
 
+public class SecondFragment extends Fragment implements
+		OnItemLongClickListener, OnTouchListener {
 
-public class SecondFragment extends Fragment implements OnItemLongClickListener, OnTouchListener  {
-	
 	public static String TAG = "List";
-	
-    private ProgressDialog pdialog;
-    private final int ACTION_GET = 1;
+
+	private ProgressDialog pdialog;
+	private final int ACTION_GET = 1;
 	private final int ACTION_ADD_SOLDIER = 2;
 	private boolean isTimeOut = false;
 	SwipeRefreshLayout swipeRefreshLayout;
-    ListView list;
-    ArrayList<String> categories = new ArrayList<String>();
-    FriendListAdapter adapter;
-	
-    public interface onclickListener	{
-    	public void onRefreshSelected();
-    	    }
-    
-    public void update(){
-    	new callservice(ACTION_GET).execute();
-    }
- 
-    @Override
+	ListView list;
+	ArrayList<String> categories = new ArrayList<String>();
+	FriendListAdapter adapter;
+
+	public interface onclickListener {
+		public void onRefreshSelected();
+	}
+
+	public void update() {
+		new callservice(ACTION_GET).execute();
+	}
+
+	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
-    	
-        //  Set loading dialog until the datais received from server
-  	     pdialog =new ProgressDialog(getActivity());
-  	     pdialog.setMessage("loading list from json rest service :)");
-	     pdialog.show();  
-//	 
-	//  call the server to get the data
-       new callservice(ACTION_GET).execute();
-    	
+
+		// Set loading dialog until the datais received from server
+		pdialog = new ProgressDialog(getActivity());
+		pdialog.setMessage("loading list from json rest service :)");
+		pdialog.show();
+		//
+		// call the server to get the data
+		new callservice(ACTION_GET).execute();
+
 		super.onActivityCreated(savedInstanceState);
 	}
 
 	@Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
-		
-        View rootView = inflater.inflate(R.layout.secondfragment, container, false);
+
+		View rootView = inflater.inflate(R.layout.secondfragment, container,
+				false);
 
 		this.swipeRefreshLayout = (SwipeRefreshLayout) rootView
 				.findViewById(R.id.srl_main);
@@ -94,9 +95,9 @@ public class SecondFragment extends Fragment implements OnItemLongClickListener,
 				.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 					@Override
 					public void onRefresh() {
-					    // Start showing the refresh animation
+						// Start showing the refresh animation
 						swipeRefreshLayout.setRefreshing(true);
-						// new callservice(ACTION_GET).execute();
+//						update();
 						new Handler().postDelayed(new Runnable() {
 							@Override
 							public void run() {
@@ -106,27 +107,27 @@ public class SecondFragment extends Fragment implements OnItemLongClickListener,
 					}
 				});
 
-        GlobalParams.getInstance().listFriends = this;
-        rootView.setOnTouchListener(this);
-        list = (ListView) rootView.findViewById(R.id.mylistview);
-	//	adapter = new FriendListAdapter(getActivity());
-	//	list.setAdapter(adapter);
+		GlobalParams.getInstance().listFriends = this;
+		rootView.setOnTouchListener(this);
+		list = (ListView) rootView.findViewById(R.id.mylistview);
+		// adapter = new FriendListAdapter(getActivity());
+		// list.setAdapter(adapter);
 		list.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE_MODAL);
 		// TODO: list.setEmptyView
 		list.setOnItemLongClickListener(this);
 		list.setMultiChoiceModeListener(new MultiChoiceModeListener() {
-			
+
 			@Override
 			public boolean onPrepareActionMode(ActionMode arg0, Menu arg1) {
 				// TODO Auto-generated method stub
 				return false;
 			}
-			
+
 			@Override
 			public void onDestroyActionMode(ActionMode arg0) {
-				// TODO Auto-generated method stub	
+				adapter.clearSelection();
 			}
-			
+
 			@Override
 			public boolean onCreateActionMode(ActionMode arg0, Menu arg1) {
 				// TODO Auto-generated method stub
@@ -134,99 +135,105 @@ public class SecondFragment extends Fragment implements OnItemLongClickListener,
 				inflater.inflate(R.menu.contextmenu, arg1);
 				return true;
 			}
-			
+
 			@Override
 			public boolean onActionItemClicked(ActionMode mode, MenuItem arg1) {
-				
-				Iterator<Integer> iterator = adapter.getSelection().keySet().iterator();
+
+				Iterator<Integer> iterator = adapter.getSelection().keySet()
+						.iterator();
 				Collection<Point> friendsToRemove = new ArrayList<Point>();
-				
-				while(iterator.hasNext())
-				{
+
+				while (iterator.hasNext()) {
 					int key = iterator.next();
-					Point currFriend = GlobalParams.getInstance().getSpecificPoint(key);
+					Point currFriend = GlobalParams.getInstance()
+							.getSpecificPoint(key);
 					friendsToRemove.add(currFriend);
 					new DeleteObject(currFriend).execute();
 				}
 				GlobalParams.getInstance().deletePoints(friendsToRemove);
 				adapter.clearSelection();
 				adapter = new FriendListAdapter(getActivity());
-				list.setAdapter(adapter);	
-				
+				list.setAdapter(adapter);
+
 				mode.finish();
-				
+
 				return false;
 			}
-			
+
 			@Override
-			public void onItemCheckedStateChanged(ActionMode arg0, int position, long arg2,
-					boolean checked) {
-				if(checked){
+			public void onItemCheckedStateChanged(ActionMode arg0,
+					int position, long arg2, boolean checked) {
+				if (checked) {
 					adapter.setItemSelected(position);
-				}
-				else{
+				} else {
 					adapter.removeSelection(position);
-				}				
+				}
 			}
 		});
-        list.setOnItemClickListener(new OnItemClickListener() {
+		list.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) {
+				Object o = list.getItemAtPosition(arg2);
+				String s = (String) o;
+				Toast.makeText(getActivity(), s, Toast.LENGTH_SHORT).show();
+			}
+		});
+
+		return rootView;
+	}
 
 	@Override
-	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-		Object o = list.getItemAtPosition(arg2);
-		String s = (String) o;
-		Toast.makeText(getActivity(), s, Toast.LENGTH_SHORT).show();
-	}
-});
-
-        return rootView;
-    }
-
-    @Override
 	public boolean onTouch(View v, MotionEvent event) {
-    	if (event.getAction() == MotionEvent.ACTION_DOWN) 
-		{
-    		pdialog = new ProgressDialog(getActivity());
-    		pdialog.setTitle("Creating...");
-    		pdialog.show();
-    		new callservice(ACTION_ADD_SOLDIER).execute();
-    	Toast.makeText(v.getContext(),"clicked!" ,Toast.LENGTH_SHORT).show();
+		if (event.getAction() == MotionEvent.ACTION_DOWN) {
+			pdialog = new ProgressDialog(getActivity());
+			pdialog.setTitle("Creating...");
+			pdialog.show();
+			new callservice(ACTION_ADD_SOLDIER).execute();
+			Toast.makeText(v.getContext(), "clicked!", Toast.LENGTH_SHORT)
+					.show();
 		}
-    	return true;
-    }
-    private class callservice extends AsyncTask<Void, Void, ArrayList<String>>{
-    	
-    	private int action;
-    	private final String url = "http://172.20.19.192:3000/friends";
-    	private final int ACTION_GET = 1;
-    	private final int ACTION_ADD_SOLDIER = 2;
-    	
-    	public callservice(int action){
-    		this.action = action;
-    	}
+		return true;
+	}
+
+	private class callservice extends AsyncTask<Void, Void, ArrayList<String>> {
+
+		private int action;
+		private final String url = "http://172.20.19.192:3000/friends";
+		private final int ACTION_GET = 1;
+		private final int ACTION_ADD_SOLDIER = 2;
+
+		public callservice(int action) {
+			this.action = action;
+		}
+
 		@Override
 		protected ArrayList<String> doInBackground(Void... params) {
 			// TODO Auto-generated method stub
 
 			// create HttpClient
-            HttpClient httpclient = new DefaultHttpClient();
-            int timeout = 5; // seconds
-            HttpParams httpParams = httpclient.getParams();
-            HttpConnectionParams.setConnectionTimeout(httpParams, timeout * 1000); // http.connection.timeout
-            HttpConnectionParams.setSoTimeout(httpParams, timeout * 1000); // http.socket.timeout
-            
-            // make GET request to the given URL
-            HttpResponse httpResponse;
-            switch (action) {
+			HttpClient httpclient = new DefaultHttpClient();
+			int timeout = 5; // seconds
+			HttpParams httpParams = httpclient.getParams();
+			HttpConnectionParams.setConnectionTimeout(httpParams,
+					timeout * 1000); // http.connection.timeout
+			HttpConnectionParams.setSoTimeout(httpParams, timeout * 1000); // http.socket.timeout
+
+			// make GET request to the given URL
+			HttpResponse httpResponse;
+			switch (action) {
 			case (ACTION_GET):
-//				try {
-					GlobalParams.getInstance().clearList();
-					
-					// Check which fragment called us
-					ArrayList<Point> points =  GlobalParams.getInstance().PointsDBaccess.getPoints(MainActivity.originFragment.equals(GoogleMapFragment.TAG));
-					for (Point point : points) {
+				// try {
+				GlobalParams.getInstance().clearList();
+
+				// Check which fragment called us
+				ArrayList<Point> points = GlobalParams.getInstance().PointsDBaccess
+						.getPoints(MainActivity.originFragment
+								.equals(GoogleMapFragment.TAG));
+				for (Point point : points) {
 					DecimalFormat df = new DecimalFormat("#.####");
-					
+
 					Double langitude = point.langitude;
 					langitude = Double.valueOf(df.format(langitude));
 					point.langitude = langitude;
@@ -234,150 +241,155 @@ public class SecondFragment extends Fragment implements OnItemLongClickListener,
 					Double longitude = point.longitude;
 					longitude = Double.valueOf(df.format(longitude));
 					point.longitude = longitude;
-					
+
 					GlobalParams.getInstance().addPoint(point);
 					// }
 				}
-						
-					
-//					httpResponse = httpclient.execute(new HttpGet(url));
-//					
-//		            // receive response as inputStream
-//		            InputStream inputStream = httpResponse.getEntity().getContent();
-//		            
-//		            String result = convertInputStreamToString(inputStream);
-//		            
-//		            JSONObject json = new JSONObject(result);
-//		            
-//		            JSONArray friends = json.getJSONArray("friends");
-//		            
-//		            // Run over all the friends, create an instance and add them to the array in global class
-//		            for(int i = 0; i < friends.length(); i++){
-//		            GlobalParams.getInstance().addFriend(new Friend(friends.getJSONObject(i).getString("firstname"),
-//		            												90,
-//		            												friends.getJSONObject(i).getString("_id"),
-//		            												friends.getJSONObject(i).getInt("locationX"),
-//		            												friends.getJSONObject(i).getInt("locationY")));
-//		            }
-//		            
-//				} catch (ClientProtocolException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				} catch (IOException e) {
-//					// TODO Auto-generated catch block
-//					//pdialog.hide();
-//					//showError();
-//					isTimeOut = true;
-//					e.printStackTrace();
-//				} catch (JSONException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-				
+
+				// httpResponse = httpclient.execute(new HttpGet(url));
+				//
+				// // receive response as inputStream
+				// InputStream inputStream =
+				// httpResponse.getEntity().getContent();
+				//
+				// String result = convertInputStreamToString(inputStream);
+				//
+				// JSONObject json = new JSONObject(result);
+				//
+				// JSONArray friends = json.getJSONArray("friends");
+				//
+				// // Run over all the friends, create an instance and add them
+				// to the array in global class
+				// for(int i = 0; i < friends.length(); i++){
+				// GlobalParams.getInstance().addFriend(new
+				// Friend(friends.getJSONObject(i).getString("firstname"),
+				// 90,
+				// friends.getJSONObject(i).getString("_id"),
+				// friends.getJSONObject(i).getInt("locationX"),
+				// friends.getJSONObject(i).getInt("locationY")));
+				// }
+				//
+				// } catch (ClientProtocolException e) {
+				// // TODO Auto-generated catch block
+				// e.printStackTrace();
+				// } catch (IOException e) {
+				// // TODO Auto-generated catch block
+				// //pdialog.hide();
+				// //showError();
+				// isTimeOut = true;
+				// e.printStackTrace();
+				// } catch (JSONException e) {
+				// // TODO Auto-generated catch block
+				// e.printStackTrace();
+				// }
+
 				break;
 
 			case (ACTION_ADD_SOLDIER):
-				
-				GlobalParams.getInstance().PointsDBaccess.createPoint("martin", "gordon", 150, 480, false, 0);
-			//	url with the post data
-//			    HttpPost httpost = new HttpPost(url);
-//				
-//			    //convert parameters into JSON object
-//			    JSONObject newSoldier = new JSONObject();
-//			    
-//			    try {
-//					newSoldier.put("firstname", "300");
-//					newSoldier.put("locationX", 200);
-//					newSoldier.put("locationY", 300);
-//					//passes the results to a string builder/entity
-//				    StringEntity se = new StringEntity(newSoldier.toString());
-//
-//				    //sets the post request as the resulting string
-//				    httpost.setEntity(se);
-//				    //sets a request header so the page receving the request
-//				    //will know what to do with it
-//				    httpost.setHeader("Accept", "application/json");
-//				    httpost.setHeader("Content-type", "application/json");
-//
-//				    //Handles what is returned from the page 
-//				    ResponseHandler responseHandler = new BasicResponseHandler();
-//				    httpclient.execute(httpost, responseHandler);
-//				    
-//				    GlobalParams.getInstance().clearList();
-				    new callservice(ACTION_GET).execute();
-//					break;
-//				} catch (JSONException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				} catch (UnsupportedEncodingException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				} catch (ClientProtocolException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				} catch (IOException e) {
-//					// TODO Auto-generated catch block
-//					
-//					e.printStackTrace();
-//				} 
-			    
-			}
-			 
-	        return categories;
-	      
-		}
-		@Override
-		 protected void onPostExecute(ArrayList<String> result) {
-			
-		 super.onPostExecute(result);
-		 adapter = new FriendListAdapter(getActivity());
 
-		 list.setAdapter(adapter);		 
-		 pdialog.hide();
-		 if (isTimeOut){
-		//	 showError();
-		 }
-		// Helper.getListViewSize(list);
-		 }
-    	
-    }
-    
-    private static String convertInputStreamToString(InputStream inputStream) throws IOException{
-        BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
-        String line = "";
-        String result = "";
-        while((line = bufferedReader.readLine()) != null)
-            result += line;
- 
-        inputStream.close();
-        return result;
- 
-    }
-    
+				GlobalParams.getInstance().PointsDBaccess.createPoint("martin",
+						"gordon", 150, 480, false, 0);
+				// url with the post data
+				// HttpPost httpost = new HttpPost(url);
+				//
+				// //convert parameters into JSON object
+				// JSONObject newSoldier = new JSONObject();
+				//
+				// try {
+				// newSoldier.put("firstname", "300");
+				// newSoldier.put("locationX", 200);
+				// newSoldier.put("locationY", 300);
+				// //passes the results to a string builder/entity
+				// StringEntity se = new StringEntity(newSoldier.toString());
+				//
+				// //sets the post request as the resulting string
+				// httpost.setEntity(se);
+				// //sets a request header so the page receving the request
+				// //will know what to do with it
+				// httpost.setHeader("Accept", "application/json");
+				// httpost.setHeader("Content-type", "application/json");
+				//
+				// //Handles what is returned from the page
+				// ResponseHandler responseHandler = new BasicResponseHandler();
+				// httpclient.execute(httpost, responseHandler);
+				//
+				// GlobalParams.getInstance().clearList();
+				new callservice(ACTION_GET).execute();
+				// break;
+				// } catch (JSONException e) {
+				// // TODO Auto-generated catch block
+				// e.printStackTrace();
+				// } catch (UnsupportedEncodingException e) {
+				// // TODO Auto-generated catch block
+				// e.printStackTrace();
+				// } catch (ClientProtocolException e) {
+				// // TODO Auto-generated catch block
+				// e.printStackTrace();
+				// } catch (IOException e) {
+				// // TODO Auto-generated catch block
+				//
+				// e.printStackTrace();
+				// }
+
+			}
+
+			return categories;
+
+		}
+
+		@Override
+		protected void onPostExecute(ArrayList<String> result) {
+
+			super.onPostExecute(result);
+			adapter = new FriendListAdapter(getActivity());
+
+			list.setAdapter(adapter);
+			pdialog.hide();
+			if (isTimeOut) {
+				// showError();
+			}
+			// Helper.getListViewSize(list);
+		}
+
+	}
+
+	private static String convertInputStreamToString(InputStream inputStream)
+			throws IOException {
+		BufferedReader bufferedReader = new BufferedReader(
+				new InputStreamReader(inputStream));
+		String line = "";
+		String result = "";
+		while ((line = bufferedReader.readLine()) != null)
+			result += line;
+
+		inputStream.close();
+		return result;
+
+	}
+
 	@Override
 	public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int arg2,
 			long arg3) {
 		// TODO Auto-generated method stub
 		list.setItemChecked(arg2, true);
-		
-		if(GlobalParams.getInstance().selectedItem == arg2){
+
+		if (GlobalParams.getInstance().selectedItem == arg2) {
 			GlobalParams.getInstance().selectedItem = -1;
-		}
-		else{
-		GlobalParams.getInstance().selectedItem = arg2;
+		} else {
+			GlobalParams.getInstance().selectedItem = arg2;
 		}
 		// start the CAB using the ActionMode.Callback defined above
-       // mActionMode = MyListActivityActionbar.this
-       //     .startActionMode(mActionModeCallback);
-        arg1.setSelected(true);
+		// mActionMode = MyListActivityActionbar.this
+		// .startActionMode(mActionModeCallback);
+		arg1.setSelected(true);
 		return true;
 	}
-	public void showError(){
-		Toast.makeText(getActivity(), "connection failed", Toast.LENGTH_SHORT).show();
+
+	public void showError() {
+		Toast.makeText(getActivity(), "connection failed", Toast.LENGTH_SHORT)
+				.show();
 
 	}
 
 	
-	
 }
-
