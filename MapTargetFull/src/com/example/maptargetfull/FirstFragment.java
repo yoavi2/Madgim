@@ -78,12 +78,12 @@ public class FirstFragment extends Fragment
         surface = (DrawSample) rootView.findViewById(R.id.rect);
         surface.setLongClickable(true);
         surface.setOnLongClickListener(this);
-		dialog =  new Dialog(getActivity(), R.style.cust_dialog);
+//		dialog =  new Dialog(getActivity(), R.style.cust_dialog);
 		
-	    builder = new AlertDialog.Builder(getActivity());
-		builder.setPositiveButton("Add new friend" , this);
-		builder.setNegativeButton("Cancel", this);
-		builder.setTitle("Map management");
+//	    builder = new AlertDialog.Builder(getActivity());
+//		builder.setPositiveButton("Add new friend" , this);
+//		builder.setNegativeButton("Cancel", this);
+//		builder.setTitle("Map management");
     //    view = surface;
         GlobalParams.getInstance().setview(surface);
         
