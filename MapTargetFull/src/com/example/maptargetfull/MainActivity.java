@@ -68,7 +68,9 @@ public class MainActivity extends AbstractNavDrawerActivity {
 				NavMenuItem.createMenuItem(101, R.string.text_googlemap,
 						R.drawable.google_map_icon, true, false),
 				NavMenuItem.createMenuItem(102, R.string.text_map,
-						R.drawable.image_map_icon, true, false) };
+						R.drawable.image_map_icon, true, false),
+				NavMenuItem.createMenuItem(103, R.string.text_mapa,
+						R.drawable.mapa_icon, true, false) };
 
 		NavDrawerActivityConfiguration navDrawerActivityConfiguration = new NavDrawerActivityConfiguration();
 		navDrawerActivityConfiguration.setMainLayout(R.layout.activity_main);
@@ -104,6 +106,14 @@ public class MainActivity extends AbstractNavDrawerActivity {
 			this.currFragment = FirstFragment.TAG;
 			originFragment = FirstFragment.TAG;
 			GlobalParams.getInstance().setProgress(first);
+			this.invalidateOptionsMenu();
+			break;
+		case 103:
+			WebViewFragment web = new WebViewFragment();
+			getFragmentManager().beginTransaction()
+					.replace(R.id.content_frame, web, WebViewFragment.TAG).commit();
+			this.currFragment = WebViewFragment.TAG;
+			originFragment = WebViewFragment.TAG;
 			this.invalidateOptionsMenu();
 			break;
 		// case 103:

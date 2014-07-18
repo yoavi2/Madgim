@@ -20,7 +20,8 @@
     <string name="text_list">Forces details</string>
     <string name="text_googlemap">Google Map</string>
     <string name="text_imagemap">Image Map</string>
-
+	<string name="text_mapa">Mapa.co.il</string>
+    
     <string name="text_enemy">Enemy</string>
     <string name="text_friend">Friend</string>
     <string name="text_accept">Accept</string>
