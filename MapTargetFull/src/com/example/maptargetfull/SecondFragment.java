@@ -14,10 +14,15 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
+
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -38,7 +43,7 @@ import android.widget.Toast;
 import com.example.maptargetfull.PointsDBAccess.Point;
 
 
-public class SecondFragment extends Fragment implements OnItemLongClickListener, OnTouchListener {
+public class SecondFragment extends Fragment implements OnItemLongClickListener, OnTouchListener  {
 	
 	public static String TAG = "List";
 	
@@ -46,6 +51,7 @@ public class SecondFragment extends Fragment implements OnItemLongClickListener,
     private final int ACTION_GET = 1;
 	private final int ACTION_ADD_SOLDIER = 2;
 	private boolean isTimeOut = false;
+	SwipeRefreshLayout swipeRefreshLayout;
     ListView list;
     ArrayList<String> categories = new ArrayList<String>();
     FriendListAdapter adapter;
@@ -60,6 +66,7 @@ public class SecondFragment extends Fragment implements OnItemLongClickListener,
  
     @Override
 	public void onActivityCreated(Bundle savedInstanceState) {
+    	
         //  Set loading dialog until the datais received from server
   	     pdialog =new ProgressDialog(getActivity());
   	     pdialog.setMessage("loading list from json rest service :)");
@@ -75,13 +82,37 @@ public class SecondFragment extends Fragment implements OnItemLongClickListener,
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
+		
         View rootView = inflater.inflate(R.layout.secondfragment, container, false);
+
+		this.swipeRefreshLayout = (SwipeRefreshLayout) rootView
+				.findViewById(R.id.srl_main);
+
+		swipeRefreshLayout.setColorScheme(R.color.purple_dark, R.color.blue,
+				R.color.friend, R.color.red);
+		swipeRefreshLayout
+				.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+					@Override
+					public void onRefresh() {
+					    // Start showing the refresh animation
+						swipeRefreshLayout.setRefreshing(true);
+						// new callservice(ACTION_GET).execute();
+						new Handler().postDelayed(new Runnable() {
+							@Override
+							public void run() {
+								swipeRefreshLayout.setRefreshing(false);
+							}
+						}, 5000);
+					}
+				});
+
         GlobalParams.getInstance().listFriends = this;
         rootView.setOnTouchListener(this);
         list = (ListView) rootView.findViewById(R.id.mylistview);
 	//	adapter = new FriendListAdapter(getActivity());
 	//	list.setAdapter(adapter);
 		list.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE_MODAL);
+		// TODO: list.setEmptyView
 		list.setOnItemLongClickListener(this);
 		list.setMultiChoiceModeListener(new MultiChoiceModeListener() {
 			
@@ -345,6 +376,7 @@ public class SecondFragment extends Fragment implements OnItemLongClickListener,
 		Toast.makeText(getActivity(), "connection failed", Toast.LENGTH_SHORT).show();
 
 	}
+
 	
 	
 }

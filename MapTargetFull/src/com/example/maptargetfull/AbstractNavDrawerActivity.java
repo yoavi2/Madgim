@@ -5,6 +5,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -28,7 +29,6 @@ public abstract class AbstractNavDrawerActivity extends Activity {
     private int lastItemChecked = 0 ;
 
 	protected abstract NavDrawerActivityConfiguration getNavDrawerConfiguration();
-	
 	protected abstract void onNavItemSelected( int id );
 	
 	@Override
@@ -137,6 +137,10 @@ public abstract class AbstractNavDrawerActivity extends Activity {
 
 	protected ActionBarDrawerToggle getDrawerToggle() {
 		return mDrawerToggle;
+	}
+	
+	protected void lockDrawer(boolean lock){
+		this.mDrawerLayout.setDrawerLockMode(lock ? DrawerLayout.LOCK_MODE_LOCKED_CLOSED : DrawerLayout.LOCK_MODE_UNLOCKED);
 	}
    
     private class DrawerItemClickListener implements ListView.OnItemClickListener {

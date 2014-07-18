@@ -15,6 +15,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -164,6 +165,7 @@ public class MainActivity extends AbstractNavDrawerActivity {
 			dialog.show(getFragmentManager(), "test");
 			return true;
 		case R.id.action_list:
+			this.lockDrawer(true);
 //			getFragmentManager().beginTransaction().hide(getFragmentManager().findFragmentByTag(currFragment));
 			getFragmentManager().beginTransaction().addToBackStack(null)
 			.replace(R.id.content_frame, new SecondFragment(),SecondFragment.TAG).commit();
@@ -279,6 +281,8 @@ public class MainActivity extends AbstractNavDrawerActivity {
 	public void onBackPressed() {
 		
 		if (this.currFragment.equals(SecondFragment.TAG)) {
+			this.lockDrawer(false);
+			
 			// Reload google map + Popbackstack
 			if (originFragment.equals(GoogleMapFragment.TAG)) {
 				getFragmentManager().popBackStackImmediate();
@@ -296,6 +300,10 @@ public class MainActivity extends AbstractNavDrawerActivity {
 		}
 	}
 
+	@Override
+	protected void lockDrawer(boolean lock){
+		super.lockDrawer(lock);
+	}
 
 
 	
