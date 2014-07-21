@@ -15,6 +15,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
+import android.app.Dialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.graphics.Color;
@@ -43,12 +44,13 @@ import android.widget.Toast;
 import com.example.maptargetfull.PointsDBAccess.Point;
 
 public class SecondFragment extends Fragment implements
-		OnItemLongClickListener, OnTouchListener {
+		OnItemLongClickListener //, OnTouchListener 
+{
 
 	public static String TAG = "List";
 
 	private ProgressDialog pdialog;
-	private final int ACTION_GET = 1;
+	public static final int ACTION_GET = 1;
 	private final int ACTION_ADD_SOLDIER = 2;
 	private boolean isTimeOut = false;
 	SwipeRefreshLayout swipeRefreshLayout;
@@ -98,17 +100,18 @@ public class SecondFragment extends Fragment implements
 						// Start showing the refresh animation
 						swipeRefreshLayout.setRefreshing(true);
 //						update();
-						new Handler().postDelayed(new Runnable() {
-							@Override
-							public void run() {
+//						new Handler().postDelayed(new Runnable() {
+//							@Override
+//							public void run() {
+								((MainActivity) getActivity()).refresh(false);
 								swipeRefreshLayout.setRefreshing(false);
-							}
-						}, 5000);
+//							}
+//						}, 1000);
 					}
 				});
 
 		GlobalParams.getInstance().listFriends = this;
-		rootView.setOnTouchListener(this);
+	//	rootView.setOnTouchListener(this);
 		list = (ListView) rootView.findViewById(R.id.mylistview);
 		// adapter = new FriendListAdapter(getActivity());
 		// list.setAdapter(adapter);
@@ -184,28 +187,34 @@ public class SecondFragment extends Fragment implements
 		return rootView;
 	}
 
-	@Override
-	public boolean onTouch(View v, MotionEvent event) {
-		if (event.getAction() == MotionEvent.ACTION_DOWN) {
-			pdialog = new ProgressDialog(getActivity());
-			pdialog.setTitle("Creating...");
-			pdialog.show();
-			new callservice(ACTION_ADD_SOLDIER).execute();
-			Toast.makeText(v.getContext(), "clicked!", Toast.LENGTH_SHORT)
-					.show();
-		}
-		return true;
-	}
+//	@Override
+//	public boolean onTouch(View v, MotionEvent event) {
+//		if (event.getAction() == MotionEvent.ACTION_DOWN) {
+//			pdialog = new ProgressDialog(getActivity());
+//			pdialog.setTitle("Creating...");
+//			pdialog.show();
+//			new callservice(ACTION_ADD_SOLDIER).execute();
+//			Toast.makeText(v.getContext(), "clicked!", Toast.LENGTH_SHORT)
+//					.show();
+//		}
+//		return true;
+//	}
 
-	private class callservice extends AsyncTask<Void, Void, ArrayList<String>> {
+	public class callservice extends AsyncTask<Void, Void, ArrayList<String>> {
 
 		private int action;
 		private final String url = "http://172.20.19.192:3000/friends";
 		private final int ACTION_GET = 1;
 		private final int ACTION_ADD_SOLDIER = 2;
+		private Dialog pdialog2;
 
 		public callservice(int action) {
 			this.action = action;
+		}
+		
+		public callservice(int action, Dialog pdialog1) {
+			this.action = action;
+			this.pdialog2 = pdialog1;
 		}
 
 		@Override
@@ -339,7 +348,6 @@ public class SecondFragment extends Fragment implements
 
 		@Override
 		protected void onPostExecute(ArrayList<String> result) {
-
 			super.onPostExecute(result);
 			adapter = new FriendListAdapter(getActivity());
 
@@ -348,6 +356,14 @@ public class SecondFragment extends Fragment implements
 			if (isTimeOut) {
 				// showError();
 			}
+			
+			swipeRefreshLayout.setRefreshing(false);
+			
+			if (this.pdialog2 != null && this.pdialog2.isShowing()) 
+			{
+				this.pdialog2.hide();
+			}
+			
 			// Helper.getListViewSize(list);
 		}
 
@@ -390,6 +406,18 @@ public class SecondFragment extends Fragment implements
 				.show();
 
 	}
-
 	
+	@Override
+	public void onPause() {
+		super.onPause();
+		
+		((MainActivity) getActivity()).lockDrawer(false);
+	}
+	
+	@Override
+	public void onResume() {
+		((MainActivity) getActivity()).lockDrawer(true);
+		
+		super.onResume();
+	}
 }

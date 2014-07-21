@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Dialog;
+import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
@@ -15,7 +16,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -32,7 +32,7 @@ public class MainActivity extends AbstractNavDrawerActivity {
 
 	private DialogDetails dialog = new DialogDetails();
 
-	private Dialog pdialog;
+	public Dialog pdialog;
 
 	public String currFragment;
 	public static String originFragment;
@@ -175,7 +175,6 @@ public class MainActivity extends AbstractNavDrawerActivity {
 			dialog.show(getFragmentManager(), "test");
 			return true;
 		case R.id.action_list:
-			this.lockDrawer(true);
 //			getFragmentManager().beginTransaction().hide(getFragmentManager().findFragmentByTag(currFragment));
 			getFragmentManager().beginTransaction().addToBackStack(null)
 			.replace(R.id.content_frame, new SecondFragment(),SecondFragment.TAG).commit();
@@ -206,15 +205,17 @@ public class MainActivity extends AbstractNavDrawerActivity {
     		pdialog.setTitle("Refreshing data...");
     		pdialog.show();        	
         }
-
-		ContentResolver.requestSync(mAccount, AUTHORITY, settingsBundle);
 		
 		ConnectivityManager connectivityManager = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
 		
 		if ( activeNetwork == null || !activeNetwork.isConnected() )
 		{
-			new refreshAsync().execute(pdialog);
+			refresh_view();
+		}
+		else
+		{
+			ContentResolver.requestSync(mAccount, AUTHORITY, settingsBundle);
 		}
 	}
 	
@@ -251,9 +252,33 @@ public class MainActivity extends AbstractNavDrawerActivity {
 
 	    @Override
 	    public void onReceive(Context context, Intent intent) {
-			new refreshAsync().execute(pdialog);
+	    	refresh_view();
 	    }
 	};
+	
+	public void refresh_view()
+	{
+    	Fragment currFrag = getFragmentManager().findFragmentByTag(currFragment);
+    	
+    	if (currFragment.equals(FirstFragment.TAG)) 
+    	{
+    		new refreshAsync().execute(pdialog);
+		}
+    	else if(currFragment.equals(SecondFragment.TAG))
+    	{
+    		((SecondFragment)currFrag).new callservice(SecondFragment.ACTION_GET, pdialog).execute();
+    	}
+    	else if(currFragment.equals(GoogleMapFragment.TAG))
+    	{
+    		this.onNavItemSelected(101);
+    		pdialog.hide();
+    	}
+    	else if(currFragment.equals(WebViewFragment.TAG))
+    	{
+    		this.onNavItemSelected(103);
+    		pdialog.hide();
+    	}
+	}
 	
 	static public class refreshAsync extends AsyncTask<Dialog, Void, Void>
 	{
@@ -291,8 +316,6 @@ public class MainActivity extends AbstractNavDrawerActivity {
 	public void onBackPressed() {
 		
 		if (this.currFragment.equals(SecondFragment.TAG)) {
-			this.lockDrawer(false);
-			
 			// Reload google map + Popbackstack
 			if (originFragment.equals(GoogleMapFragment.TAG)) {
 				getFragmentManager().popBackStackImmediate();
@@ -311,7 +334,7 @@ public class MainActivity extends AbstractNavDrawerActivity {
 	}
 
 	@Override
-	protected void lockDrawer(boolean lock){
+	public  void lockDrawer(boolean lock){
 		super.lockDrawer(lock);
 	}
 
