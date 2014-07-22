@@ -129,6 +129,7 @@ public class PointsDBAccess {
 			p.langitude = cursor.getDouble(cursor.getColumnIndex(Points.Columns.langitude));
 			p.server_id = cursor.getString(cursor.getColumnIndex(Points.Columns.server_id));
 			p.is_deleted = cursor.getInt(cursor.getColumnIndex(Points.Columns.is_deleted));
+			p.is_google = cursor.getInt(cursor.getColumnIndex(Points.Columns.is_google));
 			p.pointType = cursor.getInt(cursor.getColumnIndex(Points.Columns.point_type));
 			arrayPoint.add(p);
 		}

@@ -37,7 +37,7 @@ import com.example.maptargetfull.PointsDBAccess.PointForSync;
 import com.example.maptargetfull.SQLiteDB.Points;
 
 public class SyncAdapter extends AbstractThreadedSyncAdapter {
-	private final String url = "http://172.20.19.192:3000/friends";
+	private final String url = "http://192.168.43.48:3000/friends";
 	
 	public SyncAdapter(Context context, boolean autoInitialize) {
 		super(context, autoInitialize);
@@ -54,6 +54,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	@Override
 	public void onPerformSync(Account account, Bundle extras, String authority,
 			ContentProviderClient provider, SyncResult syncResult) {
+		android.os.Debug.waitForDebugger();
 		Boolean succeeded = true;
 		
 			PointsDBAccess pointsDB = new PointsDBAccess(getContext());
@@ -77,6 +78,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 							arrayPoint.get(i).longitude);
 					json.put(Points.Columns.langitude,
 							arrayPoint.get(i).langitude);
+					
 					json.put(Points.Columns.is_deleted,
 							arrayPoint.get(i).is_deleted);
 					json.put(Points.Columns.is_google,
