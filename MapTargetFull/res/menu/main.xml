@@ -24,6 +24,7 @@
         <item
         android:id="@+id/action_connect"
         android:orderInCategory="1"
+        android:visible="false"
         android:icon="@drawable/ic_warning"
         android:showAsAction="always"/>
    

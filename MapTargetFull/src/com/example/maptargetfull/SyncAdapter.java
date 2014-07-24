@@ -37,7 +37,7 @@ import com.example.maptargetfull.PointsDBAccess.PointForSync;
 import com.example.maptargetfull.SQLiteDB.Points;
 
 public class SyncAdapter extends AbstractThreadedSyncAdapter {
-	private final String url = "http://192.168.43.48:3000/friends";
+	private final String url = "http://192.168.43.69:3000/friends";
 	
 	public SyncAdapter(Context context, boolean autoInitialize) {
 		super(context, autoInitialize);
@@ -98,7 +98,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 						httpclient.execute(httpPost, responseHandler);
 					} else {
 						json.put("_id", arrayPoint.get(i).server_id);
-						HttpPut httpPut = new HttpPut(url);
+						
+						HttpPut httpPut = new HttpPut(url + "/" + arrayPoint.get(i).server_id);
 
 						httpPut.setHeader("Accept", "application/json");
 						httpPut.setHeader("Content-type", "application/json");

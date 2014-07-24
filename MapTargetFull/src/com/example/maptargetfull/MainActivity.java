@@ -6,6 +6,7 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Dialog;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
@@ -18,6 +19,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.example.maptargetfull.PointsDBAccess.Point;
 
@@ -36,6 +38,7 @@ public class MainActivity extends AbstractNavDrawerActivity {
 
 	public String currFragment;
 	public static String originFragment;
+	private boolean didSyncFailed;
 
 	// Instance fields
 	Account mAccount;
@@ -90,6 +93,8 @@ public class MainActivity extends AbstractNavDrawerActivity {
 
 	@Override
 	protected void onNavItemSelected(int id) {
+		getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+		
 		switch (id) {
 		case 101:
 			getFragmentManager()
@@ -106,7 +111,6 @@ public class MainActivity extends AbstractNavDrawerActivity {
 			this.currFragment = FirstFragment.TAG;
 			originFragment = FirstFragment.TAG;
 			GlobalParams.getInstance().setProgress(first);
-			this.invalidateOptionsMenu();
 			break;
 		case 103:
 			WebViewFragment web = new WebViewFragment();
@@ -114,17 +118,10 @@ public class MainActivity extends AbstractNavDrawerActivity {
 					.replace(R.id.content_frame, web, WebViewFragment.TAG).commit();
 			this.currFragment = WebViewFragment.TAG;
 			originFragment = WebViewFragment.TAG;
-			this.invalidateOptionsMenu();
 			break;
-		// case 103:
-		// SecondFragment second = new SecondFragment();
-		// getFragmentManager().beginTransaction()
-		// .replace(R.id.content_frame, second).commit();
-		// currFragment = SecondFragment.TAG;
-		// GlobalParams.getInstance().setProgress(second);
-		// this.invalidateOptionsMenu();
-		// break;
 		}
+		
+		this.invalidateOptionsMenu();
 	}
 
 	public static Account CreateSyncAccount(Context context) {
@@ -175,21 +172,26 @@ public class MainActivity extends AbstractNavDrawerActivity {
 			dialog.show(getFragmentManager(), "test");
 			return true;
 		case R.id.action_list:
-//			getFragmentManager().beginTransaction().hide(getFragmentManager().findFragmentByTag(currFragment));
-			getFragmentManager().beginTransaction().addToBackStack(null)
-			.replace(R.id.content_frame, new SecondFragment(),SecondFragment.TAG).commit();
+			// getFragmentManager().beginTransaction().hide(getFragmentManager().findFragmentByTag(currFragment));
+			getFragmentManager()
+					.beginTransaction()
+					.addToBackStack(null)
+					.replace(R.id.content_frame, new SecondFragment(),
+							SecondFragment.TAG).commit();
 			this.currFragment = SecondFragment.TAG;
 			this.invalidateOptionsMenu();
 			break;
 		case R.id.action_refresh:
-			this.refresh( true );
+			this.refresh(true);
+			break;
+		case R.id.action_connect:
+			Toast.makeText(this, "Data may not be synced. Internet may be down or server isn't responding", Toast.LENGTH_LONG).show();
 			break;
 		}
 		return super.onOptionsItemSelected(item);
 	}
-	
-	public void refresh( Boolean withDialog )
-	{
+
+	public void refresh(Boolean withDialog) {
 		// Pass the settings flags by inserting them in a bundle
         Bundle settingsBundle = new Bundle();
 		settingsBundle.putBoolean(
@@ -206,10 +208,7 @@ public class MainActivity extends AbstractNavDrawerActivity {
     		pdialog.show();        	
         }
 		
-		ConnectivityManager connectivityManager = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
-		
-		if ( activeNetwork == null || !activeNetwork.isConnected() )
+		if (!this.isConnected())
 		{
 			refresh_view();
 		}
@@ -221,6 +220,14 @@ public class MainActivity extends AbstractNavDrawerActivity {
 	
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
+		
+		if (!this.isConnected() || this.didSyncFailed)
+		{
+			menu.findItem(R.id.action_connect).setVisible(true);
+		} else {
+			menu.findItem(R.id.action_connect).setVisible(false);
+		}
+		
 		if (currFragment.equals(FirstFragment.TAG)) {
 			menu.findItem(R.id.action_settings).setVisible(true);
 			menu.findItem(R.id.action_list).setVisible(true);
@@ -252,12 +259,16 @@ public class MainActivity extends AbstractNavDrawerActivity {
 
 	    @Override
 	    public void onReceive(Context context, Intent intent) {
-	    	refresh_view();
+	    	didSyncFailed = !intent.getExtras().getBoolean(GlobalParams.getInstance().syncSucceeded);
+	    	
+	    	 refresh_view();
 	    }
 	};
 	
 	public void refresh_view()
 	{
+		invalidateOptionsMenu();
+		
     	Fragment currFrag = getFragmentManager().findFragmentByTag(currFragment);
     	
     	if (currFragment.equals(FirstFragment.TAG)) 
@@ -338,7 +349,12 @@ public class MainActivity extends AbstractNavDrawerActivity {
 		super.lockDrawer(lock);
 	}
 
-
+	public boolean isConnected(){
+		ConnectivityManager connectivityManager = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
+		
+		return (activeNetwork != null && activeNetwork.isConnected());
+	}
 	
 	
 }
