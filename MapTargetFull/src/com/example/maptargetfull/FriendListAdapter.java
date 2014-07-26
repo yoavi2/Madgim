@@ -5,6 +5,7 @@ import java.util.HashMap;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,53 +26,62 @@ public class FriendListAdapter extends BaseAdapter {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		LayoutInflater inflater = (LayoutInflater) context
-				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View rowView = inflater.inflate(R.layout.row_friend, parent, false);
-		if (mSelection.get(position) != null) {
-			rowView.setBackgroundColor(context.getResources().getColor(
-					R.color.purple_dark));
+		
+		ViewHolder holder;
+		
+		if (convertView == null) {
+			LayoutInflater inflater = (LayoutInflater) context
+					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			convertView = inflater.inflate(R.layout.row_friend, parent, false);
+			
+			holder = new ViewHolder();
+			holder.firstName = (TextView) convertView.findViewById(R.id.FirstName);
+			holder.lastName = (TextView) convertView.findViewById(R.id.LastName);
+			holder.location = (TextView) convertView.findViewById(R.id.position);
+			holder.img = (ImageView) convertView.findViewById(R.id.type_pict);
+			holder.img.setTag(this.getItemId(position));
+			
+			convertView.setTag(holder);
+		} else {
+			holder = (ViewHolder) convertView.getTag();
 		}
-		TextView firstName = (TextView) rowView.findViewById(R.id.FirstName);
-		TextView lastName = (TextView) rowView.findViewById(R.id.LastName);
-		TextView location = (TextView) rowView.findViewById(R.id.position);
-		ImageView img = (ImageView) rowView.findViewById(R.id.type_pict);
+		
+		
+		if (mSelection.get(position) != null) {
+			convertView.setBackgroundColor(context.getResources().getColor(
+					R.color.purple_dark));
+		} else {
+			convertView.setBackgroundColor(Color.TRANSPARENT);
+		}
 
 		if (GlobalParams.getInstance().getFriend()) {
 			
 			Point currFriend = GlobalParams.getInstance().getSpecificPoint(position);
 			
 			if (currFriend != null) {
-				firstName.setText(currFriend.first_name);
-				lastName.setText("last name");
+				holder.firstName.setText(currFriend.first_name);
+				holder.lastName.setText("last name");
 				
 				if (currFriend.pointType == 1) {
-					img.setBackgroundResource(R.color.friend);
+					holder.img.setBackgroundResource(R.color.friend);
 				} else {
-					img.setBackgroundResource(R.color.red);
+					holder.img.setBackgroundResource(R.color.red);
 				}
 				
-			    GlobalParams.loadBitmap(currFriend.rowID, img, this.context);
+				if (((Long) holder.img.getTag()) != currFriend.rowID || holder.img.getDrawable() == null) {
+					GlobalParams.loadBitmap(currFriend.rowID, holder.img, this.context);
+					
+					if (holder.img.getDrawable() == null) {
+						holder.img.setTag(currFriend.rowID);
+					}
+				}
 				
-				location.setText(Double.toString(currFriend.langitude)
+			    holder.location.setText(Double.toString(currFriend.langitude)
 						+ " ; " + Double.toString(currFriend.longitude));
 			}
 		}
-if (GlobalParams.getInstance().getEenemy()) {
-			
-//			Friend currFriend = GlobalParams.getInstance().get()
-//					.get(position);
-//			
-//			if (currFriend != null) {
-//				firstName.setText(currFriend.getName());
-//				lastName.setText("last name");
-//				img.setImageResource(R.drawable.friend);
-//				location.setText(Integer.toString(currFriend.getWidth())
-//						+ " ; " + Integer.toString(currFriend.getHeight()));
-			//}
-		}
 		
-		return rowView;
+		return convertView;
 	}
 
 	@Override
@@ -91,7 +101,7 @@ if (GlobalParams.getInstance().getEenemy()) {
 	@Override
 	public long getItemId(int position) {
 		// TODO Auto-generated method stub
-		return position;
+		return GlobalParams.getInstance().getSpecificPoint(position).rowID;
 	}
 
 	public void setItemSelected(int position) {
@@ -112,4 +122,11 @@ if (GlobalParams.getInstance().getEenemy()) {
 		this.mSelection.clear();
 	}
 
+}
+
+class ViewHolder {
+	TextView firstName;
+	TextView lastName;
+	TextView location;
+	ImageView img;
 }

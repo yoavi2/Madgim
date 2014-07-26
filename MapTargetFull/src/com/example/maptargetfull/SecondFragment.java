@@ -98,17 +98,9 @@ public class SecondFragment extends Fragment implements
 					@Override
 					public void onRefresh() {
 						// Start showing the refresh animation
-						swipeRefreshLayout.setRefreshing(true);
-//						update();
-//						new Handler().postDelayed(new Runnable() {
-//							@Override
-//							public void run() {
 								((MainActivity) getActivity()).refresh(false);
-								swipeRefreshLayout.setRefreshing(false);
-//							}
-//						}, 1000);
-					}
-				});
+								list.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE_MODAL);
+				}});
 
 		GlobalParams.getInstance().listFriends = this;
 	//	rootView.setOnTouchListener(this);

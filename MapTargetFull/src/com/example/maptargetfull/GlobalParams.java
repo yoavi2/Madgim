@@ -282,7 +282,7 @@ public class GlobalParams {
 	        final AsyncDrawable asyncDrawable =
 	                new AsyncDrawable(context.getResources(), BitmapFactory.decodeResource(context.getResources(),R.drawable.nophoto2), task);
 	        imageView.setImageDrawable(asyncDrawable);
-	        task.execute((int)rowid);
+	        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (int)rowid);
 		}
 	}
 
