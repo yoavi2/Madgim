@@ -96,7 +96,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 						ResponseHandler responseHandler = new BasicResponseHandler();
 						httpclient.execute(httpPost, responseHandler);
 					} else {
-						json.put("_id", arrayPoint.get(i).server_id);
 						
 						HttpPut httpPut = new HttpPut(url + "/" + arrayPoint.get(i).server_id);
 

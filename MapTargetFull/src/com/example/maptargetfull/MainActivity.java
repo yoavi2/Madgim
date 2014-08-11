@@ -361,7 +361,5 @@ public class MainActivity extends AbstractNavDrawerActivity {
 		NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
 		
 		return (activeNetwork != null && activeNetwork.isConnected());
-	}
-	
-	
+	}	
 }
