@@ -2,6 +2,10 @@ package com.example.maptargetfull;
 
 import java.util.ArrayList;
 
+import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Dialog;
@@ -22,6 +26,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.maptargetfull.PointsDBAccess.Point;
+import com.example.maptargetfull.mqtthandler;
 
 public class MainActivity extends AbstractNavDrawerActivity {
 	// Constants
@@ -42,7 +47,7 @@ public class MainActivity extends AbstractNavDrawerActivity {
 
 	// Instance fields
 	Account mAccount;
-
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -61,6 +66,8 @@ public class MainActivity extends AbstractNavDrawerActivity {
 			originFragment = FirstFragment.TAG;
 		}
 		
+		startService(new Intent(this, mqttService.class));
+
 		this.refresh(true);
 	}
 

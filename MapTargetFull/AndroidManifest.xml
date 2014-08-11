@@ -67,7 +67,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.MapTargetFull.itemListActivity" />
         </activity>
-
+		
         <service android:name="com.example.maptargetfull.AuthenticatorService" >
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
@@ -89,7 +89,7 @@
                 android:name="android.content.SyncAdapter"
                 android:resource="@xml/syncadapter" />
         </service>
-
+		<service android:name="com.example.maptargetfull.mqttService"/>
         <provider
             android:name="com.example.maptargetfull.StubProvider"
             android:authorities="com.example.maptargetfull.provider"
