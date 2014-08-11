@@ -69,11 +69,12 @@ public class FriendListAdapter extends BaseAdapter {
 				}
 				
 				if (((Long) holder.img.getTag()) != currFriend.rowID || holder.img.getDrawable() == null) {
-					GlobalParams.loadBitmap(currFriend.rowID, holder.img, this.context);
 					
 					if (holder.img.getDrawable() == null) {
 						holder.img.setTag(currFriend.rowID);
 					}
+					
+					GlobalParams.loadBitmap(currFriend.rowID, holder.img, this.context);
 				}
 				
 			    holder.location.setText(Double.toString(currFriend.langitude)
