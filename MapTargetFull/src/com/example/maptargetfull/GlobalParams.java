@@ -7,8 +7,9 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Hashtable;
 
-import com.example.maptargetfull.PointsDBAccess.Point;
+import us.ba3.me.Location;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -23,6 +24,8 @@ import android.os.Environment;
 import android.util.Log;
 import android.widget.ImageView;
 
+import com.example.maptargetfull.PointsDBAccess.Point;
+
 public class GlobalParams {
 	private boolean ShowEenemy;
 	private boolean ShowFriend;
@@ -35,9 +38,15 @@ public class GlobalParams {
 	public SecondFragment listFriends;
 	private Fragment frag;
 	private ArrayList<Point> mPoints = new ArrayList<Point>();
+	public boolean Exist;
+	public Hashtable<String, Location> myList = new Hashtable<String, Location>();
 
 	public void setProgress(Fragment p) {
 		this.frag = p;
+	}
+	
+	public void AddMarker(String s, Location loc){
+		myList.put(s, loc);
 	}
 
 	public Fragment getf() {

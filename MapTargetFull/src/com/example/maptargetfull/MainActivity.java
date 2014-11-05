@@ -2,9 +2,15 @@ package com.example.maptargetfull;
 
 import java.util.ArrayList;
 
-import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.android.service.MqttAndroidClient;
+import org.eclipse.paho.android.service.MqttService;
+import org.eclipse.paho.client.mqttv3.IMqttActionListener;
+import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+import org.eclipse.paho.client.mqttv3.IMqttToken;
+import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttException;
-import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.eclipse.paho.client.mqttv3.MqttSecurityException;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -21,14 +27,14 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.Settings.Secure;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.maptargetfull.PointsDBAccess.Point;
-import com.example.maptargetfull.mqtthandler;
 
-public class MainActivity extends AbstractNavDrawerActivity {
+public class MainActivity extends AbstractNavDrawerActivity implements MqttCallback, IMqttActionListener {
 	// Constants
 	// The authority for the sync adapter's content provider
 	public static final String AUTHORITY = "com.example.maptargetfull.provider";
@@ -44,6 +50,7 @@ public class MainActivity extends AbstractNavDrawerActivity {
 	public String currFragment;
 	public static String originFragment;
 	private boolean didSyncFailed;
+	private MqttAndroidClient c;
 
 	// Instance fields
 	Account mAccount;
@@ -66,7 +73,19 @@ public class MainActivity extends AbstractNavDrawerActivity {
 			originFragment = FirstFragment.TAG;
 		}
 		
-		startService(new Intent(this, mqttService.class));
+		c = new MqttAndroidClient(this, "tcp://192.168.1.23:1883", Secure.ANDROID_ID);
+		
+		
+		try {
+			c.setCallback(this);
+			c.connect(this, this);
+		} catch (MqttSecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MqttException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		this.refresh(true);
 	}
@@ -80,7 +99,10 @@ public class MainActivity extends AbstractNavDrawerActivity {
 				NavMenuItem.createMenuItem(102, R.string.text_map,
 						R.drawable.image_map_icon, true, false),
 				NavMenuItem.createMenuItem(103, R.string.text_mapa,
-						R.drawable.mapa_icon, true, false) };
+						R.drawable.mapa_icon, true, false),
+						NavMenuItem.createMenuItem(104, R.string.text_ua3,
+								R.drawable.google_map_icon, true, false),
+						};
 
 		NavDrawerActivityConfiguration navDrawerActivityConfiguration = new NavDrawerActivityConfiguration();
 		navDrawerActivityConfiguration.setMainLayout(R.layout.activity_main);
@@ -125,6 +147,13 @@ public class MainActivity extends AbstractNavDrawerActivity {
 					.replace(R.id.content_frame, web, WebViewFragment.TAG).commit();
 			this.currFragment = WebViewFragment.TAG;
 			originFragment = WebViewFragment.TAG;
+			break;
+		case 104:
+			OfflineMapFragment offline = new OfflineMapFragment();
+			getFragmentManager().beginTransaction()
+					.replace(R.id.content_frame, offline, OfflineMapFragment.TAG).commit();
+			this.currFragment = OfflineMapFragment.TAG;
+			originFragment = OfflineMapFragment.TAG;
 			break;
 		}
 		
@@ -361,5 +390,51 @@ public class MainActivity extends AbstractNavDrawerActivity {
 		NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
 		
 		return (activeNetwork != null && activeNetwork.isConnected());
+	}
+
+	@Override
+	public void connectionLost(Throwable cause) {
+		// TODO Auto-generated method stub
+		Toast t = Toast.makeText(this, "LOST", Toast.LENGTH_LONG);
+		t.show();		
+	}
+
+	@Override
+	public void messageArrived(String topic, MqttMessage message)
+			throws Exception {
+		
+		if (topic.equals("test")) {
+//		if (topic == "test") {
+			Toast t = Toast.makeText(this, message.toString(), Toast.LENGTH_LONG);
+			t.show();
+		}
+//		}
+	}
+
+	@Override
+	public void deliveryComplete(IMqttDeliveryToken token) {
+		// TODO Auto-generated method stub
+		Toast t = Toast.makeText(this, "complete", Toast.LENGTH_LONG);
+		t.show();
+	}
+
+	@Override
+	public void onSuccess(IMqttToken asyncActionToken) {
+		// TODO Auto-generated method stub
+		try {
+			c.subscribe("test", 0);
+		} catch (MqttSecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MqttException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+		// TODO Auto-generated method stub
+		Toast.makeText(this, "FAIL", Toast.LENGTH_LONG).show();
 	}	
 }
