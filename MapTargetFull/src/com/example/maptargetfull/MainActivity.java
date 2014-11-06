@@ -3,7 +3,6 @@ package com.example.maptargetfull;
 import java.util.ArrayList;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
-import org.eclipse.paho.android.service.MqttService;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
@@ -73,7 +72,7 @@ public class MainActivity extends AbstractNavDrawerActivity implements MqttCallb
 			originFragment = FirstFragment.TAG;
 		}
 		
-		c = new MqttAndroidClient(this, "tcp://192.168.1.23:1883", Secure.ANDROID_ID);
+		c = new MqttAndroidClient(this, "tcp://192.168.43.231:1883", Secure.ANDROID_ID);
 		
 		
 		try {

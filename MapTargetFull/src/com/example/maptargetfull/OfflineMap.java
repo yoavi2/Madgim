@@ -3,13 +3,11 @@ package com.example.maptargetfull;
 import java.util.ArrayList;
 
 import us.ba3.me.ConvertPointCallback;
-import us.ba3.me.HaloPulse;
 import us.ba3.me.Location;
 import us.ba3.me.markers.DynamicMarker;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.PointF;
 import android.util.Log;
 import android.view.MotionEvent;
