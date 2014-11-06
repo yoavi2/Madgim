@@ -3,6 +3,8 @@ package com.example.maptargetfull;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import us.ba3.me.markers.DynamicMarker;
+import us.ba3.me.markers.DynamicMarkerMapInfo;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
@@ -12,6 +14,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.PointF;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -28,6 +31,8 @@ import android.widget.Toast;
 import com.example.maptargetfull.AddTargetOnLocationDialog.AddTargetOnLocationListener;
 import com.example.maptargetfull.EditTargetDialog.EditTargetListener;
 import com.example.maptargetfull.PointsDBAccess.Point;
+//import com.example.markers.Delegate;
+//import com.example.markers.R;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdate;
@@ -54,6 +59,7 @@ public class GoogleMapFragment extends Fragment implements
 	private Dialog mGpsDialog;
 	private boolean mLocationSet = false;
 	private MapView mMapView;
+	private us.ba3.me.MapView mOfflineMapView;
 	private GoogleMap mMap;
 	public View mViewInfoWindow;
 	private LocationManager mLocationService;
@@ -317,6 +323,58 @@ public class GoogleMapFragment extends Fragment implements
 			addMarkerOnLocation(rowid, name, type, latitude, longitude, true);
 		
 		}
+	}
+	
+	public void addMarkerOnLocationOffline(long rowid, String name, target_type type, double latitude, double longitude, boolean showInfoWindow) {
+		
+		//Add dynamic marker map layer
+		DynamicMarkerMapInfo mapInfo = new DynamicMarkerMapInfo();
+		mapInfo.name = "Markers";
+		mapInfo.zOrder = 2;
+		mOfflineMapView.addMapUsingMapInfo(mapInfo);
+		
+		//Add image
+		Bitmap bmTank = BitmapFactory.decodeResource(getResources(), R.drawable.tank);
+		
+		//Add a marker
+		DynamicMarker marker = new DynamicMarker();
+		marker.name = "marker1";
+//		mapInfo.delegate = new Delegate(mOfflineMapView);
+		marker.setImage(bmTank, false);
+		marker.anchorPoint = new PointF(16,16);
+		marker.location.longitude = -78.6389;
+		marker.location.latitude = 35.7719;
+		mOfflineMapView.addDynamicMarkerToMap("Markers", marker);
+		
+		Marker destMark = this.mMap.addMarker(new MarkerOptions()
+				.position(new LatLng(latitude, longitude)).title(name)
+				.snippet(type.toString()));
+		
+		Point point = this.mDbHandler.new Point();
+		
+		if (type == target_type.FRIEND) {
+			destMark.setIcon(BitmapDescriptorFactory
+					.fromResource(R.drawable.friend));
+			point.pointType = 1;
+		} else {
+			destMark.setIcon(BitmapDescriptorFactory
+					.fromResource(R.drawable.enemy));
+			point.pointType = 2;
+		}
+
+		// Put in marker hashtable before showinfowwindow (for image loading purposes)
+		this.mMarkers.put(rowid, destMark);
+		
+		if (showInfoWindow) {
+			destMark.showInfoWindow();
+		}
+		
+		point.rowID = rowid;
+		point.first_name = name;
+		point.last_name = "";
+		point.langitude = latitude;
+		point.longitude = longitude;
+		mGooglePoints.put(rowid, point);
 	}
 	
 	public void addMarkerOnLocation(long rowid, String name, target_type type, double latitude, double longitude, boolean showInfoWindow) {
