@@ -51,54 +51,9 @@ public class OfflineMapFragment extends Fragment {
 	                    new Location(38.933,-76.9665),
 	                    0, 0);
 	              
-	              //Get the map view and add a street map.
-	            //  MapView mapView = (MapView)this.findViewById(R.id.mapView1);
-	             /* mapView.addInternetMap("MapQuest",
-	      				"http://otile1.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.jpg",
-	      				"", 		//Subdomains
-	      				19,			//Max Level
-	      				2,			//zOrder
-	      				3,			//Number of simultaneous downloads
-	      				true,		//Use cache
-	      				false		//No alpha
-	      				);*/
-	              //Add dynamic marker map layer
-	              DynamicMarkerMapInfo mapInfo = new DynamicMarkerMapInfo();
-	              mapInfo.delegate = new Delegate(mapView);
-	              mapInfo.name = "Markers";
-	              mapInfo.zOrder = 10;
-	              mapView.addMapUsingMapInfo(mapInfo);
-	               Bitmap mbit = null;
-	               
-	               mbit = BitmapFactory.decodeResource(getResources(),
-	       				R.drawable.tank);
-	              //Add a marker
-	              DynamicMarker marker = new DynamicMarker();
-	              marker.name = "marker1";
-	              marker.setImage(mbit, false);
-	              marker.anchorPoint = new PointF(16,16);
-	              marker.location.longitude = -77.1127;
-	              marker.location.latitude = 38.848;
-	              mapView.addDynamicMarkerToMap("mapquest", marker);
 	              return mapView;
 	        }
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+
 		return null;
 	}
 }

@@ -11,6 +11,9 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.MqttSecurityException;
 
+import us.ba3.me.markers.DynamicMarker;
+import us.ba3.me.markers.DynamicMarkerMapInfo;
+
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Dialog;
@@ -22,6 +25,9 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.PointF;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -31,7 +37,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.example.maptargetfull.GoogleMapFragment.target_type;
 import com.example.maptargetfull.PointsDBAccess.Point;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MainActivity extends AbstractNavDrawerActivity implements MqttCallback, IMqttActionListener {
 	// Constants
@@ -50,6 +61,7 @@ public class MainActivity extends AbstractNavDrawerActivity implements MqttCallb
 	public static String originFragment;
 	private boolean didSyncFailed;
 	private MqttAndroidClient c;
+	private OfflineMap mOfflineMapView;
 
 	// Instance fields
 	Account mAccount;
@@ -183,8 +195,8 @@ public class MainActivity extends AbstractNavDrawerActivity implements MqttCallb
 		}
 
 		return newAccount;
-	}
-
+	}	
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 
