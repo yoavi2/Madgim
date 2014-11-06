@@ -3,8 +3,6 @@ package com.example.maptargetfull;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import us.ba3.me.markers.DynamicMarker;
-import us.ba3.me.markers.DynamicMarkerMapInfo;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
@@ -14,7 +12,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.PointF;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;

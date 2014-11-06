@@ -5,7 +5,6 @@ import us.ba3.me.Location;
 import us.ba3.me.markers.DynamicMarkerMapDelegate;
 import android.graphics.Color;
 import android.graphics.PointF;
-import android.util.Log;
 
 public class Delegate implements DynamicMarkerMapDelegate {
 private OfflineMap currMap;
