@@ -1,10 +1,16 @@
 package com.example.maptargetfull;
 
+//import com.technotalkative.contextualactionbarsingle.MainActivity.ActionBarCallBack;
+
+import java.io.ObjectInputStream.GetField;
+
 import us.ba3.me.HaloPulse;
 import us.ba3.me.Location;
 import us.ba3.me.markers.DynamicMarkerMapDelegate;
+import ActionMode.ActionModeCallback;
 import android.graphics.Color;
 import android.graphics.PointF;
+import android.view.MenuItem;
 
 public class Delegate implements DynamicMarkerMapDelegate {
 private OfflineMap currMap;
@@ -14,7 +20,7 @@ private OfflineMap currMap;
 	
 	@Override
 	public void tapOnMarker(String arg0, String arg1, PointF arg2, PointF arg3) {
-
+	    
 		GlobalParams.getInstance().Exist = true;
 		Location currLoc= GlobalParams.getInstance().myList.get(arg1);
 		HaloPulse beacon = new HaloPulse();
@@ -34,6 +40,8 @@ private OfflineMap currMap;
 	    currMap.addHaloPulse(beacon);
 	    
 	    currMap.setLocation(currLoc, 0.3);
+//	    GlobalParams.getInstance().inflater.inflate(R.menu.currmarker, GlobalParams.getMenu());
+	    ((OfflineMapFragment)GlobalParams.getFragment().findFragmentByTag(OfflineMapFragment.TAG)).AddContextualMenu();
 	}
 
 }

@@ -10,7 +10,10 @@ import java.util.Collection;
 import java.util.Hashtable;
 
 import us.ba3.me.Location;
+import ActionMode.ActionModeCallback;
+import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.res.Resources;
@@ -22,12 +25,17 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
+import android.view.ActionMode;
+import android.view.MenuInflater;
 import android.widget.ImageView;
 
 import com.example.maptargetfull.PointsDBAccess.Point;
 
 public class GlobalParams {
 	public enum markerType {Tank, Truck};
+	public static FragmentManager mFragmentManager;
+	public static OfflineMap mCurrMap; 
+	public static android.view.Menu myMenu;
 	private boolean ShowEenemy;
 	private boolean ShowFriend;
 	private DrawSample mydraw;
@@ -38,10 +46,38 @@ public class GlobalParams {
 	public String syncSucceeded = "SUCCEEDED";
 	public SecondFragment listFriends;
 	private Fragment frag;
+	public MenuInflater inflater;
+	public ActionMode mActionMode;
+	public ActionMode.Callback mActionModeCallback;
+	public Activity currActivity;
 	private ArrayList<Point> mPoints = new ArrayList<Point>();
 	public boolean Exist;
 	public Hashtable<String, Location> myList = new Hashtable<String, Location>();
 
+	public static void setMenu(android.view.Menu menu) {
+		myMenu = menu;
+	}
+	
+	public static android.view.Menu getMenu() {
+		return myMenu;
+	}
+	
+	public static void setCurrMap(OfflineMap mMap) {
+		mCurrMap = mMap;
+	}
+	
+	public static OfflineMap getCurrMap() {
+		return mCurrMap;
+	}
+	
+	public static void setFragment(FragmentManager frg) {
+		mFragmentManager = frg;
+	}
+	
+	public static FragmentManager getFragment() {
+		return mFragmentManager;
+	}
+	
 	public void setProgress(Fragment p) {
 		this.frag = p;
 	}

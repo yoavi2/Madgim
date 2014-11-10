@@ -1,5 +1,9 @@
 package com.example.maptargetfull;
 
+import com.example.maptargetfull.GoogleMapFragment.target_type;
+import com.example.maptargetfull.PointsDBAccess.Point;
+
+import android.app.ActionBar.LayoutParams;
 import android.app.DialogFragment;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -42,7 +46,7 @@ public class AddTargetOnLocationDialog extends DialogFragment {
 		frag.setArguments(args);
 		return frag;
 	}
-
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -87,11 +91,36 @@ public class AddTargetOnLocationDialog extends DialogFragment {
 								tt_type = GoogleMapFragment.target_type.ENEMY;
 							}
 
-							AddTargetOnLocationListener fragment = (AddTargetOnLocationListener) getActivity()
-									.getFragmentManager().findFragmentByTag(
-											mCallerTag);
-							fragment.createPointOnLocation(mETName.getText()
-									.toString(), tt_type, mLatitude, mLongitude);
+//							AddTargetOnLocationListener fragment = (AddTargetOnLocationListener) getActivity()
+//									.getFragmentManager().findFragmentByTag(
+//											mCallerTag);
+//							fragment.createPointOnLocation(mETName.getText()
+//									.toString(), tt_type, mLatitude, mLongitude);
+							
+							GlobalParams.markerType mMarkerType = tt_type == target_type.FRIEND ? GlobalParams.markerType.Tank : GlobalParams.markerType.Truck;
+							String strName = mETName.getText().toString();
+							
+							long rowid = GlobalParams.getInstance().PointsDBaccess.createPoint(strName, 
+																							   "", 
+																							   mLongitude, 
+																							   mLatitude, 
+																							   false, 
+																							   tt_type == target_type.FRIEND ? 1 : 2);
+							if (rowid != -1)
+					    	{
+					    		Point p = GlobalParams.getInstance().PointsDBaccess.new Point();
+					    		p.first_name = strName;
+					    		p.longitude = mLongitude;
+					    		p.langitude = mLatitude;
+					    		p.pointType = tt_type == target_type.FRIEND ? 1 : 2;
+					    		p.rowID = rowid;
+					    		GlobalParams.getInstance().addPoint(p);
+								
+								GlobalParams.getCurrMap().addMarkerOnLocationOffline(strName, 
+									     mMarkerType, 
+										 mLatitude, 
+										 mLongitude);
+					    	}
 
 							dismiss();
 						}

@@ -6,16 +6,19 @@ import us.ba3.me.ConvertPointCallback;
 import us.ba3.me.Location;
 import us.ba3.me.markers.DynamicMarker;
 import us.ba3.me.markers.DynamicMarkerMapInfo;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PointF;
 import android.view.MotionEvent;
+import android.view.Window;
 
 import com.example.maptargetfull.GlobalParams.markerType;
 
 public class OfflineMap extends us.ba3.me.MapView {
 
+	public static String TAG = "offline_map";
 	private OfflineMap currMap;
 	private ArrayList<Location> markersLoc = new ArrayList<Location>();
 	private Location loc = new Location();
@@ -59,6 +62,8 @@ public class OfflineMap extends us.ba3.me.MapView {
 			currMap.addDynamicMarkerToMap("Trucks", marker);
 		}
 
+		// Add the marker to the markers list
+		GlobalParams.getInstance().AddMarker(strName, marker.location);
 	}
 
 	public void set(OfflineMap mapView) {
@@ -84,22 +89,33 @@ public class OfflineMap extends us.ba3.me.MapView {
 							catch (InterruptedException e) {
 						}
 
-						Bitmap mbit = null;
-
-						if (!GlobalParams.getInstance().Exist) {
-							currMap.removeHaloPulse("beacon");
-
-							// Add the marker to the markers list
-							GlobalParams.getInstance().AddMarker(
-									"Marker" + loc1.latitude, loc1);
-
-							// Add the marker to the map
-							currMap.addMarkerOnLocationOffline("Marker"
-									+ loc1.latitude, markerType.Truck,
-									loc1.latitude, loc1.longitude);
-						}
-
-						GlobalParams.getInstance().Exist = false;
+//						Bitmap mbit = null;
+//
+//						if (!GlobalParams.getInstance().Exist) {
+//							currMap.removeHaloPulse("beacon");
+//
+//							// Add the marker to the markers list
+//							GlobalParams.getInstance().AddMarker(
+//									"Marker" + loc1.latitude, loc1);
+//
+//							// Add the marker to the map
+//							currMap.addMarkerOnLocationOffline("Marker"
+//									+ loc1.latitude, markerType.Truck,
+//									loc1.latitude, loc1.longitude);
+//						}
+//
+//						GlobalParams.getInstance().Exist = false;
+						
+						
+						FragmentManager fm = GlobalParams.getFragment();
+						AddTargetOnLocationDialog addTargetDialog = AddTargetOnLocationDialog
+								.newInstance("Add Target", loc1.latitude, loc1.longitude, TAG);
+						addTargetDialog.setStyle(R.style.cust_dialog,addTargetDialog.getTheme());
+//						Window window = addTargetDialog.getActivity().getWindow();
+//						window.setLayout(200, 50);
+						addTargetDialog.show(fm, AddTargetOnLocationDialog.TAG);
+//						
+//						addTargetDialog.getDialog().getWindow().setLayout(20, 20);
 
 					}
 				});
