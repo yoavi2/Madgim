@@ -45,13 +45,13 @@ public class PointsDBAccess {
 		return db.update(Points.table_name, values, Points.Columns.row_id + " = ?", new String[]{ String.valueOf(rowID) }) == 1;
 	}
 	
-	public long getRowIdbyServerId(long serverID)
+	public long getRowIdbyServerId(String serverID)
 	{
 		SQLiteDatabase db = this.mDBHandler.getReadableDatabase();
 		Cursor cursor = db.rawQuery("SELECT " +
 			    Points.Columns.row_id + " " +
 			    "FROM " + Points.table_name + " " +
-			    "WHERE " + Points.Columns.server_id + " = ? ", new String[]{ String.valueOf(serverID) });
+			    "WHERE " + Points.Columns.server_id + " = ? ", new String[]{ serverID });
 		while (cursor.moveToNext()) {
 			return cursor.getLong(cursor.getColumnIndex(Points.Columns.row_id));
 		}
