@@ -328,6 +328,7 @@ public class MainActivity extends AbstractNavDrawerActivity implements
 			refresh_view();
 		} else {
 			ContentResolver.requestSync(mAccount, AUTHORITY, settingsBundle);
+			GlobalParams.refreshMarkers();
 		}
 	}
 
@@ -399,7 +400,7 @@ public class MainActivity extends AbstractNavDrawerActivity implements
 			this.onNavItemSelected(103);
 			pdialog.hide();
 		} else if (currFragment.equals(OfflineMapFragment.TAG)) {
-			this.onNavItemSelected(104);
+			GlobalParams.refreshMarkers();
 			pdialog.hide();
 		}
 	}
