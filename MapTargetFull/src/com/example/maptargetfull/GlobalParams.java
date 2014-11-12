@@ -7,12 +7,12 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Currency;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.zip.Inflater;
 
+import us.ba3.me.ImageDataType;
 import us.ba3.me.Location;
+import us.ba3.me.MapLoadingStrategy;
 import us.ba3.me.markers.DynamicMarker;
 import android.app.Activity;
 import android.app.Fragment;
@@ -67,6 +67,7 @@ public class GlobalParams {
 	public static PointsDBAccess mDbHandler;
 	public static HashMap<Long, Point> mOfflineMapPoints;
 	public static HashMap<Long, DynamicMarker> mMarkers;
+	public static String targetFileName;
 	
 	public static void addMarkersFromDB() {
 		mMarkers = new HashMap<Long, DynamicMarker>();
@@ -105,9 +106,9 @@ public class GlobalParams {
 		mCurrMap.inflate(inflaterContext, R.layout.fragment_offlinemap, viewGroup);
 		
 		mCurrMap.set(mCurrMap);
-//		mCurrMap.addMBTilesMap("offline", targetFileName, "grayGrid",
-//				ImageDataType.kImageDataTypePNG, false, 2,
-//				MapLoadingStrategy.kLowestDetailFirst);
+		mCurrMap.addMBTilesMap("offline", targetFileName, "grayGrid",
+				ImageDataType.kImageDataTypePNG, false, 2,
+				MapLoadingStrategy.kLowestDetailFirst);
 	}
 	
 	public static void setMenu(android.view.Menu menu) {

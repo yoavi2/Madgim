@@ -186,6 +186,7 @@ public class OfflineMapFragment extends Fragment {
 					ImageDataType.kImageDataTypePNG, false, 2,
 					MapLoadingStrategy.kLowestDetailFirst);
 
+			GlobalParams.getInstance().targetFileName = targetFileName;
 			GlobalParams.setCurrMap(mapView);
 			
 			// Zoom into washington D.C.
