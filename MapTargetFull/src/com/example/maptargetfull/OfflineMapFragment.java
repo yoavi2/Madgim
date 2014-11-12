@@ -189,7 +189,7 @@ public class OfflineMapFragment extends Fragment implements EditTargetListener {
 
 			// this.addMarkersFromDB();
 			GlobalParams.addMarkersFromDB();
-
+			
 			this.getActivity().registerForContextMenu(mapView);
 
 			return mapView;
