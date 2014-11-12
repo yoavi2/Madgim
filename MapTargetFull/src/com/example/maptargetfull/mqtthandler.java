@@ -6,9 +6,8 @@ import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
-import android.app.NotificationManager;
 import android.content.Context;
-import android.support.v4.app.NotificationCompat;
+import android.widget.Toast;
 
 
 
@@ -41,12 +40,17 @@ public class mqtthandler implements MqttCallback
 			throws Exception {
 		// TODO Auto-generated method stub
 	//	Toast.makeText(this.context, "Message Arrived!", Toast.LENGTH_SHORT).show();
-		NotificationManager m = (NotificationManager) this.context.getSystemService(context.NOTIFICATION_SERVICE);
-		NotificationCompat.Builder b = new NotificationCompat.Builder(context)
-		.setSmallIcon(R.drawable.google_map_icon)
-		.setContentTitle("Mqtt")
-		.setContentText("Message has arrived!");
-		m.notify(123, b.build());
+//		NotificationManager m = (NotificationManager) this.context.getSystemService(context.NOTIFICATION_SERVICE);
+//		NotificationCompat.Builder b = new NotificationCompat.Builder(context)
+//		.setSmallIcon(R.drawable.google_map_icon)
+//		.setContentTitle("Mqtt")
+//		.setContentText("Message has arrived!");
+//		m.notify(123, b.build());
+		
+		if (topic.equals("insert"))
+		{
+			Toast.makeText(this.context, message.toString(), Toast.LENGTH_SHORT).show();
+		}
 	}
 
 	@Override

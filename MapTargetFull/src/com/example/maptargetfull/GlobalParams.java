@@ -74,10 +74,10 @@ public class GlobalParams {
 		mMarkers = new HashMap<Long, DynamicMarker>();
 		mDbHandler = new PointsDBAccess(GlobalParams.getInstance().currActivity);
 		mOfflineMapPoints = new HashMap<Long, PointsDBAccess.Point>();
-		ArrayList<Point> points = mDbHandler.getPoints(false);
+		GlobalParams.getInstance().mPoints = mDbHandler.getPoints(false);
 
-		if (points.size() != 0) {
-			for (Point point : points) {
+		if (GlobalParams.getInstance().mPoints.size() != 0) {
+			for (Point point : GlobalParams.getInstance().mPoints) {
 				mCurrMap.addMarkerOnLocationOffline(point.first_name,
 						point.pointType == 1 ? markerType.Tank
 								: markerType.Truck, point.langitude,

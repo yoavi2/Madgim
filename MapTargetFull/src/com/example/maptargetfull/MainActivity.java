@@ -84,7 +84,7 @@ public class MainActivity extends AbstractNavDrawerActivity implements
 			originFragment = OfflineMapFragment.TAG;
 		}
 
-		c = new MqttAndroidClient(this, "tcp://192.168.43.231:1883", Secure.ANDROID_ID);
+		c = new MqttAndroidClient(this, "tcp://192.168.43.37:1883", Secure.ANDROID_ID);
 
 		try {
 			c.setCallback(new mqtthandler(this, c));
@@ -498,6 +498,7 @@ public class MainActivity extends AbstractNavDrawerActivity implements
 	public void onSuccess(IMqttToken asyncActionToken) {
 		try {
 			c.subscribe("test", 0);
+			c.subscribe("insert", 0);
 		} catch (MqttSecurityException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
