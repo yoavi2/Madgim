@@ -59,15 +59,33 @@ public class OfflineMap extends us.ba3.me.MapView {
 		marker.location.longitude = longitude;
 		marker.location.latitude = latitude;
 		
+		long rowId = GlobalParams.getInstance().getRowidByName(strName);
+		boolean isSynched = GlobalParams.getInstance().PointsDBaccess.getSynched(rowId);
 		
 		if (mrkType == markerType.Tank) {
-			bmImage = BitmapFactory.decodeResource(getResources(),
-					R.drawable.tank_no_conn);
+
+			if (isSynched) {
+				bmImage = BitmapFactory.decodeResource(getResources(),
+													   R.drawable.tank);
+			}
+			else {
+				bmImage = BitmapFactory.decodeResource(getResources(),
+						   							   R.drawable.tank_no_conn);
+			}
+			
 			marker.setImage(bmImage, false);
 			currMap.addDynamicMarkerToMap("Tanks", marker);
 		} else {
-			bmImage = BitmapFactory.decodeResource(getResources(),
-					R.drawable.truck_no_conn);
+			
+			if (isSynched) {
+				bmImage = BitmapFactory.decodeResource(getResources(),
+													   R.drawable.truck);
+			}
+			else {
+				bmImage = BitmapFactory.decodeResource(getResources(),
+						   							   R.drawable.truck_no_conn);
+			}
+
 			marker.setImage(bmImage, false);
 			currMap.addDynamicMarkerToMap("Trucks", marker);
 		}
