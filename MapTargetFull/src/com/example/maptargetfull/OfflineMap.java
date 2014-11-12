@@ -62,12 +62,12 @@ public class OfflineMap extends us.ba3.me.MapView {
 		
 		if (mrkType == markerType.Tank) {
 			bmImage = BitmapFactory.decodeResource(getResources(),
-					R.drawable.tank);
+					R.drawable.tank_no_conn);
 			marker.setImage(bmImage, false);
 			currMap.addDynamicMarkerToMap("Tanks", marker);
 		} else {
 			bmImage = BitmapFactory.decodeResource(getResources(),
-					R.drawable.truck);
+					R.drawable.truck_no_conn);
 			marker.setImage(bmImage, false);
 			currMap.addDynamicMarkerToMap("Trucks", marker);
 		}
