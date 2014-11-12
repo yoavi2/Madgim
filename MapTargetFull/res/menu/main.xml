@@ -25,7 +25,17 @@
         android:id="@+id/action_connect"
         android:orderInCategory="1"
         android:visible="false"
-        android:icon="@drawable/ic_warning"
+        android:icon="@drawable/alert_icon"
         android:showAsAction="always"/>
 
+   <item
+        android:id="@+id/action_online_map_toggle"
+        android:layout_width="170dp"
+        android:layout_height="100dp"
+        android:layout_gravity="right"
+        android:orderInCategory="1"
+        android:visible="false"
+        android:icon="@drawable/cloud_off"
+        android:showAsAction="always"/>
+   
 </menu>

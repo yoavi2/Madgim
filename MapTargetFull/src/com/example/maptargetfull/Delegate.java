@@ -40,8 +40,14 @@ private OfflineMap currMap;
 	    currMap.addHaloPulse(beacon);
 	    
 	    currMap.setLocation(currLoc, 0.3);
-//	    GlobalParams.getInstance().inflater.inflate(R.menu.currmarker, GlobalParams.getMenu());
-	    ((OfflineMapFragment)GlobalParams.getFragment().findFragmentByTag(OfflineMapFragment.TAG)).AddContextualMenu();
+	    GlobalParams.getInstance().currMarkerName = arg1;
+	    
+	    if (arg0 == "Tanks") {
+	    	GlobalParams.getInstance().currMarkerType = GlobalParams.markerType.Tank;
+	    }
+	    else {
+	    	GlobalParams.getInstance().currMarkerType = GlobalParams.markerType.Truck;
+	    }
 	}
 
 }

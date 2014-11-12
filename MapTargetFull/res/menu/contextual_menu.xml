@@ -5,8 +5,24 @@
         android:id="@+id/item_delete"
         android:icon="@android:drawable/ic_menu_delete"
         android:showAsAction="ifRoom|withText"
-        android:title="Delete"
-        android:titleCondensed="Delete">
+        android:title="מחיקה"
+        android:titleCondensed="מחיקה">
+    </item>
+    
+    <item
+        android:id="@+id/item_list"
+        android:icon="@android:drawable/ic_menu_help"
+        android:showAsAction="ifRoom|withText"
+        android:title="מטלות"
+        android:titleCondensed="מטלות">
+    </item>
+    
+    <item
+        android:id="@+id/item_info"
+        android:icon="@android:drawable/ic_menu_info_details"
+        android:showAsAction="always|withText"
+        android:title="מידע "
+        android:titleCondensed="מידע ">
     </item>
 
 </menu>

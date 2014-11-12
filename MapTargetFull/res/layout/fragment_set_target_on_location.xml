@@ -81,7 +81,7 @@
         android:layout_toLeftOf="@+id/et_name"
         android:text="@string/text_name" />
 
-    <LinearLayout
+   <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/rg_target_type"
@@ -91,30 +91,30 @@
 
         <Button
             android:id="@+id/btn_accept"
-            android:layout_width="120dp"
-            android:layout_height="40dp"
+			android:textColor="#FFFFFF"
+			android:textSize="22sp"
+			android:layout_width="120dp"
+			android:layout_height="40dp"
             android:background="@drawable/buttonshape"
             android:shadowColor="#66c7eb"
             android:shadowDx="0"
             android:shadowDy="0"
             android:shadowRadius="0"
-            android:text="@string/text_accept"
-            android:textColor="#66c7eb"
-            android:textSize="20sp" />
-
+            android:text="@string/text_accept" />
+ 
         <Button
             android:id="@+id/btn_cancel"
-            android:layout_width="120dp"
-            android:layout_height="40dp"
+			android:textColor="#FFFFFF"
+			android:textSize="22sp"
+			android:layout_width="120dp"
+			android:layout_height="40dp"
             android:layout_marginLeft="26dp"
             android:background="@drawable/buttonshape"
             android:shadowColor="#66c7eb"
             android:shadowDx="0"
             android:shadowDy="0"
             android:shadowRadius="0"
-            android:text="@string/text_cancel"
-            android:textColor="#66c7eb"
-            android:textSize="20sp" />
+            android:text="@string/text_cancel" />
     </LinearLayout>
 
 </RelativeLayout>

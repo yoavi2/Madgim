@@ -2,6 +2,8 @@ package com.example.maptargetfull;
 
 import java.util.ArrayList;
 
+import us.ba3.me.markers.DynamicMarker;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -65,6 +67,14 @@ public class PointsDBAccess {
 		values.put(Points.Columns.is_synched, SQLiteDB.convertBoolean(false));
 		values.put(Points.Columns.is_deleted, SQLiteDB.convertBoolean(true));
 		return db.update(Points.table_name, values, Points.Columns.row_id + " = ?", new String[]{ String.valueOf(rowID) }) == 1;
+	}
+	
+	public Boolean deletePointOffline(String name){
+		SQLiteDatabase db = this.mDBHandler.getWritableDatabase();
+		ContentValues values = new ContentValues();
+		values.put(Points.Columns.is_synched, SQLiteDB.convertBoolean(false));
+		values.put(Points.Columns.is_deleted, SQLiteDB.convertBoolean(true));
+		return db.update(Points.table_name, values, Points.Columns.first_name + " = ?", new String[]{ String.valueOf(name) }) == 1;
 	}
 	
 	public ArrayList<Point> getPoints(Boolean is_google){

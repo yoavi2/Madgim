@@ -15,6 +15,7 @@ import android.view.ActionMode;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,8 +23,12 @@ import android.view.ViewGroup;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.Toast;
 
+import com.example.maptargetfull.EditTargetDialog.EditTargetListener;
 import com.example.maptargetfull.GlobalParams.markerType;
 import com.example.maptargetfull.PointsDBAccess.Point;
+//import com.technotalkative.contextualactionbarsingle.R;
+//import com.technotalkative.contextualactionbarsingle.MainActivity;
+//import com.technotalkative.contextualactionbarsingle.MainActivity.ActionBarCallBack;
 
 public class OfflineMapFragment extends Fragment {
 
@@ -31,48 +36,62 @@ public class OfflineMapFragment extends Fragment {
 	private PointsDBAccess mDbHandler;
 	public static HashMap<Long, Point> mOfflineMapPoints;
 	private HashMap<Long, DynamicMarker> mMarkers;
-
-	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v,
-	                                ContextMenuInfo menuInfo) {
-	    super.onCreateContextMenu(menu, v, menuInfo);
-	    MenuInflater inflater = this.getActivity().getMenuInflater();
-	    inflater.inflate(R.menu.main, menu);
-	    
-	    GlobalParams.setMenu(menu);
-	    GlobalParams.getInstance().inflater = inflater;
-	}
+	private ActionMode mActionMode;
 	
-	@Override
-	public boolean onContextItemSelected(MenuItem item) {
-	    AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-	    switch (item.getItemId()) {
-	        case R.id.action_connect:
-//	            editNote(info.id);
-	            return true;
-//	        case R.id.sagi:
-////	            deleteNote(info.id);
+	
+//	@Override
+//	public void onCreateContextMenu(ContextMenu menu, View v,
+//	                                ContextMenuInfo menuInfo) {
+//	    super.onCreateContextMenu(menu, v, menuInfo);
+//	    MenuInflater inflater = this.getActivity().getMenuInflater();
+//	    inflater.inflate(R.menu.main, menu);
+//	    
+//	    GlobalParams.setMenu(menu);
+//	    GlobalParams.getInstance().inflater = inflater;
+//	}
+	
+//	@Override
+//	public boolean onContextItemSelected(MenuItem item) {
+//	    AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+//	    switch (item.getItemId()) {
+//	        case R.id.item_delete:
+//	        	deletePoint(GlobalParams.getInstance().currMarkerName);
+//				
 //	            return true;
-	        default:
-	            return super.onContextItemSelected(item);
-	    }
-	}
-	
+//	        case R.id.item_info:
+//
+//				
+//	            return true;
+//	        default:
+//	            return super.onContextItemSelected(item);
+//	    }
+//	}
+		
 	public void AddContextualMenu() {
 
         // Start the CAB using the ActionMode.Callback defined above
-    	GlobalParams.getInstance().mActionModeCallback = new ActionModeCallback();
-    	GlobalParams.getInstance().mActionMode = getActivity().startActionMode(GlobalParams.getInstance().mActionModeCallback);
+		if (mActionMode == null) {
+	    	GlobalParams.getInstance().mActionModeCallback = new ActionModeCallback();
+		}
+		
+		mActionMode = getActivity().startActionMode(GlobalParams.getInstance().mActionModeCallback);
 	}
 	
-	public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-	    // Inflate the menu for the CAB
-		Toast t = new Toast(getActivity());
-		t.setText("test");
-		t.show();
-	    return true;
+	public void RemoveContextualMenu() {
+		
+		if (mActionMode != null) {
+			mActionMode.finish();
+		}
 	}
 	
+//	public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+//	    // Inflate the menu for the CAB
+//		Toast t = new Toast(getActivity());
+//		t.setText("test");
+//		t.show();
+//	    return true;
+//	}
+//	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -81,14 +100,52 @@ public class OfflineMapFragment extends Fragment {
 		
 	}
 	
+//    class ActionBarCallBackTest implements ActionMode.Callback {
+//    	 
+//        @Override
+//        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+//    	    switch (item.getItemId()) {
+//		        case R.id.item_delete:
+//		        	deletePoint(GlobalParams.getInstance().currMarkerName);
+//					
+//		            return true;
+//		        case R.id.item_info:
+//	
+//		            return true;
+//		        default:
+//		            return false;
+//		    }
+//        }
+// 
+//        @Override
+//        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+//            // TODO Auto-generated method stub
+//            mode.getMenuInflater().inflate(R.menu.contextual_menu, menu);
+//            return true;
+//        }
+// 
+//        @Override
+//        public void onDestroyActionMode(ActionMode mode) {
+//            // TODO Auto-generated method stub
+// 
+//        }
+// 
+//        @Override
+//        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+//            // TODO Auto-generated method stub
+// 
+//            mode.setTitle("שגיא הוא אלוף!");
+//            return false;
+//        }
+// 
+//    }
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
 		if (savedInstanceState == null) {
 
-			GlobalParams.getInstance().currActivity = this.getActivity();
-			
 			GlobalParams.setFragment(getFragmentManager());
 			
 			// Extract the mbtiles map asset if needed
@@ -105,6 +162,9 @@ public class OfflineMapFragment extends Fragment {
 			// Add the mb tiles map.
 			// mymap mapView = (mymap)this.findViewById(R.id.mapView1);
 			OfflineMap mapView = new OfflineMap(getActivity());
+			
+			mapView.inflate(inflater.getContext(), R.layout.fragment_offlinemap, container);
+			
 			mapView.set(mapView);
 			mapView.addMBTilesMap("mapquest", targetFileName, "grayGrid",
 					ImageDataType.kImageDataTypePNG, false, 2,
@@ -116,6 +176,7 @@ public class OfflineMapFragment extends Fragment {
 			mapView.setLocationThatFitsCoordinates(new Location(38.848,
 					-77.1127), new Location(38.933, -76.9665), 0, 0);
 
+			
 			this.mMarkers = new HashMap<Long, DynamicMarker>();
 			this.mDbHandler = new PointsDBAccess(getActivity());
 			mOfflineMapPoints = new HashMap<Long, PointsDBAccess.Point>();
@@ -131,7 +192,7 @@ public class OfflineMapFragment extends Fragment {
 			}
 	
 		    this.getActivity().registerForContextMenu(mapView);
-			
+		    
 			return mapView;
 		}
 

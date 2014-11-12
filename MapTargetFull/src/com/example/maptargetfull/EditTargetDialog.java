@@ -1,5 +1,7 @@
 package com.example.maptargetfull;
 
+import java.sql.RowId;
+
 import com.example.maptargetfull.PointsDBAccess.Point;
 import android.app.Activity;
 import android.app.DialogFragment;
@@ -38,6 +40,7 @@ public class EditTargetDialog extends DialogFragment implements OnClickListener 
 
 	public interface EditTargetListener {
 		void deletePoint(long rowid);
+//		void deletePointOffline(String name);
 		void savePoint(Point point);
 		void imageUpdated(long rowid);
 	}
@@ -52,6 +55,43 @@ public class EditTargetDialog extends DialogFragment implements OnClickListener 
 		frag.setArguments(args);
 		return frag;
 	}
+	
+//	@Override
+//	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+//			Bundle savedInstanceState) {
+//		View view = inflater.inflate(R.layout.customdialog, container);
+//
+//		image = (ImageView) view.findViewById(R.id.image);
+//		btnSave = (Button) view.findViewById(R.id.saveButton);
+//		btnEdit = (Button) view.findViewById(R.id.EditButton);
+//		btnDel = (Button) view.findViewById(R.id.DeleteButton);
+//		etFirstName = (EditText) view.findViewById(R.id.FirstName);
+//		etLastName = (EditText) view.findViewById(R.id.LastName);
+//
+//		etFirstName.setEnabled(false);
+//		etLastName.setEnabled(false);
+//
+//		// Set the listener for the objects we want to handle the click event
+//		btnSave.setOnClickListener(this);
+//		btnDel.setOnClickListener(this);
+//		btnEdit.setOnClickListener(this);
+//		image.setOnClickListener(this);
+//
+//		this.mCallerTag = getArguments().getString("callertag");
+//		
+//		String name = getArguments().getString("name", "name");
+//		this.mPoint = GlobalParams.getInstance().getPointByName(name);
+//				
+//		GlobalParams.loadBitmap(mPoint.rowID, image, getActivity());
+//		
+//		etFirstName.setText(mPoint.first_name);
+//		etLastName.setText(mPoint.last_name);
+//		btnSave.setVisibility(View.GONE);
+//
+//		String title = getArguments().getString("title", "Add Target");
+//		getDialog().setTitle(title);
+//		return view;
+//	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -83,11 +123,13 @@ public class EditTargetDialog extends DialogFragment implements OnClickListener 
 		}
 		else
 		{
-			this.mPoint = GlobalParams.getInstance().getPointByRowid(getArguments()
-					.getLong("rowid"));
+			long rowId = GlobalParams.getInstance().getRowidByName(GlobalParams.getInstance().currMarkerName);
+			this.mPoint = GlobalParams.getInstance().getPointByRowid(rowId);
+//			this.mPoint = GlobalParams.getInstance().getPointByRowid(getArguments()
+//					.getLong("rowid"));
 		}
 
-		GlobalParams.loadBitmap(mPoint.rowID, image, getActivity());
+//		GlobalParams.loadBitmap(mPoint.rowID, image, getActivity());
 		
 		etFirstName.setText(mPoint.first_name);
 		etLastName.setText(mPoint.last_name);
@@ -143,7 +185,7 @@ public class EditTargetDialog extends DialogFragment implements OnClickListener 
 		case R.id.saveButton:
 			this.btnSave.setVisibility(View.GONE);
 			this.btnEdit.setVisibility(View.VISIBLE);
-			EditTargetListener frag = (EditTargetListener) getActivity()
+			EditTargetListener frag = (EditTargetListener) GlobalParams.getInstance().currActivity
 					.getFragmentManager().findFragmentByTag(mCallerTag);
 			this.mPoint.first_name = this.etFirstName.getText().toString();
 			this.mPoint.last_name = this.etLastName.getText().toString();

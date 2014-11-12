@@ -35,7 +35,8 @@ import android.widget.Toast;
 
 import com.example.maptargetfull.PointsDBAccess.Point;
 
-public class MainActivity extends AbstractNavDrawerActivity implements MqttCallback, IMqttActionListener {
+public class MainActivity extends AbstractNavDrawerActivity implements
+		MqttCallback, IMqttActionListener {
 	// Constants
 	// The authority for the sync adapter's content provider
 	public static final String AUTHORITY = "com.example.maptargetfull.provider";
@@ -56,28 +57,38 @@ public class MainActivity extends AbstractNavDrawerActivity implements MqttCallb
 
 	// Instance fields
 	Account mAccount;
-	
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
+		GlobalParams.getInstance().currActivity = this;
+
 		// Create the dummy account
 		mAccount = CreateSyncAccount(this);
 
 		GlobalParams.getInstance().PointsDBaccess = new PointsDBAccess(this);
-		
+
 		if (savedInstanceState == null) {
-			FirstFragment first = new FirstFragment();
+//			FirstFragment first = new FirstFragment();
+//			getFragmentManager().beginTransaction()
+//					.replace(R.id.content_frame, first, FirstFragment.TAG)
+//					.commit();
+//			GlobalParams.getInstance().setProgress(first);
+//			this.currFragment = FirstFragment.TAG;
+//			originFragment = FirstFragment.TAG;
+			OfflineMapFragment offline = new OfflineMapFragment();
 			getFragmentManager().beginTransaction()
-					.replace(R.id.content_frame, first, FirstFragment.TAG).commit();
-			GlobalParams.getInstance().setProgress(first);
-			this.currFragment = FirstFragment.TAG; 
-			originFragment = FirstFragment.TAG;
+					.replace(R.id.content_frame, offline, OfflineMapFragment.TAG)
+					.commit();
+			GlobalParams.getInstance().setProgress(offline);
+			this.currFragment = OfflineMapFragment.TAG;
+			originFragment = OfflineMapFragment.TAG;
 		}
-		
-		c = new MqttAndroidClient(this, "tcp://192.168.43.231:1883", Secure.ANDROID_ID);
-		
-		
+
+		c = new MqttAndroidClient(this, "tcp://192.168.43.231:1883",
+				Secure.ANDROID_ID);
+
 		try {
 			c.setCallback(this);
 			c.connect(this, this);
@@ -102,9 +113,8 @@ public class MainActivity extends AbstractNavDrawerActivity implements MqttCallb
 						R.drawable.image_map_icon, true, false),
 				NavMenuItem.createMenuItem(103, R.string.text_mapa,
 						R.drawable.mapa_icon, true, false),
-						NavMenuItem.createMenuItem(104, R.string.text_ua3,
-								R.drawable.google_map_icon, true, false),
-						};
+				NavMenuItem.createMenuItem(104, R.string.text_ua3,
+						R.drawable.google_map_icon, true, false), };
 
 		NavDrawerActivityConfiguration navDrawerActivityConfiguration = new NavDrawerActivityConfiguration();
 		navDrawerActivityConfiguration.setMainLayout(R.layout.activity_main);
@@ -112,7 +122,7 @@ public class MainActivity extends AbstractNavDrawerActivity implements MqttCallb
 		navDrawerActivityConfiguration.setLeftDrawerId(R.id.left_drawer);
 		navDrawerActivityConfiguration.setNavItems(menu);
 		navDrawerActivityConfiguration
-				.setDrawerShadow(R.drawable.drawer_shadow);
+				.setDrawerShadow(R.drawable.x);
 		navDrawerActivityConfiguration.setDrawerOpenDesc(R.string.drawer_open);
 		navDrawerActivityConfiguration
 				.setDrawerCloseDesc(R.string.drawer_close);
@@ -124,8 +134,9 @@ public class MainActivity extends AbstractNavDrawerActivity implements MqttCallb
 
 	@Override
 	protected void onNavItemSelected(int id) {
-		getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-		
+		getFragmentManager().popBackStack(null,
+				FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
 		switch (id) {
 		case 101:
 			getFragmentManager()
@@ -138,7 +149,8 @@ public class MainActivity extends AbstractNavDrawerActivity implements MqttCallb
 		case 102:
 			FirstFragment first = new FirstFragment();
 			getFragmentManager().beginTransaction()
-					.replace(R.id.content_frame, first, FirstFragment.TAG).commit();
+					.replace(R.id.content_frame, first, FirstFragment.TAG)
+					.commit();
 			this.currFragment = FirstFragment.TAG;
 			originFragment = FirstFragment.TAG;
 			GlobalParams.getInstance().setProgress(first);
@@ -146,19 +158,22 @@ public class MainActivity extends AbstractNavDrawerActivity implements MqttCallb
 		case 103:
 			WebViewFragment web = new WebViewFragment();
 			getFragmentManager().beginTransaction()
-					.replace(R.id.content_frame, web, WebViewFragment.TAG).commit();
+					.replace(R.id.content_frame, web, WebViewFragment.TAG)
+					.commit();
 			this.currFragment = WebViewFragment.TAG;
 			originFragment = WebViewFragment.TAG;
 			break;
 		case 104:
 			OfflineMapFragment offline = new OfflineMapFragment();
-			getFragmentManager().beginTransaction()
-					.replace(R.id.content_frame, offline, OfflineMapFragment.TAG).commit();
+			getFragmentManager()
+					.beginTransaction()
+					.replace(R.id.content_frame, offline,
+							OfflineMapFragment.TAG).commit();
 			this.currFragment = OfflineMapFragment.TAG;
 			originFragment = OfflineMapFragment.TAG;
 			break;
 		}
-		
+
 		this.invalidateOptionsMenu();
 	}
 
@@ -186,46 +201,48 @@ public class MainActivity extends AbstractNavDrawerActivity implements MqttCallb
 		}
 
 		return newAccount;
-	}	
-	
-//	private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
-//
-//	    // Called when the action mode is created; startActionMode() was called
-//	    @Override
-//	    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-//	        // Inflate a menu resource providing context menu items
-//	        MenuInflater inflater = mode.getMenuInflater();
-//	        inflater.inflate(R.menu.currmarker, menu);
-//	        return true;
-//	    }
-//
-//	    // Called each time the action mode is shown. Always called after onCreateActionMode, but
-//	    // may be called multiple times if the mode is invalidated.
-//	    @Override
-//	    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-//	        return false; // Return false if nothing is done
-//	    }
-//
-//	    // Called when the user selects a contextual menu item
-//	    @Override
-//	    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-//	        switch (item.getItemId()) {
-//	            case R.id.tv_name:
-////	                shareCurrentItem();
-//	                mode.finish(); // Action picked, so close the CAB
-//	                return true;
-//	            default:
-//	                return false;
-//	        }
-//	    }
-//
-//	    // Called when the user exits the action mode
-//	    @Override
-//	    public void onDestroyActionMode(ActionMode mode) {
-//	        GlobalParams.getInstance().mActionMode = null;
-//	    }
-//	};
-	
+	}
+
+	// private ActionMode.Callback mActionModeCallback = new
+	// ActionMode.Callback() {
+	//
+	// // Called when the action mode is created; startActionMode() was called
+	// @Override
+	// public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+	// // Inflate a menu resource providing context menu items
+	// MenuInflater inflater = mode.getMenuInflater();
+	// inflater.inflate(R.menu.currmarker, menu);
+	// return true;
+	// }
+	//
+	// // Called each time the action mode is shown. Always called after
+	// onCreateActionMode, but
+	// // may be called multiple times if the mode is invalidated.
+	// @Override
+	// public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+	// return false; // Return false if nothing is done
+	// }
+	//
+	// // Called when the user selects a contextual menu item
+	// @Override
+	// public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+	// switch (item.getItemId()) {
+	// case R.id.tv_name:
+	// // shareCurrentItem();
+	// mode.finish(); // Action picked, so close the CAB
+	// return true;
+	// default:
+	// return false;
+	// }
+	// }
+	//
+	// // Called when the user exits the action mode
+	// @Override
+	// public void onDestroyActionMode(ActionMode mode) {
+	// GlobalParams.getInstance().mActionMode = null;
+	// }
+	// };
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -262,8 +279,23 @@ public class MainActivity extends AbstractNavDrawerActivity implements MqttCallb
 		case R.id.action_refresh:
 			this.refresh(true);
 			break;
+		case R.id.action_online_map_toggle:
+			 if (GlobalParams.getInstance().isOffline) {
+				 item.setIcon(R.drawable.cloud_on);
+				 GlobalParams.getInstance().isOffline = false;
+				 Toast.makeText(this, "Online map", Toast.LENGTH_SHORT).show();
+			 }
+			 else {
+				 item.setIcon(R.drawable.cloud_off);
+				 GlobalParams.getInstance().isOffline = true;
+				 Toast.makeText(this, "Offline map", Toast.LENGTH_SHORT).show();
+			 }
+			break;
 		case R.id.action_connect:
-			Toast.makeText(this, "Data may not be synced. Internet may be down or server isn't responding", Toast.LENGTH_LONG).show();
+			Toast.makeText(
+					this,
+					"Data may not be synced. Internet may be down or server isn't responding",
+					Toast.LENGTH_LONG).show();
 			break;
 		}
 		return super.onOptionsItemSelected(item);
@@ -271,51 +303,48 @@ public class MainActivity extends AbstractNavDrawerActivity implements MqttCallb
 
 	public void refresh(Boolean withDialog) {
 		// Pass the settings flags by inserting them in a bundle
-        Bundle settingsBundle = new Bundle();
-		settingsBundle.putBoolean(
-                ContentResolver.SYNC_EXTRAS_MANUAL, true);
-		settingsBundle.putBoolean(
-                ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+		Bundle settingsBundle = new Bundle();
+		settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
+		settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
 		/*
-         * Request the sync for the default account, authority, and
-         * manual sync settings
-         */
-        if (withDialog){
-    		pdialog = new ProgressDialog(this);
-    		pdialog.setTitle("Refreshing data...");
-    		pdialog.show();        	
-        }
-		
-		if (!this.isConnected())
-		{
-			refresh_view();
+		 * Request the sync for the default account, authority, and manual sync
+		 * settings
+		 */
+		if (withDialog) {
+			pdialog = new ProgressDialog(this);
+			pdialog.setTitle("Refreshing data...");
+			pdialog.show();
 		}
-		else
-		{
+
+		if (!this.isConnected()) {
+			refresh_view();
+		} else {
 			ContentResolver.requestSync(mAccount, AUTHORITY, settingsBundle);
 		}
 	}
-	
+
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		
-		if (!this.isConnected() || this.didSyncFailed)
-		{
+
+		if (!this.isConnected() || this.didSyncFailed) {
 			menu.findItem(R.id.action_connect).setVisible(true);
 		} else {
 			menu.findItem(R.id.action_connect).setVisible(false);
 		}
-		
+
 		if (currFragment.equals(FirstFragment.TAG)) {
 			menu.findItem(R.id.action_settings).setVisible(true);
 			menu.findItem(R.id.action_list).setVisible(true);
-		}else if(currFragment.equals(GoogleMapFragment.TAG)){
+			menu.findItem(R.id.action_online_map_toggle).setVisible(false);
+		} else if (currFragment.equals(GoogleMapFragment.TAG)
+				|| currFragment.equals(OfflineMapFragment.TAG)) {
 			menu.findItem(R.id.action_settings).setVisible(false);
 			menu.findItem(R.id.action_list).setVisible(true);
-		}
-		else {
+			menu.findItem(R.id.action_online_map_toggle).setVisible(true);
+		} else {
 			menu.findItem(R.id.action_settings).setVisible(false);
 			menu.findItem(R.id.action_list).setVisible(false);
+			menu.findItem(R.id.action_online_map_toggle).setVisible(false);
 		}
 		return true;
 	}
@@ -335,81 +364,79 @@ public class MainActivity extends AbstractNavDrawerActivity implements MqttCallb
 
 	private BroadcastReceiver syncFinishedReceiver = new BroadcastReceiver() {
 
-	    @Override
-	    public void onReceive(Context context, Intent intent) {
-	    	didSyncFailed = !intent.getExtras().getBoolean(GlobalParams.getInstance().syncSucceeded);
-	    	
-	    	 refresh_view();
-	    }
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			didSyncFailed = !intent.getExtras().getBoolean(
+					GlobalParams.getInstance().syncSucceeded);
+
+			refresh_view();
+		}
 	};
-	
-	public void refresh_view()
-	{
+
+	public void refresh_view() {
 		invalidateOptionsMenu();
-		
-    	Fragment currFrag = getFragmentManager().findFragmentByTag(currFragment);
-    	
-    	if (currFragment.equals(FirstFragment.TAG)) 
-    	{
-    		new refreshAsync().execute(pdialog);
-		}
-    	else if(currFragment.equals(SecondFragment.TAG))
-    	{
-    		((SecondFragment)currFrag).new callservice(SecondFragment.ACTION_GET, pdialog).execute();
-    	}
-    	else if(currFragment.equals(GoogleMapFragment.TAG))
-    	{
-    		this.onNavItemSelected(101);
-    		pdialog.hide();
-    	}
-    	else if(currFragment.equals(WebViewFragment.TAG))
-    	{
-    		this.onNavItemSelected(103);
-    		pdialog.hide();
-    	}
-	}
-	
-	static public class refreshAsync extends AsyncTask<Dialog, Void, Void>
-	{
-		Dialog pdialog;
-		
-		@Override
-		protected Void doInBackground(Dialog... params) {
-	        GlobalParams.getInstance().clearList();
-			
-			ArrayList<Point> points =  GlobalParams.getInstance().PointsDBaccess.getPoints(false);
-			for (Point point : points) {
-				GlobalParams.getInstance().addPoint(point);
-			}
-			
-			pdialog = params[0];
-			
-			return null;
-		}
-		
-		@Override
-		protected void onPostExecute(Void result) {
-			
-//			if (GlobalParams.getInstance().getf() != null)
-//			{
-//				GlobalParams.getInstance().getf().getView().invalidate();
-//			}
-			
-			GlobalParams.getInstance().getView().invalidate();
-			
+
+		Fragment currFrag = getFragmentManager()
+				.findFragmentByTag(currFragment);
+
+		if (currFragment.equals(FirstFragment.TAG)) {
+			new refreshAsync().execute(pdialog);
+		} else if (currFragment.equals(SecondFragment.TAG)) {
+			((SecondFragment) currFrag).new callservice(
+					SecondFragment.ACTION_GET, pdialog).execute();
+		} else if (currFragment.equals(GoogleMapFragment.TAG)) {
+			this.onNavItemSelected(101);
+			pdialog.hide();
+		} else if (currFragment.equals(WebViewFragment.TAG)) {
+			this.onNavItemSelected(103);
+			pdialog.hide();
+		} else if (currFragment.equals(OfflineMapFragment.TAG)) {
+			this.onNavItemSelected(104);
 			pdialog.hide();
 		}
 	}
-	
+
+	static public class refreshAsync extends AsyncTask<Dialog, Void, Void> {
+		Dialog pdialog;
+
+		@Override
+		protected Void doInBackground(Dialog... params) {
+			GlobalParams.getInstance().clearList();
+
+			ArrayList<Point> points = GlobalParams.getInstance().PointsDBaccess
+					.getPoints(false);
+			for (Point point : points) {
+				GlobalParams.getInstance().addPoint(point);
+			}
+
+			pdialog = params[0];
+
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(Void result) {
+
+			// if (GlobalParams.getInstance().getf() != null)
+			// {
+			// GlobalParams.getInstance().getf().getView().invalidate();
+			// }
+
+			GlobalParams.getInstance().getView().invalidate();
+
+			pdialog.hide();
+		}
+	}
+
 	@Override
 	public void onBackPressed() {
-		
+
 		if (this.currFragment.equals(SecondFragment.TAG)) {
 			// Reload google map + Popbackstack
 			if (originFragment.equals(GoogleMapFragment.TAG)) {
 				getFragmentManager().popBackStackImmediate();
 				this.onNavItemSelected(101);
-			// Super
+				// Super
 			} else {
 				this.currFragment = originFragment;
 				super.onBackPressed();
@@ -423,14 +450,15 @@ public class MainActivity extends AbstractNavDrawerActivity implements MqttCallb
 	}
 
 	@Override
-	public  void lockDrawer(boolean lock){
+	public void lockDrawer(boolean lock) {
 		super.lockDrawer(lock);
 	}
 
-	public boolean isConnected(){
-		ConnectivityManager connectivityManager = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+	public boolean isConnected() {
+		ConnectivityManager connectivityManager = (ConnectivityManager) this
+				.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
-		
+
 		return (activeNetwork != null && activeNetwork.isConnected());
 	}
 
@@ -438,19 +466,20 @@ public class MainActivity extends AbstractNavDrawerActivity implements MqttCallb
 	public void connectionLost(Throwable cause) {
 		// TODO Auto-generated method stub
 		Toast t = Toast.makeText(this, "LOST", Toast.LENGTH_LONG);
-		t.show();		
+		t.show();
 	}
 
 	@Override
 	public void messageArrived(String topic, MqttMessage message)
 			throws Exception {
-		
+
 		if (topic.equals("test")) {
-//		if (topic == "test") {
-			Toast t = Toast.makeText(this, message.toString(), Toast.LENGTH_LONG);
+			// if (topic == "test") {
+			Toast t = Toast.makeText(this, message.toString(),
+					Toast.LENGTH_LONG);
 			t.show();
 		}
-//		}
+		// }
 	}
 
 	@Override
@@ -477,6 +506,6 @@ public class MainActivity extends AbstractNavDrawerActivity implements MqttCallb
 	@Override
 	public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
 		// TODO Auto-generated method stub
-		Toast.makeText(this, "FAIL", Toast.LENGTH_LONG).show();
-	}	
+//		Toast.makeText(this, "FAIL", Toast.LENGTH_LONG).show();
+	}
 }

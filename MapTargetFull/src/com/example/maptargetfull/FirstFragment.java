@@ -112,7 +112,7 @@ public class FirstFragment extends Fragment
 			{
 				isMatch = true;
 				EditTargetDialog editTargetDialog = EditTargetDialog
-						.newInstance("Edit Target", iter.rowID, TAG);
+						.newInstance("Edit Tar																			get", iter.rowID, TAG);
 				editTargetDialog.show(this.getFragmentManager(), EditTargetDialog.TAG);
 				
 				break;

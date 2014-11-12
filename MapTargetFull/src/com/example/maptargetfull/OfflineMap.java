@@ -12,9 +12,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PointF;
 import android.view.MotionEvent;
-import android.view.Window;
 
 import com.example.maptargetfull.GlobalParams.markerType;
+import com.example.maptargetfull.PointsDBAccess.Point;
 
 public class OfflineMap extends us.ba3.me.MapView {
 
@@ -22,11 +22,21 @@ public class OfflineMap extends us.ba3.me.MapView {
 	private OfflineMap currMap;
 	private ArrayList<Location> markersLoc = new ArrayList<Location>();
 	private Location loc = new Location();
-
+	
 	public OfflineMap(Context context) {
 		super(context);
+	    GlobalParams.getInstance().frgOfflineMap = ((OfflineMapFragment)GlobalParams.getFragment().findFragmentByTag(OfflineMapFragment.TAG));
 	}
 
+    public void deletePoint(String name) {
+    	if (GlobalParams.getInstance().PointsDBaccess.deletePointOffline(name))
+    	{
+    		GlobalParams.getInstance().deletePointByName(name);
+    	}
+    	
+    	GlobalParams.getInstance().getView().invalidate();
+    }
+	
 	public void addMarkersLayer(String strLayerName, int zOrder) {
 
 		// Add dynamic marker map layer
@@ -49,7 +59,8 @@ public class OfflineMap extends us.ba3.me.MapView {
 		marker.anchorPoint = new PointF(32, 18);
 		marker.location.longitude = longitude;
 		marker.location.latitude = latitude;
-
+		
+		
 		if (mrkType == markerType.Tank) {
 			bmImage = BitmapFactory.decodeResource(getResources(),
 					R.drawable.tank);
@@ -64,6 +75,20 @@ public class OfflineMap extends us.ba3.me.MapView {
 
 		// Add the marker to the markers list
 		GlobalParams.getInstance().AddMarker(strName, marker.location);
+	}
+	
+	public void removeMarkerOnLocationOffline(String strName) {
+		try {
+			currMap.removeDynamicMarkerFromMap("Tanks", strName);
+		} catch (Exception e) {
+			
+		}
+		
+		try {
+			currMap.removeDynamicMarkerFromMap("Trucks", strName);
+		} catch (Exception e) {
+			
+		}
 	}
 
 	public void set(OfflineMap mapView) {
@@ -106,7 +131,6 @@ public class OfflineMap extends us.ba3.me.MapView {
 //
 //						GlobalParams.getInstance().Exist = false;
 						
-						
 						FragmentManager fm = GlobalParams.getFragment();
 						AddTargetOnLocationDialog addTargetDialog = AddTargetOnLocationDialog
 								.newInstance("Add Target", loc1.latitude, loc1.longitude, TAG);
@@ -119,6 +143,12 @@ public class OfflineMap extends us.ba3.me.MapView {
 
 					}
 				});
+	}
+	
+	public void ShowMeTheContextualMenu() {
+		if (GlobalParams.getInstance().Exist) {
+			GlobalParams.getInstance().frgOfflineMap.AddContextualMenu();
+		}
 	}
 
 	@Override
@@ -141,8 +171,12 @@ public class OfflineMap extends us.ba3.me.MapView {
 						}
 						Bitmap mbit = null;
 
+						ShowMeTheContextualMenu();
+						
 						if (!GlobalParams.getInstance().Exist) {
 							currMap.removeHaloPulse("beacon");
+							GlobalParams.getInstance().currMarkerName = null;
+							GlobalParams.getInstance().frgOfflineMap.RemoveContextualMenu();
 						}
 
 						GlobalParams.getInstance().Exist = false;

@@ -10,7 +10,6 @@ import java.util.Collection;
 import java.util.Hashtable;
 
 import us.ba3.me.Location;
-import ActionMode.ActionModeCallback;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -32,7 +31,9 @@ import android.widget.ImageView;
 import com.example.maptargetfull.PointsDBAccess.Point;
 
 public class GlobalParams {
+	public Boolean isOffline = true;
 	public enum markerType {Tank, Truck};
+	public markerType currMarkerType;
 	public static FragmentManager mFragmentManager;
 	public static OfflineMap mCurrMap; 
 	public static android.view.Menu myMenu;
@@ -49,11 +50,14 @@ public class GlobalParams {
 	public MenuInflater inflater;
 	public ActionMode mActionMode;
 	public ActionMode.Callback mActionModeCallback;
+	public OfflineMapFragment frgOfflineMap;
 	public Activity currActivity;
+	public String currMarkerName;
 	private ArrayList<Point> mPoints = new ArrayList<Point>();
 	public boolean Exist;
 	public Hashtable<String, Location> myList = new Hashtable<String, Location>();
-
+	public Hashtable<String, Point> myPoints = new Hashtable<String, Point>();
+	
 	public static void setMenu(android.view.Menu menu) {
 		myMenu = menu;
 	}
@@ -144,6 +148,25 @@ public class GlobalParams {
 		}
 	}
 	
+	public void deletePointByName(String name)
+	{
+		for (int i = 0; i < mPoints.size(); i++) {
+			if (mPoints.get(i).first_name == name) {
+				mPoints.remove(i);
+			}
+		}
+	}
+	
+	public Point getPointByName(String name)
+	{
+		for (int i = 0; i < mPoints.size(); i++) {
+			if (mPoints.get(i).first_name == name) {
+				return mPoints.get(i);
+			}
+		}
+		return null;
+	}
+	
 	public Point getPointByRowid(long rowid)
 	{
 		for (int i = 0; i < mPoints.size(); i++) {
@@ -152,6 +175,16 @@ public class GlobalParams {
 			}
 		}
 		return null;
+	}
+	
+	public long getRowidByName(String name)
+	{
+		for (int i = 0; i < mPoints.size(); i++) {
+			if (mPoints.get(i).first_name.equals(name)) {
+				return mPoints.get(i).rowID;
+			}
+		}
+		return -1;
 	}
 	
 	public Point getSpecificPoint(int position) {
