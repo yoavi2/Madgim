@@ -39,7 +39,7 @@ import com.example.maptargetfull.PointsDBAccess.Point;
 
 public class GlobalParams {
 	public Boolean isOffline = true;
-	public enum markerType {Tank, Truck};
+	public enum markerType {Tank, Truck, GPS};
 	public markerType currMarkerType;
 	public static Context inflaterContext;
 	public static ViewGroup viewGroup;
@@ -71,6 +71,16 @@ public class GlobalParams {
 	public static HashMap<Long, Point> mOfflineMapPoints;
 	public static HashMap<Long, DynamicMarker> mMarkers;
 	public static String targetFileName;
+	
+	public static boolean isExist(String markerName) {
+		for (Point point : GlobalParams.getInstance().mPoints) {
+			if (point.first_name.equals(markerName)) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
 	
 	public static void refreshMarkers() {
 		
