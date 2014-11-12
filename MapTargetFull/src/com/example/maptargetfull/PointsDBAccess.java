@@ -45,6 +45,34 @@ public class PointsDBAccess {
 		return db.update(Points.table_name, values, Points.Columns.row_id + " = ?", new String[]{ String.valueOf(rowID) }) == 1;
 	}
 	
+	public long getRowIdbyServerId(long serverID)
+	{
+		SQLiteDatabase db = this.mDBHandler.getReadableDatabase();
+		Cursor cursor = db.rawQuery("SELECT " +
+			    Points.Columns.row_id + " " +
+			    "FROM " + Points.table_name + " " +
+			    "WHERE " + Points.Columns.server_id + " = ? ", new String[]{ String.valueOf(serverID) });
+		while (cursor.moveToNext()) {
+			return cursor.getLong(cursor.getColumnIndex(Points.Columns.row_id));
+		}
+		
+		return -1;
+	}
+	
+	public Boolean getSynched(long rowid)
+	{
+		SQLiteDatabase db = this.mDBHandler.getReadableDatabase();
+		Cursor cursor = db.rawQuery("SELECT " +
+			    Points.Columns.is_synched + " " +
+			    "FROM " + Points.table_name + " " +
+			    "WHERE " + Points.Columns.row_id + " = ? ", new String[]{ String.valueOf(rowid) });
+		while (cursor.moveToNext()) {
+			return cursor.getInt(cursor.getColumnIndex(Points.Columns.is_synched)) == 1? true:false;
+		}
+		
+		return false;
+	}
+	
 	public Boolean updatePoint(long rowID, String firstName, String lastName, double longitude, double langitude, Boolean is_google, int pointType){
 		SQLiteDatabase db = this.mDBHandler.getWritableDatabase();
 		ContentValues values = new ContentValues();
