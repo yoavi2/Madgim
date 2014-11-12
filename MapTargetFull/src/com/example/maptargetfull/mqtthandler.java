@@ -132,7 +132,8 @@ public class mqtthandler implements MqttCallback
 					"_id");
 			ps.pointType = json.getInt(
 					Points.Columns.point_type);
-			long rowid = pointsDB.getRowIdbyServerId(Long.parseLong(ps.server_id));
+			ps.is_deleted = json.getInt(Points.Columns.is_deleted);
+			long rowid = pointsDB.getRowIdbyServerId(ps.server_id);
 			pointsDB.updatePoint(rowid, ps.first_name, ps.last_name, ps.longitude, ps.langitude, ps.is_google==1?true:false, ps.pointType);
 			pointsDB.SetServerID(rowid, ps.server_id);
 			pointsDB.SetSynched(rowid);
@@ -141,6 +142,7 @@ public class mqtthandler implements MqttCallback
 			{
 				GlobalParams.getInstance().deletePointByRowid(rowid);
 				GlobalParams.getInstance().mCurrMap.removeMarkerOnLocationOffline(ps.first_name);
+				Toast.makeText(this.context, ps.first_name + " deleted!", Toast.LENGTH_SHORT).show();
 			}
 			else
 			{
@@ -151,6 +153,7 @@ public class mqtthandler implements MqttCallback
 				p.pointType	= ps.pointType;
 				p.rowID = rowid;
 				GlobalParams.getInstance().updatePoint(p);
+				Toast.makeText(this.context, ps.first_name + " updated!", Toast.LENGTH_SHORT).show();
 			}
 		}
 	}

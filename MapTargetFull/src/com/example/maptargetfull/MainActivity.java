@@ -500,7 +500,7 @@ public class MainActivity extends AbstractNavDrawerActivity implements
 	@Override
 	public void onSuccess(IMqttToken asyncActionToken) {
 		try {
-			c.subscribe("test", 0);
+			c.subscribe("update", 0);
 			c.subscribe("insert", 0);
 		} catch (MqttSecurityException e) {
 			// TODO Auto-generated catch block
