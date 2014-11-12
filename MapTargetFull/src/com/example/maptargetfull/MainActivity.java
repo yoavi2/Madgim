@@ -22,6 +22,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -29,6 +30,7 @@ import android.os.Bundle;
 import android.provider.Settings.Secure;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.maptargetfull.PointsDBAccess.Point;
@@ -61,7 +63,7 @@ public class MainActivity extends AbstractNavDrawerActivity implements
 		super.onCreate(savedInstanceState);
 
 		GlobalParams.getInstance().currActivity = this;
-
+		
 		// Create the dummy account
 		mAccount = CreateSyncAccount(this);
 
