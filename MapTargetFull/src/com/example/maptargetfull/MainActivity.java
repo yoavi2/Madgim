@@ -1,6 +1,7 @@
 package com.example.maptargetfull;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
@@ -84,7 +85,7 @@ public class MainActivity extends AbstractNavDrawerActivity implements
 			originFragment = OfflineMapFragment.TAG;
 		}
 
-		c = new MqttAndroidClient(this, "tcp://192.168.43.37:1883", Secure.ANDROID_ID);
+		c = new MqttAndroidClient(this, "tcp://192.168.43.37:1883", UUID.randomUUID().toString());
 
 		try {
 			c.setCallback(new mqtthandler(this, c));
@@ -510,14 +511,15 @@ public class MainActivity extends AbstractNavDrawerActivity implements
 
 	@Override
 	public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-		while (!c.isConnected())
-		{
-			try {
-				c.connect();
-			} catch (MqttException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+//		while (!c.isConnected())
+//		{
+//			try {
+//				c.connect();
+//			} catch (MqttException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		}
+		Toast.makeText(GlobalParams.getInstance().currActivity, "FAIL", Toast.LENGTH_LONG).show();
 	}	
 }
