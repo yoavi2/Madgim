@@ -347,7 +347,7 @@ public class MainActivity extends AbstractNavDrawerActivity implements
 		} else if (currFragment.equals(GoogleMapFragment.TAG)
 				|| currFragment.equals(OfflineMapFragment.TAG)) {
 			menu.findItem(R.id.action_settings).setVisible(false);
-			menu.findItem(R.id.action_list).setVisible(true);
+			menu.findItem(R.id.action_list).setVisible(false);
 			menu.findItem(R.id.action_online_map_toggle).setVisible(true);
 		} else {
 			menu.findItem(R.id.action_settings).setVisible(false);
