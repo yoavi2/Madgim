@@ -30,6 +30,7 @@ import android.os.Environment;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.MenuInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
@@ -103,7 +104,7 @@ public class GlobalParams {
 	public static void goToOfflineMap() {
 		mCurrMap.removeMap("online", false);
 		
-		mCurrMap.inflate(inflaterContext, R.layout.fragment_offlinemap, viewGroup);
+		View.inflate(inflaterContext, R.layout.fragment_offlinemap, viewGroup);
 		
 		mCurrMap.set(mCurrMap);
 		mCurrMap.addMBTilesMap("offline", targetFileName, "grayGrid",

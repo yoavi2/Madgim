@@ -3,7 +3,6 @@ package com.example.maptargetfull;
 import com.example.maptargetfull.GoogleMapFragment.target_type;
 import com.example.maptargetfull.PointsDBAccess.Point;
 
-import android.app.ActionBar.LayoutParams;
 import android.app.DialogFragment;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;

@@ -2,15 +2,11 @@ package com.example.maptargetfull;
 
 //import com.technotalkative.contextualactionbarsingle.MainActivity.ActionBarCallBack;
 
-import java.io.ObjectInputStream.GetField;
-
 import us.ba3.me.HaloPulse;
 import us.ba3.me.Location;
 import us.ba3.me.markers.DynamicMarkerMapDelegate;
-import ActionMode.ActionModeCallback;
 import android.graphics.Color;
 import android.graphics.PointF;
-import android.view.MenuItem;
 
 public class Delegate implements DynamicMarkerMapDelegate {
 private OfflineMap currMap;

@@ -2,8 +2,6 @@ package com.example.maptargetfull;
 
 import java.util.ArrayList;
 
-import us.ba3.me.markers.DynamicMarker;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;

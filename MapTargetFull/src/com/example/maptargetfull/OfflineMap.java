@@ -14,7 +14,6 @@ import android.graphics.PointF;
 import android.view.MotionEvent;
 
 import com.example.maptargetfull.GlobalParams.markerType;
-import com.example.maptargetfull.PointsDBAccess.Point;
 
 public class OfflineMap extends us.ba3.me.MapView {
 

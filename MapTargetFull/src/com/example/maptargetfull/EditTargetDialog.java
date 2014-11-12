@@ -1,7 +1,5 @@
 package com.example.maptargetfull;
 
-import java.sql.RowId;
-
 import com.example.maptargetfull.PointsDBAccess.Point;
 import android.app.Activity;
 import android.app.DialogFragment;
@@ -129,7 +127,7 @@ public class EditTargetDialog extends DialogFragment implements OnClickListener 
 //					.getLong("rowid"));
 		}
 
-//		GlobalParams.loadBitmap(mPoint.rowID, image, getActivity());
+		GlobalParams.loadBitmap(mPoint.rowID, image, getActivity());
 		
 		etFirstName.setText(mPoint.first_name);
 		etLastName.setText(mPoint.last_name);
@@ -219,7 +217,7 @@ public class EditTargetDialog extends DialogFragment implements OnClickListener 
 				
 				EditTargetListener frag = (EditTargetListener) getActivity()
 						.getFragmentManager().findFragmentByTag(mCallerTag);
-				frag.imageUpdated(mPoint.rowID);
+				frag.imageUpdated(GlobalParams.getInstance().getRowidByName(GlobalParams.getInstance().currMarkerName));
 			}
 		}
 	}

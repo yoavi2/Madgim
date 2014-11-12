@@ -9,7 +9,6 @@ import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 public class ActionModeCallback implements ActionMode.Callback {
 

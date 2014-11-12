@@ -23,6 +23,7 @@
 
     <style name="myactionbar" parent="@android:style/Widget.ActionBar">
         <item name="android:background">@color/purple_dark</item>
+        <item name="android:titleTextStyle">@color/white</item> 
     </style>
 
     <style name="cust_dialog" parent="@android:style/Theme.Holo.Light.Dialog">
