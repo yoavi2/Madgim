@@ -4,6 +4,7 @@ import com.example.maptargetfull.EditTargetDialog;
 import com.example.maptargetfull.GlobalParams;
 import com.example.maptargetfull.OfflineMapFragment;
 import com.example.maptargetfull.R;
+import com.example.maptargetfull.SecondFragment;
 
 import android.view.ActionMode;
 import android.view.Menu;
@@ -51,6 +52,10 @@ public class ActionModeCallback implements ActionMode.Callback {
 	        	
 	        	
 	            return true;
+	            
+	        case R.id.item_list:
+	        	SecondFragment list = new SecondFragment();
+	        	list.show(GlobalParams.getFragment(), "list");
 	        default:
 	            return false;
 	    }

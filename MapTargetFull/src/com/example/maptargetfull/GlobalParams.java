@@ -82,6 +82,14 @@ public class GlobalParams {
 		return false;
 	}
 	
+	public void removeFrommPoints(long rowid) {
+		for (Point point : GlobalParams.getInstance().mPoints) {
+			if (point.rowID == rowid) {
+				mPoints.remove(point);
+			}
+		}
+	}
+	
 	public static void refreshMarkers() {
 		
 		if (GlobalParams.getInstance().mPoints.size() != 0) {

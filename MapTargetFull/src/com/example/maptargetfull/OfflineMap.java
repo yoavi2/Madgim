@@ -34,6 +34,7 @@ public class OfflineMap extends us.ba3.me.MapView {
     		GlobalParams.getInstance().deletePointByName(name);
     	}
     	
+    	((MainActivity)GlobalParams.getInstance().currActivity).refresh(false);
 //    	GlobalParams.getInstance().getView().invalidate();
     }
 	
@@ -50,65 +51,57 @@ public class OfflineMap extends us.ba3.me.MapView {
 	public void addMarkerOnLocationOffline(String strName, markerType mrkType,
 			double latitude, double longitude) {
 
-		// Check if exist marker with this name
-		if (GlobalParams.isExist(strName)) {
-			Toast.makeText(GlobalParams.getInstance().inflaterContext, 
-					"Marker with this name already exists!", 
-					Toast.LENGTH_LONG).show();
-		}
-		else {
-			// Image
-			Bitmap bmImage = null;
+		// Image
+		Bitmap bmImage = null;
 
-			// Add a marker
-			DynamicMarker marker = new DynamicMarker();
-			marker.name = strName;
-			marker.anchorPoint = new PointF(32, 18);
-			marker.location.longitude = longitude;
-			marker.location.latitude = latitude;
-			
-			long rowId = GlobalParams.getInstance().getRowidByName(strName);
-			boolean isSynched = GlobalParams.getInstance().PointsDBaccess.getSynched(rowId);
-			
-			if (mrkType == markerType.Tank) {
+		// Add a marker
+		DynamicMarker marker = new DynamicMarker();
+		marker.name = strName;
+		marker.anchorPoint = new PointF(32, 18);
+		marker.location.longitude = longitude;
+		marker.location.latitude = latitude;
+		
+		long rowId = GlobalParams.getInstance().getRowidByName(strName);
+		boolean isSynched = GlobalParams.getInstance().PointsDBaccess.getSynched(rowId);
+		
+		if (mrkType == markerType.Tank) {
 
-				if (isSynched) {
-					bmImage = BitmapFactory.decodeResource(getResources(),
-														   R.drawable.tank);
-				}
-				else {
-					bmImage = BitmapFactory.decodeResource(getResources(),
-							   							   R.drawable.tank_no_conn);
-				}
-				
-				marker.setImage(bmImage, false);
-				currMap.addDynamicMarkerToMap("Tanks", marker);
-			} 
-			else if (mrkType == markerType.Truck){
-				
-				if (isSynched) {
-					bmImage = BitmapFactory.decodeResource(getResources(),
-														   R.drawable.truck);
-				}
-				else {
-					bmImage = BitmapFactory.decodeResource(getResources(),
-							   							   R.drawable.truck_no_conn);
-				}
-
-				marker.setImage(bmImage, false);
-				currMap.addDynamicMarkerToMap("Trucks", marker);
+			if (isSynched) {
+				bmImage = BitmapFactory.decodeResource(getResources(),
+													   R.drawable.tank);
 			}
 			else {
 				bmImage = BitmapFactory.decodeResource(getResources(),
-						   R.drawable.mapa_icon);
-				
-				marker.setImage(bmImage, false);
-				currMap.addDynamicMarkerToMap("GPS", marker);
+						   							   R.drawable.tank_no_conn);
+			}
+			
+			marker.setImage(bmImage, false);
+			currMap.addDynamicMarkerToMap("Tanks", marker);
+		} 
+		else if (mrkType == markerType.Truck){
+			
+			if (isSynched) {
+				bmImage = BitmapFactory.decodeResource(getResources(),
+													   R.drawable.truck);
+			}
+			else {
+				bmImage = BitmapFactory.decodeResource(getResources(),
+						   							   R.drawable.truck_no_conn);
 			}
 
-			// Add the marker to the markers list
-			GlobalParams.getInstance().AddMarker(strName, marker.location);
+			marker.setImage(bmImage, false);
+			currMap.addDynamicMarkerToMap("Trucks", marker);
 		}
+		else {
+			bmImage = BitmapFactory.decodeResource(getResources(),
+					   R.drawable.mapa_icon);
+			
+			marker.setImage(bmImage, false);
+			currMap.addDynamicMarkerToMap("GPS", marker);
+		}
+
+		// Add the marker to the markers list
+		GlobalParams.getInstance().AddMarker(strName, marker.location);
 	}
 	
 	public void removeMarkerOnLocationOffline(String strName) {

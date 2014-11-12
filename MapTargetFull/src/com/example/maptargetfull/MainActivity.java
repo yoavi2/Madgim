@@ -62,7 +62,7 @@ public class MainActivity extends AbstractNavDrawerActivity implements
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		
 		GlobalParams.getInstance().currActivity = this;
 		
 		// Create the dummy account
