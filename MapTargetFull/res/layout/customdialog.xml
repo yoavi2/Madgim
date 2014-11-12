@@ -41,39 +41,53 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/image"
         android:layout_marginTop="22dp"
-        android:orientation="horizontal" >
+        android:orientation="horizontal" 
+        android:paddingBottom="10dp" >
 
         <Button
             android:id="@+id/DeleteButton"
             style="?android:attr/buttonStyleSmall"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/image"
             android:layout_weight="1"
-            android:text="Delete" />
+            android:text="Delete" 
+            android:textColor="#FFFFFF"
+			android:textSize="22sp"
+			android:layout_width="100dp"
+			android:layout_height="40dp"
+            android:layout_marginLeft="26dp"
+            android:background="@drawable/buttonshape" />
 
         <Button
             android:id="@+id/EditButton"
             style="?android:attr/buttonStyleSmall"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
             android:layout_below="@+id/image"
             android:layout_toRightOf="@+id/DeleteButton"
             android:layout_weight="1"
-            android:text="Edit" />
+            android:text="Edit" 
+            android:textColor="#FFFFFF"
+			android:textSize="22sp"
+			android:layout_width="100dp"
+			android:layout_height="40dp"
+            android:layout_marginLeft="26dp"
+            android:layout_marginRight="26dp"
+            android:background="@drawable/buttonshape" />
 
         <Button
             android:id="@+id/saveButton"
             style="?android:attr/buttonStyleSmall"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
             android:layout_alignBaseline="@+id/EditButton"
             android:layout_alignBottom="@+id/EditButton"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="18dp"
             android:layout_weight="1"
-            android:text="Save" />
+            android:text="Save" 
+            android:textColor="#FFFFFF"
+			android:textSize="22sp"
+			android:layout_width="100dp"
+			android:layout_height="40dp"
+            android:layout_marginLeft="26dp"
+            android:layout_marginRight="26dp"
+            android:background="@drawable/buttonshape" />
+        
     </LinearLayout>
 
     <TextView
