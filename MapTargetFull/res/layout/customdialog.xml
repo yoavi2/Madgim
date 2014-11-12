@@ -21,7 +21,6 @@
         android:layout_centerVertical="true"
         android:layout_toRightOf="@+id/First" >
 
-        <requestFocus />
     </EditText>
 
     <TextView

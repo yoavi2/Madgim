@@ -154,7 +154,7 @@ public class OfflineMapFragment extends Fragment implements EditTargetListener {
 			GlobalParams.setFragment(getFragmentManager());
 
 			// Extract the mbtiles map asset if needed
-			String sourceAssetName = "open-streets-dc.mbtiles";
+			String sourceAssetName = "Sagi5.mbtiles";
 			String targetFileName = getActivity().getFilesDir()
 					.getAbsolutePath() + File.separator + sourceAssetName;
 			File destFile = new File(targetFileName);
@@ -184,8 +184,9 @@ public class OfflineMapFragment extends Fragment implements EditTargetListener {
 			GlobalParams.setCurrMap(mapView);
 
 			// Zoom into washington D.C.
-			mapView.setLocationThatFitsCoordinates(new Location(38.848,
-					-77.1127), new Location(38.933, -76.9665), 0, 0);
+			mapView.setLocationThatFitsCoordinates(new Location(32.0813599, 34.7714926), 
+												   new Location(32.0761256, 34.7780077), 
+												   0, 0);
 
 			// this.addMarkersFromDB();
 			GlobalParams.addMarkersFromDB();

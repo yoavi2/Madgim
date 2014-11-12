@@ -69,7 +69,6 @@
         android:inputType="textPersonName"
         android:onClick="onNameFieldClick" >
 
-        <requestFocus />
     </EditText>
 
     <TextView
