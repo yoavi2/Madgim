@@ -9,13 +9,19 @@ import us.ba3.me.MapLoadingStrategy;
 import us.ba3.me.markers.DynamicMarker;
 import ActionMode.ActionModeCallback;
 import android.app.Fragment;
+import android.content.Context;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import com.example.maptargetfull.EditTargetDialog.EditTargetListener;
+import com.example.maptargetfull.GlobalParams.markerType;
 import com.example.maptargetfull.PointsDBAccess.Point;
+import com.google.android.gms.maps.model.LatLng;
 
 public class OfflineMapFragment extends Fragment implements EditTargetListener {
 
@@ -25,6 +31,8 @@ public class OfflineMapFragment extends Fragment implements EditTargetListener {
 	private HashMap<Long, DynamicMarker> mMarkers;
 	private ActionMode mActionMode;
 	private OfflineMap mapView;
+	private LocationManager mLocationService;
+
 
 	// @Override
 	// public void onCreateContextMenu(ContextMenu menu, View v,
@@ -123,7 +131,7 @@ public class OfflineMapFragment extends Fragment implements EditTargetListener {
 	// public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
 	// // TODO Auto-generated method stub
 	//
-	// mode.setTitle("שגיא הוא אלוף!");
+	// mode.setTitle("׳©׳’׳™׳� ׳”׳•׳� ׳�׳�׳•׳£!");
 	// return false;
 	// }
 	//
@@ -152,6 +160,9 @@ public class OfflineMapFragment extends Fragment implements EditTargetListener {
 		if (savedInstanceState == null) {
 
 			GlobalParams.setFragment(getFragmentManager());
+			
+			this.mLocationService = (LocationManager) getActivity()
+					.getSystemService(Context.LOCATION_SERVICE);
 
 			// Extract the mbtiles map asset if needed
 			String sourceAssetName = "Sagi5.mbtiles";
@@ -188,11 +199,47 @@ public class OfflineMapFragment extends Fragment implements EditTargetListener {
 												   new Location(32.0761256, 34.7780077), 
 												   0, 0);
 
+			
+			this.mLocationService.requestLocationUpdates(
+					LocationManager.GPS_PROVIDER, 0, 0, new LocationListener() {
+						@Override
+						public void onProviderEnabled(String provider) {
+							//if (mGpsDialog.isShowing()) {
+							//	mGpsDialog.dismiss();
+							//}
+						}
+
+						@Override
+						public void onProviderDisabled(String provider) {
+
+						}
+
+						@Override
+						public void onLocationChanged(android.location.Location location) {
+							//if (!mLocationSet) {
+
+//								adjustMap();
+								//mLocationSet = true;
+								//mLocationService.removeUpdates(this);
+								//getActivity().invalidateOptionsMenu();
+						//	}
+						}
+
+						@Override
+						public void onStatusChanged(String provider, int status,
+								Bundle extras) {
+						}
+					});
+
+			
+		
+			
+			
 			// this.addMarkersFromDB();
 			GlobalParams.addMarkersFromDB();
 			
 			this.getActivity().registerForContextMenu(mapView);
-
+			this.adjustMap();
 			return mapView;
 		}
 
@@ -215,5 +262,25 @@ public class OfflineMapFragment extends Fragment implements EditTargetListener {
 	public void imageUpdated(long rowid) {
 		// TODO Auto-generated method stub
 
+	}
+	private void adjustMap() {
+
+		android.location.Location location = this.mLocationService
+				.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+		if (location == null) {
+
+			location = this.mLocationService
+					.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+		}
+
+		LatLng loc = null;
+
+		if (location != null) {
+			loc = new LatLng(location.getLatitude(), location.getLongitude());
+			GlobalParams.getInstance().mCurrMap.addMarkerOnLocationOffline("MyLoc", markerType.GPS, loc.latitude, loc.longitude);
+			//.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 16.0f));
+
+		}
 	}
 }
