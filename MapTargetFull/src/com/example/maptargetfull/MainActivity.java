@@ -283,11 +283,19 @@ public class MainActivity extends AbstractNavDrawerActivity implements
 			 if (GlobalParams.getInstance().isOffline) {
 				 item.setIcon(R.drawable.cloud_on);
 				 GlobalParams.getInstance().isOffline = false;
+				 
+				 GlobalParams.goToOnlineMap();
+				 GlobalParams.addMarkersFromDB();
+				 
 				 Toast.makeText(this, "Online map", Toast.LENGTH_SHORT).show();
 			 }
 			 else {
 				 item.setIcon(R.drawable.cloud_off);
 				 GlobalParams.getInstance().isOffline = true;
+				 
+				 GlobalParams.goToOfflineMap();
+				 GlobalParams.addMarkersFromDB();
+				 
 				 Toast.makeText(this, "Offline map", Toast.LENGTH_SHORT).show();
 			 }
 			break;

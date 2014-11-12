@@ -7,9 +7,13 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Currency;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.zip.Inflater;
 
 import us.ba3.me.Location;
+import us.ba3.me.markers.DynamicMarker;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -26,6 +30,7 @@ import android.os.Environment;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.MenuInflater;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.example.maptargetfull.PointsDBAccess.Point;
@@ -34,6 +39,8 @@ public class GlobalParams {
 	public Boolean isOffline = true;
 	public enum markerType {Tank, Truck};
 	public markerType currMarkerType;
+	public static Context inflaterContext;
+	public static ViewGroup viewGroup;
 	public static FragmentManager mFragmentManager;
 	public static OfflineMap mCurrMap; 
 	public static android.view.Menu myMenu;
@@ -57,6 +64,51 @@ public class GlobalParams {
 	public boolean Exist;
 	public Hashtable<String, Location> myList = new Hashtable<String, Location>();
 	public Hashtable<String, Point> myPoints = new Hashtable<String, Point>();
+	public static PointsDBAccess mDbHandler;
+	public static HashMap<Long, Point> mOfflineMapPoints;
+	public static HashMap<Long, DynamicMarker> mMarkers;
+	
+	public static void addMarkersFromDB() {
+		mMarkers = new HashMap<Long, DynamicMarker>();
+		mDbHandler = new PointsDBAccess(GlobalParams.getInstance().currActivity);
+		mOfflineMapPoints = new HashMap<Long, PointsDBAccess.Point>();
+		ArrayList<Point> points = mDbHandler.getPoints(false);
+
+		if (points.size() != 0) {
+			for (Point point : points) {
+				mCurrMap.addMarkerOnLocationOffline(point.first_name,
+						point.pointType == 1 ? markerType.Tank
+								: markerType.Truck, point.langitude,
+						point.longitude);
+			}
+		}
+	}
+	
+	public static void goToOnlineMap() {
+		mCurrMap.removeMap("offline", false);
+		mCurrMap.addInternetMap("online",
+				"http://server.arcgisonline.com/arcgis/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}.jpg",
+				"", 		//Subdomains
+				19,			//Max Level
+				2,			//zOrder
+				3,			//Number of simultaneous downloads
+				true,		//Use cache
+				false		//No alpha
+				);
+		
+		mCurrMap.set(mCurrMap);
+	}
+	
+	public static void goToOfflineMap() {
+		mCurrMap.removeMap("online", false);
+		
+		mCurrMap.inflate(inflaterContext, R.layout.fragment_offlinemap, viewGroup);
+		
+		mCurrMap.set(mCurrMap);
+//		mCurrMap.addMBTilesMap("offline", targetFileName, "grayGrid",
+//				ImageDataType.kImageDataTypePNG, false, 2,
+//				MapLoadingStrategy.kLowestDetailFirst);
+	}
 	
 	public static void setMenu(android.view.Menu menu) {
 		myMenu = menu;

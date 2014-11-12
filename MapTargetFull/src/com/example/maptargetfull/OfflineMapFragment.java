@@ -26,9 +26,6 @@ import android.widget.Toast;
 import com.example.maptargetfull.EditTargetDialog.EditTargetListener;
 import com.example.maptargetfull.GlobalParams.markerType;
 import com.example.maptargetfull.PointsDBAccess.Point;
-//import com.technotalkative.contextualactionbarsingle.R;
-//import com.technotalkative.contextualactionbarsingle.MainActivity;
-//import com.technotalkative.contextualactionbarsingle.MainActivity.ActionBarCallBack;
 
 public class OfflineMapFragment extends Fragment {
 
@@ -37,7 +34,7 @@ public class OfflineMapFragment extends Fragment {
 	public static HashMap<Long, Point> mOfflineMapPoints;
 	private HashMap<Long, DynamicMarker> mMarkers;
 	private ActionMode mActionMode;
-	
+	private OfflineMap mapView;
 	
 //	@Override
 //	public void onCreateContextMenu(ContextMenu menu, View v,
@@ -140,6 +137,22 @@ public class OfflineMapFragment extends Fragment {
 // 
 //    }
 	
+//	public void addMarkersFromDB() {
+//		this.mMarkers = new HashMap<Long, DynamicMarker>();
+//		this.mDbHandler = new PointsDBAccess(getActivity());
+//		mOfflineMapPoints = new HashMap<Long, PointsDBAccess.Point>();
+//		ArrayList<Point> points = this.mDbHandler.getPoints(false);
+//
+//		if (points.size() != 0) {
+//			for (Point point : points) {
+//				mapView.addMarkerOnLocationOffline(point.first_name,
+//						point.pointType == 1 ? markerType.Tank
+//								: markerType.Truck, point.langitude,
+//						point.longitude);
+//			}
+//		}
+//	}
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -163,10 +176,13 @@ public class OfflineMapFragment extends Fragment {
 			// mymap mapView = (mymap)this.findViewById(R.id.mapView1);
 			OfflineMap mapView = new OfflineMap(getActivity());
 			
+			GlobalParams.inflaterContext = inflater.getContext();
+			GlobalParams.viewGroup = container;
+			
 			mapView.inflate(inflater.getContext(), R.layout.fragment_offlinemap, container);
 			
 			mapView.set(mapView);
-			mapView.addMBTilesMap("mapquest", targetFileName, "grayGrid",
+			mapView.addMBTilesMap("offline", targetFileName, "grayGrid",
 					ImageDataType.kImageDataTypePNG, false, 2,
 					MapLoadingStrategy.kLowestDetailFirst);
 
@@ -176,21 +192,9 @@ public class OfflineMapFragment extends Fragment {
 			mapView.setLocationThatFitsCoordinates(new Location(38.848,
 					-77.1127), new Location(38.933, -76.9665), 0, 0);
 
+//			this.addMarkersFromDB();
+			GlobalParams.addMarkersFromDB();
 			
-			this.mMarkers = new HashMap<Long, DynamicMarker>();
-			this.mDbHandler = new PointsDBAccess(getActivity());
-			mOfflineMapPoints = new HashMap<Long, PointsDBAccess.Point>();
-			ArrayList<Point> points = this.mDbHandler.getPoints(false);
-
-			if (points.size() != 0) {
-				for (Point point : points) {
-					mapView.addMarkerOnLocationOffline(point.first_name,
-							point.pointType == 1 ? markerType.Tank
-									: markerType.Truck, point.langitude,
-							point.longitude);
-				}
-			}
-	
 		    this.getActivity().registerForContextMenu(mapView);
 		    
 			return mapView;
