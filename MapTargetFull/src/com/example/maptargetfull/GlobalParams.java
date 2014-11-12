@@ -92,6 +92,7 @@ public class GlobalParams {
 	
 	public static void refreshMarkers() {
 		
+		mDbHandler = new PointsDBAccess(GlobalParams.getInstance().currActivity);
 		GlobalParams.getInstance().mPoints = mDbHandler.getPoints(false);
 		
 		if (GlobalParams.getInstance().mPoints.size() != 0) {
