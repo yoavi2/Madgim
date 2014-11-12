@@ -70,6 +70,22 @@ public class GlobalParams {
 	public static HashMap<Long, DynamicMarker> mMarkers;
 	public static String targetFileName;
 	
+	public static void refreshMarkers() {
+		
+		if (GlobalParams.getInstance().mPoints.size() != 0) {
+			for (Point point : GlobalParams.getInstance().mPoints) {
+				if (GlobalParams.getInstance().isOffline) {
+					mCurrMap.removeDynamicMarkerFromMap("offline", point.first_name);
+				}
+				else {
+					mCurrMap.removeDynamicMarkerFromMap("online", point.first_name);
+				}
+			}
+		}
+		
+		addMarkersFromDB();
+	}
+	
 	public static void addMarkersFromDB() {
 		mMarkers = new HashMap<Long, DynamicMarker>();
 		mDbHandler = new PointsDBAccess(GlobalParams.getInstance().currActivity);
