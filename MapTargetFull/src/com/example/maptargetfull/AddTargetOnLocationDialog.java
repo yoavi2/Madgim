@@ -99,12 +99,32 @@ public class AddTargetOnLocationDialog extends DialogFragment {
 							GlobalParams.markerType mMarkerType = tt_type == target_type.FRIEND ? GlobalParams.markerType.Tank : GlobalParams.markerType.Truck;
 							String strName = mETName.getText().toString();
 							
-							long rowid = GlobalParams.getInstance().PointsDBaccess.createPoint(strName, 
-																							   "", 
-																							   mLongitude, 
-																							   mLatitude, 
-																							   false, 
-																							   tt_type == target_type.FRIEND ? 1 : 2);
+							long rowid;
+							
+							// Check if exist marker with this name
+							if (GlobalParams.isExist(strName)) {
+//								Toast.makeText(GlobalParams.getInstance().inflaterContext, 
+//										"Marker with this name already exists!", 
+//										Toast.LENGTH_LONG).show();
+								
+								GlobalParams.getInstance().PointsDBaccess.deletePointOffline(strName);
+								
+								rowid = GlobalParams.getInstance().PointsDBaccess.createPoint(strName, 
+										   "", 
+										   mLongitude, 
+										   mLatitude, 
+										   false, 
+										   tt_type == target_type.FRIEND ? 1 : 2);
+							}
+							else {
+								rowid = GlobalParams.getInstance().PointsDBaccess.createPoint(strName, 
+										   "", 
+										   mLongitude, 
+										   mLatitude, 
+										   false, 
+										   tt_type == target_type.FRIEND ? 1 : 2);
+							}
+							
 							if (rowid != -1)
 					    	{
 					    		Point p = GlobalParams.getInstance().PointsDBaccess.new Point();
