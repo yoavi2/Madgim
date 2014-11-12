@@ -24,6 +24,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
@@ -46,6 +47,7 @@ public class GlobalParams {
 	public static OfflineMap mCurrMap; 
 	public static android.view.Menu myMenu;
 	private boolean ShowEenemy;
+	public LocationManager mLocationService;
 	private boolean ShowFriend;
 	private DrawSample mydraw;
 	public PointsDBAccess PointsDBaccess;
@@ -69,6 +71,22 @@ public class GlobalParams {
 	public static HashMap<Long, Point> mOfflineMapPoints;
 	public static HashMap<Long, DynamicMarker> mMarkers;
 	public static String targetFileName;
+	
+	public static void refreshMarkers() {
+		
+		if (GlobalParams.getInstance().mPoints.size() != 0) {
+			for (Point point : GlobalParams.getInstance().mPoints) {
+				if (GlobalParams.getInstance().isOffline) {
+					mCurrMap.removeDynamicMarkerFromMap("offline", point.first_name);
+				}
+				else {
+					mCurrMap.removeDynamicMarkerFromMap("online", point.first_name);
+				}
+			}
+		}
+		
+		addMarkersFromDB();
+	}
 	
 	public static void addMarkersFromDB() {
 		mMarkers = new HashMap<Long, DynamicMarker>();

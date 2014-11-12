@@ -10,6 +10,7 @@ public class Menu extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.maimmenu);
+       
 	}
 	public void onclick(View view){
 		Intent i = new Intent(Menu.this, MainActivity.class);
