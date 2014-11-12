@@ -125,9 +125,9 @@ public class NavDrawerActivityConfiguration {
         private NavDrawerActivityConfiguration mConf = new NavDrawerActivityConfiguration();
 
         public Builder() {
-            drawerOpenDesc(R.string.drawer_open);
-            drawerCloseDesc(R.string.drawer_close);
-            drawerShadow(R.drawable.x);
+//            drawerOpenDesc(R.string.drawer_open);
+//            drawerCloseDesc(R.string.drawer_close);
+//            drawerShadow(R.drawable.x);
         }
 
         public Builder mainLayout(int mainLayout) {
