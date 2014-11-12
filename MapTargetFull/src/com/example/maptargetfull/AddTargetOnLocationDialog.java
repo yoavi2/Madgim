@@ -142,7 +142,9 @@ public class AddTargetOnLocationDialog extends DialogFragment {
 										 mLatitude, 
 										 mLongitude);
 					    	}
-
+							
+							((MainActivity)GlobalParams.getInstance().currActivity).refresh(false);
+							
 							dismiss();
 						}
 					}
