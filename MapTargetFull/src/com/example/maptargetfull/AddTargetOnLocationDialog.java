@@ -108,6 +108,8 @@ public class AddTargetOnLocationDialog extends DialogFragment {
 //										Toast.LENGTH_LONG).show();
 								
 								GlobalParams.getInstance().PointsDBaccess.deletePointOffline(strName);
+								GlobalParams.getInstance().removeFrommPoints(GlobalParams.getInstance().getRowidByName(strName));
+								GlobalParams.getCurrMap().removeMarkerOnLocationOffline(strName);
 								
 								rowid = GlobalParams.getInstance().PointsDBaccess.createPoint(strName, 
 										   "", 
