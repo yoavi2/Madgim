@@ -33,7 +33,7 @@ public class OfflineMap extends us.ba3.me.MapView {
     		GlobalParams.getInstance().deletePointByName(name);
     	}
     	
-    	GlobalParams.getInstance().getView().invalidate();
+//    	GlobalParams.getInstance().getView().invalidate();
     }
 	
 	public void addMarkersLayer(String strLayerName, int zOrder) {

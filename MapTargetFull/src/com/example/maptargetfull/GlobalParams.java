@@ -205,7 +205,7 @@ public class GlobalParams {
 	public void deletePointByName(String name)
 	{
 		for (int i = 0; i < mPoints.size(); i++) {
-			if (mPoints.get(i).first_name == name) {
+			if (mPoints.get(i).first_name.equals(name)) {
 				mPoints.remove(i);
 			}
 		}
