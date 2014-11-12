@@ -55,7 +55,8 @@ public class mqtthandler implements MqttCallback
 //		.setContentText("Message has arrived!");
 //		m.notify(123, b.build());
 		JSONObject json = null;
-		
+		PointsDBAccess pdb = new PointsDBAccess( this.context );
+		Point p = pdb.new Point();
 		if (topic.equals("insert"))
 		{	
 			try {
@@ -90,6 +91,16 @@ public class mqtthandler implements MqttCallback
 				    ps.pointType);
 			pointsDB.SetServerID(rowID, ps.server_id);
 			pointsDB.SetSynched(rowID);
+			
+			p.first_name = ps.first_name;
+			p.last_name	= ps.last_name;
+			p.longitude = ps.longitude;
+			p.langitude = ps.langitude;
+			p.pointType	= ps.pointType;
+			p.rowID = rowID;
+			
+			GlobalParams.getInstance().addPoint(p);
+			
 			GlobalParams.getInstance().mCurrMap.addMarkerOnLocationOffline(ps.first_name,
 					ps.pointType == 1 ? markerType.Tank
 							: markerType.Truck, ps.langitude,
@@ -121,23 +132,26 @@ public class mqtthandler implements MqttCallback
 					"_id");
 			ps.pointType = json.getInt(
 					Points.Columns.point_type);
-		    ArrayList<Point> arr = pointsDB.getPoints(ps.is_google == 1 ? true : false);
-		    for (int i = 0; i < arr.size(); i++) {
-		    	
+			long rowid = pointsDB.getRowIdbyServerId(Long.parseLong(ps.server_id));
+			pointsDB.updatePoint(rowid, ps.first_name, ps.last_name, ps.longitude, ps.langitude, ps.is_google==1?true:false, ps.pointType);
+			pointsDB.SetServerID(rowid, ps.server_id);
+			pointsDB.SetSynched(rowid);
+			
+			if (ps.is_deleted == 1)
+			{
+				GlobalParams.getInstance().deletePointByRowid(rowid);
+				GlobalParams.getInstance().mCurrMap.removeMarkerOnLocationOffline(ps.first_name);
 			}
-			long rowID = pointsDB.createPoint(
-					ps.first_name,
-		 			ps.last_name,
-					ps.longitude,
-					ps.langitude,
-					ps.is_google == 1 ? true : false,
-				    ps.pointType);
-			pointsDB.SetServerID(rowID, ps.server_id);
-			pointsDB.SetSynched(rowID);
-			GlobalParams.getInstance().mCurrMap.addMarkerOnLocationOffline(ps.first_name,
-					ps.pointType == 1 ? markerType.Tank
-							: markerType.Truck, ps.langitude,
-					ps.longitude);
+			else
+			{
+				p.first_name = ps.first_name;
+				p.last_name	= ps.last_name;
+				p.longitude = ps.longitude;
+				p.langitude = ps.langitude;
+				p.pointType	= ps.pointType;
+				p.rowID = rowid;
+				GlobalParams.getInstance().updatePoint(p);
+			}
 		}
 	}
 
