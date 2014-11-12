@@ -16,6 +16,7 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
 import android.app.Dialog;
+import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
@@ -38,7 +39,7 @@ import android.widget.Toast;
 
 import com.example.maptargetfull.PointsDBAccess.Point;
 
-public class SecondFragment extends Fragment implements
+public class SecondFragment extends DialogFragment implements
 		OnItemLongClickListener //, OnTouchListener 
 {
 
