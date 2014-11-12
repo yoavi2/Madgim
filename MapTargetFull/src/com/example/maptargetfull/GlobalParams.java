@@ -27,6 +27,7 @@ import android.widget.ImageView;
 import com.example.maptargetfull.PointsDBAccess.Point;
 
 public class GlobalParams {
+	public enum markerType {Tank, Truck};
 	private boolean ShowEenemy;
 	private boolean ShowFriend;
 	private DrawSample mydraw;
@@ -45,8 +46,8 @@ public class GlobalParams {
 		this.frag = p;
 	}
 	
-	public void AddMarker(String s, Location loc){
-		myList.put(s, loc);
+	public void AddMarker(String strName, Location loc){
+		myList.put(strName, loc);
 	}
 
 	public Fragment getf() {

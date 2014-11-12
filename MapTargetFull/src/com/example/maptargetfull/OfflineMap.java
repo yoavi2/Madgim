@@ -5,109 +5,137 @@ import java.util.ArrayList;
 import us.ba3.me.ConvertPointCallback;
 import us.ba3.me.Location;
 import us.ba3.me.markers.DynamicMarker;
+import us.ba3.me.markers.DynamicMarkerMapInfo;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PointF;
-import android.util.Log;
 import android.view.MotionEvent;
 
+import com.example.maptargetfull.GlobalParams.markerType;
+
 public class OfflineMap extends us.ba3.me.MapView {
- OfflineMap currMap;
- public int x;
-	public int y;
- ArrayList<Location> markersLoc = new ArrayList<Location>();
-private Location loc = new Location();
+
+	private OfflineMap currMap;
+	private ArrayList<Location> markersLoc = new ArrayList<Location>();
+	private Location loc = new Location();
+
 	public OfflineMap(Context context) {
 		super(context);
-		// TODO Auto-generated constructor stub
+	}
+
+	public void addMarkersLayer(String strLayerName, int zOrder) {
+
+		// Add dynamic marker map layer
+		DynamicMarkerMapInfo mapInfo = new DynamicMarkerMapInfo();
+		mapInfo.name = strLayerName;
+		mapInfo.zOrder = zOrder;
+		mapInfo.delegate = new Delegate(currMap);
+		currMap.addMapUsingMapInfo(mapInfo);
+	}
+
+	public void addMarkerOnLocationOffline(String strName, markerType mrkType,
+			double latitude, double longitude) {
+		
+		// Image
+		Bitmap bmImage = null;
+
+		// Add a marker
+		DynamicMarker marker = new DynamicMarker();
+		marker.name = strName;
+		marker.anchorPoint = new PointF(32, 18);
+		marker.location.longitude = longitude;
+		marker.location.latitude = latitude;
+
+		if (mrkType == markerType.Tank) {
+			bmImage = BitmapFactory.decodeResource(getResources(),
+					R.drawable.tank);
+			marker.setImage(bmImage, false);
+			currMap.addDynamicMarkerToMap("Tanks", marker);
+		} else {
+			bmImage = BitmapFactory.decodeResource(getResources(),
+					R.drawable.truck);
+			marker.setImage(bmImage, false);
+			currMap.addDynamicMarkerToMap("Trucks", marker);
+		}
+
 	}
 
 	public void set(OfflineMap mapView) {
-		// TODO Auto-generated method stub
 		currMap = mapView;
-		
+
+		this.addMarkersLayer("Tanks", 2);
+		this.addMarkersLayer("Trucks", 2);
 	}
+
 	@Override
-		public boolean onSingleTapUp(MotionEvent arg0) {
-			// TODO Auto-generated method stub
+	public void onLongPress(MotionEvent arg0) {
+		super.onLongPress(arg0);
 
-			
-			Bitmap mbit = null;
-	        
-	       // mbit = FontUtil.createLabel("test", labelStyle);
-			mbit = BitmapFactory.decodeResource(getResources(),
-       				R.drawable.tank);
-	        super.getLocationForPoint(new PointF(arg0.getX(), arg0.getY()), new ConvertPointCallback(){
-				
-				
-	        	@Override
-				public void convertComplete(Location loc1) {
-	        		
-	        		try {
-						Thread.sleep(200);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+		super.getLocationForPoint(new PointF(arg0.getX(), arg0.getY()),
+				new ConvertPointCallback() {
+
+					@Override
+					public void convertComplete(Location loc1) {
+
+						try {
+							Thread.sleep(50);
+						} 
+							catch (InterruptedException e) {
+						}
+
+						Bitmap mbit = null;
+
+						if (!GlobalParams.getInstance().Exist) {
+							currMap.removeHaloPulse("beacon");
+
+							// Add the marker to the markers list
+							GlobalParams.getInstance().AddMarker(
+									"Marker" + loc1.latitude, loc1);
+
+							// Add the marker to the map
+							currMap.addMarkerOnLocationOffline("Marker"
+									+ loc1.latitude, markerType.Truck,
+									loc1.latitude, loc1.longitude);
+						}
+
+						GlobalParams.getInstance().Exist = false;
+
 					}
-					Bitmap mbit = null;
-					currMap.hideDynamicMarker("Circle","marker2" );
+				});
+	}
 
-					
-					if(!GlobalParams.getInstance().Exist)
-					{
-					    currMap.removeHaloPulse("beacon");
+	@Override
+	public boolean onSingleTapUp(MotionEvent arg0) {
 
-						//currMap.removeDynamicMarkerFromMap("Cirlce", "marker2");
-				    GlobalParams.getInstance().AddMarker("marker" + loc1.longitude, loc1);
-			        markersLoc.add(new Location(loc1.latitude, loc1.longitude));
-				       // mbit = FontUtil.createLabel("test", labelStyle);
-						mbit = BitmapFactory.decodeResource(getResources(),
-			       				R.drawable.tank);
-					/*
-						DynamicMarkerMapInfo mapInfo = new DynamicMarkerMapInfo();
-			              mapInfo.delegate = new Delegate(currMap);
-			              mapInfo.name = "Markers" + loc1.latitude;
-			              mapInfo.zOrder = 2;
-			              currMap.addMapUsingMapInfo(mapInfo);*/
-						
-					loc.longitude = loc1.longitude;
-					loc.latitude = loc1.latitude;
-					Log.w("onTouch", "lon:" + loc.longitude + " lat:" + loc.latitude);
-					
-					  DynamicMarker marker = new DynamicMarker();
-				        marker.name = "marker" + loc1.longitude;
-				        marker.setImage(mbit, false);
-				        marker.anchorPoint = new PointF(57,32);
-				        marker.location.longitude = loc1.longitude;
-				        marker.location.latitude = loc1.latitude;
-				        currMap.addDynamicMarkerToMap("Markers", marker);
-				        
+		Bitmap mbit = null;
+
+		// mbit = FontUtil.createLabel("test", labelStyle);
+		mbit = BitmapFactory.decodeResource(getResources(), R.drawable.tank);
+		super.getLocationForPoint(new PointF(arg0.getX(), arg0.getY()),
+				new ConvertPointCallback() {
+
+					@Override
+					public void convertComplete(Location loc1) {
+
+						try {
+							Thread.sleep(50);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+						Bitmap mbit = null;
+
+						if (!GlobalParams.getInstance().Exist) {
+							currMap.removeHaloPulse("beacon");
+						}
+
+						GlobalParams.getInstance().Exist = false;
+
 					}
-					else{
-						
-						
-						/*mbit = BitmapFactory.decodeResource(getResources(),
-		         				R.drawable.rad);
-		            //Add a marker
-		              DynamicMarker marker2 = new DynamicMarker();
-		              marker2.name = "marker2";
-		              marker2.setImage(mbit, false);
-		              marker2.anchorPoint = new PointF(50,50);
-		              marker2.location.longitude = loc1.longitude;
-		              marker2.location.latitude = loc1.latitude;
-		              
-		              currMap.addDynamicMarkerToMap("Circle", marker2);*/
-					}
-					GlobalParams.getInstance().Exist = false;
+				});
 
-				}});
-	        
-	        
-	        
-	      
-	        return super.onSingleTapUp(arg0);
-			
-		}
+		return super.onSingleTapUp(arg0);
+
+	}
 
 }

@@ -50,6 +50,7 @@ public class MainActivity extends AbstractNavDrawerActivity implements MqttCallb
 	public static String originFragment;
 	private boolean didSyncFailed;
 	private MqttAndroidClient c;
+	private OfflineMap mOfflineMapView;
 
 	// Instance fields
 	Account mAccount;
