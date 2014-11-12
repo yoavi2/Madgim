@@ -84,11 +84,10 @@ public class MainActivity extends AbstractNavDrawerActivity implements
 			originFragment = OfflineMapFragment.TAG;
 		}
 
-		c = new MqttAndroidClient(this, "tcp://192.168.43.231:1883",
-				Secure.ANDROID_ID);
+		c = new MqttAndroidClient(this, "tcp://192.168.43.231:1883", Secure.ANDROID_ID);
 
 		try {
-			c.setCallback(this);
+			c.setCallback(new mqtthandler(this, c));
 			c.connect(this, this);
 		} catch (MqttSecurityException e) {
 			// TODO Auto-generated catch block
@@ -497,7 +496,6 @@ public class MainActivity extends AbstractNavDrawerActivity implements
 
 	@Override
 	public void onSuccess(IMqttToken asyncActionToken) {
-		// TODO Auto-generated method stub
 		try {
 			c.subscribe("test", 0);
 		} catch (MqttSecurityException e) {
@@ -511,7 +509,14 @@ public class MainActivity extends AbstractNavDrawerActivity implements
 
 	@Override
 	public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-		// TODO Auto-generated method stub
-//		Toast.makeText(this, "FAIL", Toast.LENGTH_LONG).show();
-	}
+		while (!c.isConnected())
+		{
+			try {
+				c.connect();
+			} catch (MqttException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}	
 }
