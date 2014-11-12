@@ -74,9 +74,8 @@ public class MainActivity extends AbstractNavDrawerActivity implements MqttCallb
 		
 		c = new MqttAndroidClient(this, "tcp://192.168.43.231:1883", Secure.ANDROID_ID);
 		
-		
 		try {
-			c.setCallback(this);
+			c.setCallback(new mqtthandler(this, c));
 			c.connect(this, this);
 		} catch (MqttSecurityException e) {
 			// TODO Auto-generated catch block
@@ -183,8 +182,8 @@ public class MainActivity extends AbstractNavDrawerActivity implements MqttCallb
 		}
 
 		return newAccount;
-	}
-
+	}	
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -395,7 +394,7 @@ public class MainActivity extends AbstractNavDrawerActivity implements MqttCallb
 	public void connectionLost(Throwable cause) {
 		// TODO Auto-generated method stub
 		Toast t = Toast.makeText(this, "LOST", Toast.LENGTH_LONG);
-		t.show();		
+		t.show();	
 	}
 
 	@Override
@@ -419,7 +418,6 @@ public class MainActivity extends AbstractNavDrawerActivity implements MqttCallb
 
 	@Override
 	public void onSuccess(IMqttToken asyncActionToken) {
-		// TODO Auto-generated method stub
 		try {
 			c.subscribe("test", 0);
 		} catch (MqttSecurityException e) {
@@ -433,7 +431,14 @@ public class MainActivity extends AbstractNavDrawerActivity implements MqttCallb
 
 	@Override
 	public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-		// TODO Auto-generated method stub
-		Toast.makeText(this, "FAIL", Toast.LENGTH_LONG).show();
+		while (!c.isConnected())
+		{
+			try {
+				c.connect();
+			} catch (MqttException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}	
 }
