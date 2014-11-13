@@ -34,7 +34,7 @@ public class OfflineMap extends us.ba3.me.MapView {
     		GlobalParams.getInstance().deletePointByName(name);
     	}
     	
-    	((MainActivity)GlobalParams.getInstance().currActivity).refresh(false);
+//    	((MainActivity)GlobalParams.getInstance().currActivity).refresh(false);
     	
 //    	GlobalParams.getInstance().getView().invalidate();
     }

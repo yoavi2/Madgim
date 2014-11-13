@@ -143,7 +143,7 @@ public class AddTargetOnLocationDialog extends DialogFragment {
 										 mLongitude);
 					    	}
 							
-							((MainActivity)GlobalParams.getInstance().currActivity).refresh(false);
+//							((MainActivity)GlobalParams.getInstance().currActivity).refresh(false);
 							
 							dismiss();
 						}

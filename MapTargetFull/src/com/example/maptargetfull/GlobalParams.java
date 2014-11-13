@@ -92,9 +92,6 @@ public class GlobalParams {
 	
 	public static void refreshMarkers() {
 		
-		mDbHandler = new PointsDBAccess(GlobalParams.getInstance().currActivity);
-		GlobalParams.getInstance().mPoints = mDbHandler.getPoints(false);
-		
 		if (GlobalParams.getInstance().mPoints.size() != 0) {
 			for (Point point : GlobalParams.getInstance().mPoints) {
 				if (GlobalParams.getInstance().isOffline) {
@@ -104,9 +101,9 @@ public class GlobalParams {
 					mCurrMap.removeDynamicMarkerFromMap("online", point.first_name);
 				}
 			}
-		
-			addMarkersFromDB();
 		}
+		
+		addMarkersFromDB();
 	}
 	
 	public static void addMarkersFromDB() {
