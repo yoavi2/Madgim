@@ -4,9 +4,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -54,6 +57,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			ContentProviderClient provider, SyncResult syncResult) {
 		Boolean succeeded = true;
 		
+		android.os.Debug.waitForDebugger();
+		
 			PointsDBAccess pointsDB = new PointsDBAccess(getContext());
 			ArrayList<PointForSync> arrayPoint = pointsDB.getPointsForSync();
 			// create HttpClient
@@ -82,15 +87,16 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 							arrayPoint.get(i).is_google);
 					json.put(Points.Columns.point_type,
 							arrayPoint.get(i).pointType);
-
+					
 					if (arrayPoint.get(i).server_id == null) {
 						HttpPost httpPost = new HttpPost(url);
 
 						httpPost.setHeader("Accept", "application/json");
-						httpPost.setHeader("Content-type", "application/json");
+						httpPost.setHeader("Content-Type", "application/json;charset=UTF-8");
 
-						httpPost.setEntity(new StringEntity(json.toString()));
-
+						StringEntity se = new StringEntity(json.toString(), "UTF-8");
+						
+						httpPost.setEntity(se);
 						ResponseHandler responseHandler = new BasicResponseHandler();
 						httpclient.execute(httpPost, responseHandler);
 					} else {
@@ -98,9 +104,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 						HttpPut httpPut = new HttpPut(url + "/" + arrayPoint.get(i).server_id);
 
 						httpPut.setHeader("Accept", "application/json");
-						httpPut.setHeader("Content-type", "application/json");
+						httpPut.setHeader("Content-Type", "application/json;charset=UTF-8");
 
-						httpPut.setEntity(new StringEntity(json.toString()));
+						httpPut.setEntity(new StringEntity(json.toString(), "UTF-8"));
 
 						ResponseHandler responseHandler = new BasicResponseHandler();
 						httpclient.execute(httpPut, responseHandler);

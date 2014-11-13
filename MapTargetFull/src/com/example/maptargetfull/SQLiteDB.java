@@ -38,6 +38,7 @@ public class SQLiteDB extends SQLiteOpenHelper{
 				   Points.Columns.is_deleted + " BOOLEAN, " +
 				   Points.Columns.is_synched + " BOOLEAN, " + 
 				   Points.Columns.point_type + " INTEGER );");
+		db.execSQL("PRAGMA encoding = \"UTF-8\"");
 	}
 
 	@Override
