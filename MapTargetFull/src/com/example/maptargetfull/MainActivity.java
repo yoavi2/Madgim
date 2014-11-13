@@ -82,6 +82,12 @@ public class MainActivity extends AbstractNavDrawerActivity implements
 			getFragmentManager().beginTransaction()
 					.replace(R.id.content_frame, offline, OfflineMapFragment.TAG)
 					.commit();
+			
+			SecondFragment list = new SecondFragment();
+			getFragmentManager().beginTransaction()
+			.replace(R.id.list_frame, list, "tag")
+			.commit();
+			
 			GlobalParams.getInstance().setProgress(offline);
 			this.currFragment = OfflineMapFragment.TAG;
 			originFragment = OfflineMapFragment.TAG;
@@ -309,6 +315,28 @@ public class MainActivity extends AbstractNavDrawerActivity implements
 		return super.onOptionsItemSelected(item);
 	}
 
+	public void refreshThis(Boolean withDialog) {
+		// Pass the settings flags by inserting them in a bundle
+		Bundle settingsBundle = new Bundle();
+		settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
+		settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+		/*
+		 * Request the sync for the default account, authority, and manual sync
+		 * settings
+		 */
+		if (withDialog) {
+			pdialog = new ProgressDialog(this);
+			pdialog.setTitle("Refreshing data...");
+			pdialog.show();
+		}
+
+		if (!this.isConnected()) {
+			
+		} else {
+//			ContentResolver.requestSync(mAccount, AUTHORITY, settingsBundle);
+		}
+	}
+	
 	public void refresh(Boolean withDialog) {
 		// Pass the settings flags by inserting them in a bundle
 		Bundle settingsBundle = new Bundle();

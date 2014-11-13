@@ -454,6 +454,28 @@ public class GlobalParams {
 	        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (int)rowid);
 		}
 	}
+	
+	public static void loadSagiBitmap(long rowid, ImageView imageView, Context context) {
+		
+		Point p =GlobalParams.getInstance().getPointByRowid(rowid);
+		Bitmap bmImage;
+		
+		if (p.pointType == 1) {
+			bmImage = BitmapFactory.decodeResource(context.getResources(),
+					   R.drawable.tank_white);
+		}
+		else {
+			bmImage = BitmapFactory.decodeResource(context.getResources(),
+					   R.drawable.truck_white);
+		}
+		
+//		final BitmapWorkerTask task = new BitmapWorkerTask(imageView);
+		final BitmapWorkerTask taskEmpty = new BitmapWorkerTask(new ImageView(context));
+        final AsyncDrawable asyncDrawable =
+                new AsyncDrawable(context.getResources(), bmImage, taskEmpty);
+        imageView.setImageDrawable(asyncDrawable);
+        taskEmpty.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (int)rowid);
+	}
 
 	public static int calculateInSampleSize(BitmapFactory.Options options,
 			int reqWidth, int reqHeight) {

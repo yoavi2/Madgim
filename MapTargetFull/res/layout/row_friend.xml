@@ -8,12 +8,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" >
 
+    <Space
+        android:layout_width="6dp"
+        android:layout_height="50dip"
+        android:layout_below="@+id/FirstName"
+        android:layout_toRightOf="@+id/FirstName" />
+        
+        
         <ImageView
             android:id="@+id/type_pict"
-            android:layout_width="50dip"
-            android:layout_height="50dip"
-            android:background="#000000"
-            android:padding="2dp" />
+            android:layout_width="46dip"
+            android:layout_height="46dip"
+            android:background="@color/transparent"
+            android:paddingLeft="4dp"/>
     </LinearLayout>
 
     <TextView
@@ -21,11 +28,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
+        android:paddingTop="10dp"
+        android:paddingLeft="8dp"
         android:layout_toRightOf="@id/thumbnail"
-        android:textSize="16sp"
-        android:textStyle="bold" />
+        android:textSize="20sp"
+        android:textColor="#ffffff" />
 
-    <TextView
+ <!--    <TextView
         android:id="@+id/LastName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -37,6 +46,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true" />
-
+        android:layout_alignParentTop="true" /> -->
 </RelativeLayout>

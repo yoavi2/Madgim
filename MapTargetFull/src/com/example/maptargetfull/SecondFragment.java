@@ -15,10 +15,14 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
+import us.ba3.me.HaloPulse;
+import us.ba3.me.Location;
+
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -37,6 +41,7 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.maptargetfull.GoogleMapFragment.target_type;
 import com.example.maptargetfull.PointsDBAccess.Point;
 
 public class SecondFragment extends DialogFragment implements
@@ -49,6 +54,7 @@ public class SecondFragment extends DialogFragment implements
 	public static final int ACTION_GET = 1;
 	private final int ACTION_ADD_SOLDIER = 2;
 	private boolean isTimeOut = false;
+	public View rootView;
 	SwipeRefreshLayout swipeRefreshLayout;
 	ListView list;
 	ArrayList<String> categories = new ArrayList<String>();
@@ -81,7 +87,7 @@ public class SecondFragment extends DialogFragment implements
 			Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
 
-		View rootView = inflater.inflate(R.layout.secondfragment, container,
+		rootView = inflater.inflate(R.layout.secondfragment, container,
 				false);
 
 		this.swipeRefreshLayout = (SwipeRefreshLayout) rootView
@@ -95,7 +101,6 @@ public class SecondFragment extends DialogFragment implements
 					public void onRefresh() {
 						// Start showing the refresh animation
 								((MainActivity) getActivity()).refresh(false);
-								list.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE_MODAL);
 				}});
 
 		GlobalParams.getInstance().listFriends = this;
@@ -168,7 +173,46 @@ public class SecondFragment extends DialogFragment implements
 					long arg3) {
 				Object o = list.getItemAtPosition(arg2);
 				String s = (String) o;
-				Toast.makeText(getActivity(), s, Toast.LENGTH_SHORT).show();
+				
+//				GlobalParams.getInstance().Exist = true;
+				Location currLoc = GlobalParams.getInstance().myList.get(s);
+				HaloPulse beacon = new HaloPulse();
+			    beacon.name = "beacon";
+			    beacon.location = currLoc;
+			    beacon.minRadius = 40;
+			    beacon.maxRadius = 65;
+			    beacon.animationDuration = 1.5f;
+			    beacon.repeatDelay = 0;
+			    beacon.fade = true;
+			    beacon.fadeDelay = 1;
+			    
+			    beacon.zOrder = 3;
+			    beacon.lineStyle.strokeColor = Color.WHITE;
+			    beacon.lineStyle.outlineColor = Color.rgb(30,151,235);
+			    beacon.lineStyle.outlineWidth = 4;
+			    GlobalParams.getCurrMap().addHaloPulse(beacon);
+			    
+			    GlobalParams.getCurrMap().setLocation(currLoc, 0.3);
+			    GlobalParams.getInstance().currMarkerName = s;
+			    
+			    Point p = GlobalParams.getInstance().getPointByName(s);
+			    
+			    if (p.pointType == 1) {
+			    	GlobalParams.getInstance().currMarkerType = GlobalParams.markerType.Tank;
+			    }
+			    else {
+			    	GlobalParams.getInstance().currMarkerType = GlobalParams.markerType.Truck;
+			    }
+			    
+			    GlobalParams.getInstance().Exist = true;
+			    
+			    // Show contextual menu
+				if (GlobalParams.getInstance().Exist) {
+					GlobalParams.getInstance().frgOfflineMap.AddContextualMenu();
+					GlobalParams.getInstance().Exist = false;
+				}
+				
+				//Toast.makeText(getActivity(), s, Toast.LENGTH_SHORT).show();
 			}
 		});
 

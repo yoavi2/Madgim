@@ -34,8 +34,8 @@ public class FriendListAdapter extends BaseAdapter {
 			
 			holder = new ViewHolder();
 			holder.firstName = (TextView) convertView.findViewById(R.id.FirstName);
-			holder.lastName = (TextView) convertView.findViewById(R.id.LastName);
-			holder.location = (TextView) convertView.findViewById(R.id.position);
+			//holder.lastName = (TextView) convertView.findViewById(R.id.LastName);
+			//holder.location = (TextView) convertView.findViewById(R.id.position);
 			holder.img = (ImageView) convertView.findViewById(R.id.type_pict);
 			holder.img.setTag(this.getItemId(position));
 			
@@ -58,25 +58,27 @@ public class FriendListAdapter extends BaseAdapter {
 			
 			if (currFriend != null) {
 				holder.firstName.setText(currFriend.first_name);
-				holder.lastName.setText("last name");
+				GlobalParams.loadSagiBitmap(currFriend.rowID, holder.img, this.context);
+				//holder.lastName.setText("last name");
 				
-				if (currFriend.pointType == 1) {
-					holder.img.setBackgroundResource(R.color.friend);
-				} else {
-					holder.img.setBackgroundResource(R.color.red);
-				}
+//				if (currFriend.pointType == 1) {
+////					holder.img.setBackgroundResource(R.color.friend);
+//				} else {
+////					holder.img.setBackgroundResource(R.color.red);
+//				}
 				
-				if (((Long) holder.img.getTag()) != currFriend.rowID || holder.img.getDrawable() == null) {
-					
-					if (holder.img.getDrawable() == null) {
-						holder.img.setTag(currFriend.rowID);
-					}
-					
-					GlobalParams.loadBitmap(currFriend.rowID, holder.img, this.context);
-				}
+//				if (((Long) holder.img.getTag()) != currFriend.rowID || holder.img.getDrawable() == null) {
+//					
+////					if (holder.img.getDrawable() == null) {
+////						holder.img.setTag(currFriend.rowID);
+////					}
+//					
+////					GlobalParams.loadBitmap(currFriend.rowID, holder.img, this.context);
+//					GlobalParams.loadSagiBitmap(currFriend.rowID, holder.img, this.context);
+//				}
 				
-			    holder.location.setText(Double.toString(currFriend.langitude)
-						+ " ; " + Double.toString(currFriend.longitude));
+			   // holder.location.setText(Double.toString(currFriend.langitude)
+				//		+ " ; " + Double.toString(currFriend.longitude));
 			}
 		}
 		
