@@ -194,9 +194,9 @@ public class OfflineMapFragment extends Fragment implements EditTargetListener {
 			GlobalParams.targetFileName = targetFileName;
 			GlobalParams.setCurrMap(mapView);
 
-			// Zoom into washington D.C.
-			mapView.setLocationThatFitsCoordinates(new Location(32.0813599, 34.7714926), 
-												   new Location(32.0761256, 34.7780077), 
+			// Zoom into tel aviv
+			mapView.setLocationThatFitsCoordinates(new Location(32.0387414, 34.8377299), 
+												   new Location(32.0852946, 34.8185897), 
 												   0, 0);
 
 			
