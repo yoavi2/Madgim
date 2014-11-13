@@ -1,15 +1,17 @@
 package ActionMode;
 
+import android.app.Fragment;
+import android.app.FragmentTransaction;
+import android.view.ActionMode;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+
 import com.example.maptargetfull.EditTargetDialog;
 import com.example.maptargetfull.GlobalParams;
 import com.example.maptargetfull.OfflineMapFragment;
 import com.example.maptargetfull.R;
 import com.example.maptargetfull.SecondFragment;
-
-import android.view.ActionMode;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 
 public class ActionModeCallback implements ActionMode.Callback {
 
@@ -41,6 +43,14 @@ public class ActionModeCallback implements ActionMode.Callback {
 	        	GlobalParams.getCurrMap().removeHaloPulse("beacon");
 				GlobalParams.getInstance().currMarkerName = null;
 				GlobalParams.getInstance().frgOfflineMap.RemoveContextualMenu();
+				
+				// Reload current fragment
+				Fragment frg = null;
+				frg = GlobalParams.getFragment().findFragmentByTag("list_frame");
+				final FragmentTransaction ft = GlobalParams.getFragment().beginTransaction();
+				ft.detach(frg);
+				ft.attach(frg);
+				ft.commit();
 	        	
 	            return true;
 	        case R.id.item_info:

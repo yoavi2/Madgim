@@ -17,6 +17,7 @@ import android.accounts.AccountManager;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
@@ -85,7 +86,7 @@ public class MainActivity extends AbstractNavDrawerActivity implements
 			
 			SecondFragment list = new SecondFragment();
 			getFragmentManager().beginTransaction()
-			.replace(R.id.list_frame, list, "tag")
+			.replace(R.id.list_frame, list, "list_frame")
 			.commit();
 			
 			GlobalParams.getInstance().setProgress(offline);
@@ -284,6 +285,15 @@ public class MainActivity extends AbstractNavDrawerActivity implements
 			break;
 		case R.id.action_refresh:
 			this.refresh(true);
+			
+			// Reload current fragment
+			Fragment frg = null;
+			frg = GlobalParams.getFragment().findFragmentByTag("list_frame");
+			final FragmentTransaction ft = GlobalParams.getFragment().beginTransaction();
+			ft.detach(frg);
+			ft.attach(frg);
+			ft.commit();
+			
 			break;
 		case R.id.action_online_map_toggle:
 			 if (GlobalParams.getInstance().isOffline) {

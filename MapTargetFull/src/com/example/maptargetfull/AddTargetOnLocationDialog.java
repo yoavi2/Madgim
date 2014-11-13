@@ -1,9 +1,8 @@
 package com.example.maptargetfull;
 
-import com.example.maptargetfull.GoogleMapFragment.target_type;
-import com.example.maptargetfull.PointsDBAccess.Point;
-
 import android.app.DialogFragment;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,6 +14,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Toast;
+
+import com.example.maptargetfull.GoogleMapFragment.target_type;
+import com.example.maptargetfull.PointsDBAccess.Point;
 
 public class AddTargetOnLocationDialog extends DialogFragment {
 
@@ -143,8 +145,14 @@ public class AddTargetOnLocationDialog extends DialogFragment {
 										 mLongitude);
 					    	}
 							
-//							((MainActivity)GlobalParams.getInstance().currActivity).refresh(false);
-							
+							// Reload current fragment
+							Fragment frg = null;
+							frg = getFragmentManager().findFragmentByTag("list_frame");
+							final FragmentTransaction ft = getFragmentManager().beginTransaction();
+							ft.detach(frg);
+							ft.attach(frg);
+							ft.commit();
+
 							dismiss();
 						}
 					}
