@@ -36,6 +36,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.example.maptargetfull.PointsDBAccess.Point;
+import com.google.android.gms.maps.model.LatLng;
 
 public class GlobalParams {
 	public Boolean isOffline = true;
@@ -71,7 +72,9 @@ public class GlobalParams {
 	public static HashMap<Long, Point> mOfflineMapPoints;
 	public static HashMap<Long, DynamicMarker> mMarkers;
 	public static String targetFileName;
-	
+	public int height;
+	public int width;
+
 	public static boolean isExist(String markerName) {
 		for (Point point : GlobalParams.getInstance().mPoints) {
 			if (point.first_name.equals(markerName)) {
@@ -87,6 +90,27 @@ public class GlobalParams {
 			if (point.rowID == rowid) {
 				mPoints.remove(point);
 			}
+		}
+	}
+	
+	public void adjustMap() {
+
+		android.location.Location location = this.mLocationService
+				.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+		if (location == null) {
+
+			location = this.mLocationService
+					.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+		}
+
+		LatLng loc = null;
+
+		if (location != null) {
+			loc = new LatLng(location.getLatitude(), location.getLongitude());
+			GlobalParams.getInstance().mCurrMap.addMarkerOnLocationOffline("MyLoc", markerType.GPS, loc.latitude, loc.longitude);
+			//.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 16.0f));
+
 		}
 	}
 	
@@ -112,6 +136,8 @@ public class GlobalParams {
 		mOfflineMapPoints = new HashMap<Long, PointsDBAccess.Point>();
 		GlobalParams.getInstance().mPoints = mDbHandler.getPoints(false);
 
+		getInstance().adjustMap();
+		
 		if (GlobalParams.getInstance().mPoints.size() != 0) {
 			for (Point point : GlobalParams.getInstance().mPoints) {
 				mCurrMap.addMarkerOnLocationOffline(point.first_name,

@@ -233,13 +233,13 @@ public class OfflineMapFragment extends Fragment implements EditTargetListener {
 
 			
 		
-			
+			GlobalParams.getInstance().mLocationService = this.mLocationService;
 			
 			// this.addMarkersFromDB();
 			GlobalParams.addMarkersFromDB();
 			
 			this.getActivity().registerForContextMenu(mapView);
-			this.adjustMap();
+			GlobalParams.getInstance().adjustMap();
 			return mapView;
 		}
 
@@ -262,25 +262,5 @@ public class OfflineMapFragment extends Fragment implements EditTargetListener {
 	public void imageUpdated(long rowid) {
 		// TODO Auto-generated method stub
 
-	}
-	private void adjustMap() {
-
-		android.location.Location location = this.mLocationService
-				.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
-		if (location == null) {
-
-			location = this.mLocationService
-					.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-		}
-
-		LatLng loc = null;
-
-		if (location != null) {
-			loc = new LatLng(location.getLatitude(), location.getLongitude());
-			GlobalParams.getInstance().mCurrMap.addMarkerOnLocationOffline("MyLoc", markerType.GPS, loc.latitude, loc.longitude);
-			//.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 16.0f));
-
-		}
 	}
 }

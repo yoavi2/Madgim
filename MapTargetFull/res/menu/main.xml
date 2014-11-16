@@ -17,7 +17,7 @@
     <item
         android:id="@+id/action_refresh"
         android:orderInCategory="100"
-        android:icon="@drawable/ic_action_refresh"
+        android:icon="@drawable/ic_action_action_cached"
         android:title="Refresh"
         android:showAsAction="always"/>
     
@@ -25,7 +25,7 @@
         android:id="@+id/action_connect"
         android:orderInCategory="1"
         android:visible="false"
-        android:icon="@drawable/alert_icon"
+        android:icon="@drawable/ic_action_alert_icon"
         android:showAsAction="always"/>
 
    <item
@@ -35,7 +35,7 @@
         android:layout_gravity="right"
         android:orderInCategory="1"
         android:visible="false"
-        android:icon="@drawable/cloud_off"
+        android:icon="@drawable/ic_action_cloud_off"
         android:showAsAction="always"/>
    
 </menu>

@@ -179,8 +179,20 @@ public class SecondFragment extends DialogFragment implements
 				HaloPulse beacon = new HaloPulse();
 			    beacon.name = "beacon";
 			    beacon.location = currLoc;
-			    beacon.minRadius = 40;
-			    beacon.maxRadius = 65;
+
+			    if (GlobalParams.getInstance().height > 1080) {
+				    beacon.minRadius = 120;
+				    beacon.maxRadius = 150;
+			    }
+			    else if (GlobalParams.getInstance().height > 800) {
+				    beacon.minRadius = 80;
+				    beacon.maxRadius = 105;
+			    }
+			    else {
+				    beacon.minRadius = 40;
+				    beacon.maxRadius = 65;
+			    }
+			    
 			    beacon.animationDuration = 1.5f;
 			    beacon.repeatDelay = 0;
 			    beacon.fade = true;

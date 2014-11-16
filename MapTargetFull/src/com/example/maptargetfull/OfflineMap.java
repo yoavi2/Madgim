@@ -58,7 +58,17 @@ public class OfflineMap extends us.ba3.me.MapView {
 		// Add a marker
 		DynamicMarker marker = new DynamicMarker();
 		marker.name = strName;
-		marker.anchorPoint = new PointF(32, 18);
+		
+		if (GlobalParams.getInstance().height > 1080) {
+			marker.anchorPoint = new PointF(100, 50);
+	    }
+	    else if (GlobalParams.getInstance().height > 800) {
+			marker.anchorPoint = new PointF(32, 18);
+	    }
+	    else {
+			marker.anchorPoint = new PointF(32, 18);
+	    }
+		
 		marker.location.longitude = longitude;
 		marker.location.latitude = latitude;
 		
@@ -95,7 +105,7 @@ public class OfflineMap extends us.ba3.me.MapView {
 		}
 		else {
 			bmImage = BitmapFactory.decodeResource(getResources(),
-					   R.drawable.mapa_icon);
+					   R.drawable.me);
 			
 			marker.setImage(bmImage, false);
 			currMap.addDynamicMarkerToMap("GPS", marker);

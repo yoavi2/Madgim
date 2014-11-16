@@ -30,6 +30,7 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings.Secure;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -66,6 +67,12 @@ public class MainActivity extends AbstractNavDrawerActivity implements
 		
 		GlobalParams.getInstance().currActivity = this;
 		
+		DisplayMetrics dm = new DisplayMetrics();
+		getWindowManager().getDefaultDisplay().getMetrics(dm);
+
+		GlobalParams.getInstance().height = dm.heightPixels;
+		GlobalParams.getInstance().width = dm.widthPixels;
+			
 		// Create the dummy account
 		mAccount = CreateSyncAccount(this);
 
@@ -297,7 +304,7 @@ public class MainActivity extends AbstractNavDrawerActivity implements
 			break;
 		case R.id.action_online_map_toggle:
 			 if (GlobalParams.getInstance().isOffline) {
-				 item.setIcon(R.drawable.cloud_on);
+				 item.setIcon(R.drawable.ic_action_cloud_on);
 				 GlobalParams.getInstance().isOffline = false;
 				 
 				 GlobalParams.goToOnlineMap();
@@ -306,7 +313,7 @@ public class MainActivity extends AbstractNavDrawerActivity implements
 				 Toast.makeText(this, "Online map", Toast.LENGTH_SHORT).show();
 			 }
 			 else {
-				 item.setIcon(R.drawable.cloud_off);
+				 item.setIcon(R.drawable.ic_action_cloud_off);
 				 GlobalParams.getInstance().isOffline = true;
 				 
 				 GlobalParams.goToOfflineMap();
