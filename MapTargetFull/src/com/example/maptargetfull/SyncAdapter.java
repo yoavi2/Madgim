@@ -57,8 +57,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			ContentProviderClient provider, SyncResult syncResult) {
 		Boolean succeeded = true;
 		
-		android.os.Debug.waitForDebugger();
-		
 			PointsDBAccess pointsDB = new PointsDBAccess(getContext());
 			ArrayList<PointForSync> arrayPoint = pointsDB.getPointsForSync();
 			// create HttpClient
