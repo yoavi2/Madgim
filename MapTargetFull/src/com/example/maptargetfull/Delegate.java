@@ -30,8 +30,8 @@ private OfflineMap currMap;
 			    beacon.maxRadius = 150;
 		    }
 		    else if (GlobalParams.getInstance().height > 800) {
-			    beacon.minRadius = 80;
-			    beacon.maxRadius = 105;
+			    beacon.minRadius = 50;
+			    beacon.maxRadius = 75;
 		    }
 		    else {
 			    beacon.minRadius = 40;
