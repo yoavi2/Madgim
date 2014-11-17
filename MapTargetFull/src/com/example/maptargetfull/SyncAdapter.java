@@ -38,7 +38,7 @@ import com.example.maptargetfull.PointsDBAccess.PointForSync;
 import com.example.maptargetfull.SQLiteDB.Points;
 
 public class SyncAdapter extends AbstractThreadedSyncAdapter {
-	private final String url = "http://192.168.43.69:3000/friends";
+	private final String url = "http://192.168.43.48:3000/friends";
 	
 	public SyncAdapter(Context context, boolean autoInitialize) {
 		super(context, autoInitialize);
