@@ -139,8 +139,15 @@ public class OfflineMap extends us.ba3.me.MapView {
 
 	@Override
 	public void onLongPress(MotionEvent arg0) {
+		
+		int maskedAction = arg0.getActionMasked();
+		
 		super.onLongPress(arg0);
 
+	    if (maskedAction == MotionEvent.ACTION_POINTER_2_DOWN) {
+	    	Toast.makeText(this.getContext(), "BOOMBOOMBOOM", Toast.LENGTH_SHORT).show();
+	    }
+		
 		super.getLocationForPoint(new PointF(arg0.getX(), arg0.getY()),
 				new ConvertPointCallback() {
 
