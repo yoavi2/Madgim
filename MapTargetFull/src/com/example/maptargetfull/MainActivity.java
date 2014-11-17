@@ -101,7 +101,7 @@ public class MainActivity extends AbstractNavDrawerActivity implements
 			originFragment = OfflineMapFragment.TAG;
 		}
 
-		c = new MqttAndroidClient(this, "tcp://192.168.43.37:1883", UUID.randomUUID().toString());
+		c = new MqttAndroidClient(this, "tcp://192.168.43.48:1883", UUID.randomUUID().toString());
 
 		try {
 			c.setCallback(new mqtthandler(this, c));
