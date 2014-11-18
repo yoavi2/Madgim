@@ -33,6 +33,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SyncResult;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.example.maptargetfull.PointsDBAccess.PointForSync;
 import com.example.maptargetfull.SQLiteDB.Points;
@@ -55,7 +57,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	@Override
 	public void onPerformSync(Account account, Bundle extras, String authority,
 			ContentProviderClient provider, SyncResult syncResult) {
-		Boolean succeeded = true;
+			Boolean succeeded = true;
 		
 			PointsDBAccess pointsDB = new PointsDBAccess(getContext());
 			ArrayList<PointForSync> arrayPoint = pointsDB.getPointsForSync();
@@ -112,21 +114,25 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					Log.w("___JSONException0___", e.getMessage());
 					succeeded = false;
 					break;
 				} catch (UnsupportedEncodingException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					Log.w("___UnsupportedEncodingException0___", e.getMessage());
 					succeeded = false;
 					break;
 				} catch (ClientProtocolException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					Log.w("___ClientProtocolException0___", e.getMessage());
 					succeeded = false;
 					break;
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					
 					succeeded = false;
 					break;
 				}
@@ -179,15 +185,18 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 				} catch (ClientProtocolException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					Log.w("__ClientProtocolException___", e.getMessage());
 					succeeded = false;
 
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					Log.w("___IOException___", e.getMessage());
 					succeeded = false;
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					Log.w("___JSONException___", e.getMessage());
 					succeeded = false;
 				}
 			}
