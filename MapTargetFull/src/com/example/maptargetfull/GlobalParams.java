@@ -40,6 +40,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 public class GlobalParams {
 	public Boolean isOffline = true;
+	public Boolean isScaling = false;
 	public enum markerType {Tank, Truck, GPS};
 	public markerType currMarkerType;
 	public static Context inflaterContext;

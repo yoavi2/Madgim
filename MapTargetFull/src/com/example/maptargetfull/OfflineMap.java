@@ -12,6 +12,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PointF;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.widget.Toast;
 
 import com.example.maptargetfull.GlobalParams.markerType;
@@ -138,15 +139,29 @@ public class OfflineMap extends us.ba3.me.MapView {
 	}
 
 	@Override
+	public boolean onScaleBegin(ScaleGestureDetector detector) {
+	
+		GlobalParams.getInstance().isScaling = true;
+		
+		return super.onScaleBegin(detector);
+	}
+	
+	@Override
+	public void onScaleEnd(ScaleGestureDetector detector) {
+		
+		GlobalParams.getInstance().isScaling = false;
+		
+		super.onScaleEnd(detector);
+	}
+	
+	@Override
 	public void onLongPress(MotionEvent arg0) {
 		
 		int maskedAction = arg0.getActionMasked();
 		
 		super.onLongPress(arg0);
 
-	    if (maskedAction == MotionEvent.ACTION_POINTER_2_DOWN) {
-	    	Toast.makeText(this.getContext(), "BOOMBOOMBOOM", Toast.LENGTH_SHORT).show();
-	    }
+	    if (!GlobalParams.getInstance().isScaling) {
 		
 		super.getLocationForPoint(new PointF(arg0.getX(), arg0.getY()),
 				new ConvertPointCallback() {
@@ -188,7 +203,8 @@ public class OfflineMap extends us.ba3.me.MapView {
 //						addTargetDialog.getDialog().getWindow().setLayout(20, 20);
 
 					}
-				});
+				});  
+	    }
 	}
 	
 	public void ShowMeTheContextualMenu() {
