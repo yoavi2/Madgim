@@ -61,7 +61,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			ArrayList<PointForSync> arrayPoint = pointsDB.getPointsForSync();
 			// create HttpClient
 			HttpClient httpclient = new DefaultHttpClient();
-			int timeout = 1; // seconds
+			int timeout = 60; // seconds
 			HttpParams httpParams = httpclient.getParams();
 			HttpConnectionParams.setConnectionTimeout(httpParams,
 					timeout * 1000); // http.connection.timeout
