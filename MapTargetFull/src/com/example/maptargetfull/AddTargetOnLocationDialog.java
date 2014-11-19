@@ -74,7 +74,7 @@ public class AddTargetOnLocationDialog extends DialogFragment {
 						if (mETName.getText().toString().trim().isEmpty()) {
 
 							Toast.makeText(getActivity(),
-									"Name field is mandatory!",
+									getString(R.string.empty_msg),
 									Toast.LENGTH_LONG).show();
 
 							// Draw pencil
@@ -166,10 +166,10 @@ public class AddTargetOnLocationDialog extends DialogFragment {
 					}
 				});
 
-		String title = getArguments().getString("title", "Add Target");
+		String title = getArguments().getString("title", getString(R.string.title_add));
 		getDialog().setTitle(title);
 		// Show soft keyboard automatically
-		this.mETName.requestFocus();
+		// this.mETName.requestFocus();
 		getDialog().getWindow().setSoftInputMode(
 				WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 		return view;

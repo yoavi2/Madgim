@@ -133,7 +133,7 @@ public class EditTargetDialog extends DialogFragment implements OnClickListener 
 		etLastName.setText(mPoint.last_name);
 		btnSave.setVisibility(View.GONE);
 
-		String title = getArguments().getString("title", "Add Target");
+		String title = getArguments().getString("title", getString(R.string.title_add));
 		getDialog().setTitle(title);
 		return view;
 	}

@@ -74,7 +74,7 @@ public class SecondFragment extends DialogFragment implements
 		// Set loading dialog until the datais received from server
 		pdialog = new ProgressDialog(getActivity());
 		pdialog.setMessage("loading list from json rest service :)");
-//		pdialog.show();
+		//pdialog.show();
 		//
 		// call the server to get the data
 		new callservice(ACTION_GET).execute();
@@ -87,8 +87,8 @@ public class SecondFragment extends DialogFragment implements
 			Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
 
-		rootView = inflater.inflate(R.layout.secondfragment, container,
-				false);
+			rootView = inflater.inflate(R.layout.secondfragment, container,
+					false);
 
 		this.swipeRefreshLayout = (SwipeRefreshLayout) rootView
 				.findViewById(R.id.srl_main);
@@ -183,14 +183,17 @@ public class SecondFragment extends DialogFragment implements
 			    if (GlobalParams.getInstance().height > 1080) {
 				    beacon.minRadius = 120;
 				    beacon.maxRadius = 150;
+				    beacon.lineStyle.outlineWidth = 6;
 			    }
-			    else if (GlobalParams.getInstance().height > 800) {
-			    	beacon.minRadius = 50;
-				    beacon.maxRadius = 75;
+			    else if (GlobalParams.getInstance().height >= 800) {
+				    beacon.minRadius = 32;
+				    beacon.maxRadius = 47;
+				    beacon.lineStyle.outlineWidth = 2;
 			    }
 			    else {
 				    beacon.minRadius = 40;
 				    beacon.maxRadius = 65;
+				    beacon.lineStyle.outlineWidth = 3;
 			    }
 			    
 			    beacon.animationDuration = 1.5f;
@@ -201,7 +204,6 @@ public class SecondFragment extends DialogFragment implements
 			    beacon.zOrder = 3;
 			    beacon.lineStyle.strokeColor = Color.WHITE;
 			    beacon.lineStyle.outlineColor = Color.rgb(30,151,235);
-			    beacon.lineStyle.outlineWidth = 4;
 			    GlobalParams.getCurrMap().addHaloPulse(beacon);
 			    
 			    GlobalParams.getCurrMap().setLocation(currLoc, 0.3);

@@ -17,6 +17,7 @@ import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.maptargetfull.EditTargetDialog.EditTargetListener;
 import com.example.maptargetfull.GlobalParams.markerType;
@@ -186,14 +187,18 @@ public class OfflineMapFragment extends Fragment implements EditTargetListener {
 					R.layout.fragment_offlinemap, container);
 
 			mapView.set(mapView);
-			mapView.addMBTilesMap("offline", targetFileName, "grayGrid",
-					ImageDataType.kImageDataTypePNG, false, 2,
-					MapLoadingStrategy.kLowestDetailFirst);
+			try {
+				mapView.addMBTilesMap("offline", "/storage/emulated/0/Download/SagiBigMap.mbtiles", "grayGrid",
+						ImageDataType.kImageDataTypePNG, false, 2,
+						MapLoadingStrategy.kLowestDetailFirst);
+			} catch (Exception e) {
+				Toast.makeText(GlobalParams.getInstance().inflaterContext, "קובץ המפות לא נמצא", Toast.LENGTH_LONG).show();
+			}
 
 			GlobalParams.getInstance();
 			GlobalParams.targetFileName = targetFileName;
 			GlobalParams.setCurrMap(mapView);
-
+			
 			// Zoom into tel aviv
 			mapView.setLocationThatFitsCoordinates(new Location(32.0387414, 34.8377299), 
 												   new Location(32.0852946, 34.8185897), 
