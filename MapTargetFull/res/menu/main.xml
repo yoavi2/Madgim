@@ -7,7 +7,7 @@
         android:id="@+id/action_settings"
         android:orderInCategory="4"
         android:title="@string/action_settings"
-        android:showAsAction="ifRoom"/>
+        android:showAsAction="always" />
     <item
         android:id="@+id/action_list"
         android:orderInCategory="100"

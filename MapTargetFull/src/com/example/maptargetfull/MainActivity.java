@@ -32,6 +32,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.R.integer;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Dialog;
@@ -44,6 +45,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -54,6 +56,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -72,7 +75,8 @@ public class MainActivity extends AbstractNavDrawerActivity implements
 	public static final String ACCOUNT = "dummyaccount";
 
 	private DialogDetails dialog = new DialogDetails();
-
+	private SettingsFragment settings = new SettingsFragment();
+	
 	public Dialog pdialog;
 
 	public String currFragment;
@@ -124,7 +128,11 @@ public class MainActivity extends AbstractNavDrawerActivity implements
 			originFragment = OfflineMapFragment.TAG;
 		}
 
-		c = new MqttAndroidClient(this, "tcp://192.168.43.69:1883", UUID
+		SharedPreferences shar = MainActivity.this.getSharedPreferences("set", Context.MODE_PRIVATE);
+		
+		String ipb = shar.getString("IPB", "0.0.0.0");
+		
+		c = new MqttAndroidClient(this, "tcp://" + ipb + ":1883", UUID
 				.randomUUID().toString());
 
 		try {
@@ -301,7 +309,9 @@ public class MainActivity extends AbstractNavDrawerActivity implements
 		int id = item.getItemId();
 		switch (id) {
 		case R.id.action_settings:
-			dialog.show(getFragmentManager(), "test");
+
+			settings.show(getFragmentManager(), "settings");
+			
 			return true;
 		case R.id.action_list:
 			// getFragmentManager().beginTransaction().hide(getFragmentManager().findFragmentByTag(currFragment));
@@ -458,7 +468,7 @@ public class MainActivity extends AbstractNavDrawerActivity implements
 
 	public class refreshAsync extends AsyncTask<Dialog, Void, Void> {
 		private Dialog pdialog;
-		private final String url = "http://192.168.43.69:3000/friends";
+		private String url = "http://192.168.43.69:3000/friends";
 		private Boolean succeeded = true;
 
 		@Override
@@ -470,7 +480,25 @@ public class MainActivity extends AbstractNavDrawerActivity implements
 			ArrayList<PointForSync> arrayPoint = pointsDB.getPointsForSync();
 			// create HttpClient
 			HttpClient httpclient = new DefaultHttpClient();
-			int timeout = 60; // seconds
+			
+			//////////
+			SharedPreferences shar = MainActivity.this.getSharedPreferences("set", Context.MODE_PRIVATE);
+			
+			String timeoutString = shar.getString("TIMEOUT", "10");
+			String ipm = shar.getString("IPM", "0.0.0.0");
+			
+			
+			url = "http://" + ipm + ":3000/friends";
+			
+			//////////
+			int timeout = 10;
+			
+			try {
+				timeout = Integer.parseInt(timeoutString); // seconds
+			} catch (Exception e) {
+
+			}
+			
 			HttpParams httpParams = httpclient.getParams();
 			HttpConnectionParams.setConnectionTimeout(httpParams,
 					timeout * 1000); // http.connection.timeout
