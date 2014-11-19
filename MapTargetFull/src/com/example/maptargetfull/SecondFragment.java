@@ -74,7 +74,7 @@ public class SecondFragment extends DialogFragment implements
 		// Set loading dialog until the datais received from server
 		pdialog = new ProgressDialog(getActivity());
 		pdialog.setMessage("loading list from json rest service :)");
-		pdialog.show();
+//		pdialog.show();
 		//
 		// call the server to get the data
 		new callservice(ACTION_GET).execute();
