@@ -31,5 +31,5 @@
         android:visibility="invisible"
         android:listSelector="@drawable/navdrawer_listselector"
         />
-    
+   
 </RelativeLayout>

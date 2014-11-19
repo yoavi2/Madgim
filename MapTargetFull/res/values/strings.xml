@@ -3,7 +3,7 @@
 
     <string name="app_name"> שלג לבן </string>
     <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">הגדרות</string>
 
     <string-array name="list">
         <item>Friends</item>
@@ -25,10 +25,17 @@
     
     <string name="text_enemy">Enemy</string>
     <string name="text_friend">Friend</string>
-    <string name="text_accept">Accept</string>
-    <string name="text_cancel">Cancel</string>
-    <string name="action_edit_marker">Edit Marker</string>
-    <string name="action_delete_marker">Delete Marker</string>
-     <string name="text_name">Name</string>
+    <string name="text_accept">הוספה</string>
+    <string name="text_cancel">ביטול</string>
+    <string name="action_edit_marker">ערוך מרקר</string>
+    <string name="action_delete_marker">מחק מרקר</string>
+    <string name="text_name">שם: </string>
+    <string name="title_add">הוספת מרקר</string>
+    <string name="empty_msg">הכנס את שם המרקר בבקשה</string>
+    <string name="online_map">מפת אונליין</string>
+    <string name="offline_map">מפת אופליין</string>
+    <string name="toggle_map">החלפת מפה</string>
+    <string name="error_con">שגיאה בחיבור לשרת</string>
+    <string name="refresh">סינכרון</string>
     
 </resources>

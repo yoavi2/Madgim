@@ -28,14 +28,17 @@ private OfflineMap currMap;
 		    if (GlobalParams.getInstance().height > 1080) {
 			    beacon.minRadius = 120;
 			    beacon.maxRadius = 150;
+			    beacon.lineStyle.outlineWidth = 6;
 		    }
-		    else if (GlobalParams.getInstance().height > 800) {
-			    beacon.minRadius = 50;
-			    beacon.maxRadius = 75;
+		    else if (GlobalParams.getInstance().height >= 800) {
+			    beacon.minRadius = 32;
+			    beacon.maxRadius = 47;
+			    beacon.lineStyle.outlineWidth = 2;
 		    }
 		    else {
 			    beacon.minRadius = 40;
 			    beacon.maxRadius = 65;
+			    beacon.lineStyle.outlineWidth = 3;
 		    }
 		    
 		    beacon.animationDuration = 1.5f;
@@ -46,7 +49,6 @@ private OfflineMap currMap;
 		    beacon.zOrder = 3;
 		    beacon.lineStyle.strokeColor = Color.WHITE;
 		    beacon.lineStyle.outlineColor = Color.rgb(30,151,235);
-		    beacon.lineStyle.outlineWidth = 4;
 		    currMap.addHaloPulse(beacon);
 		    
 		    currMap.setLocation(currLoc, 0.3);

@@ -5,9 +5,9 @@
 
     <item
         android:id="@+id/action_settings"
-        android:orderInCategory="100"
+        android:orderInCategory="4"
         android:title="@string/action_settings"
-        android:showAsAction="never"/>
+        android:showAsAction="always"/>
     <item
         android:id="@+id/action_list"
         android:orderInCategory="100"
@@ -16,9 +16,9 @@
         android:showAsAction="ifRoom"/>
     <item
         android:id="@+id/action_refresh"
-        android:orderInCategory="100"
+        android:orderInCategory="3"
         android:icon="@drawable/ic_action_action_cached"
-        android:title="Refresh"
+        android:title="@string/refresh"
         android:showAsAction="always"/>
     
    <item
@@ -26,6 +26,7 @@
         android:orderInCategory="1"
         android:visible="false"
         android:icon="@drawable/ic_action_alert_icon"
+        android:title="@string/error_con"
         android:showAsAction="always"/>
 
    <item
@@ -33,8 +34,9 @@
         android:layout_width="170dp"
         android:layout_height="100dp"
         android:layout_gravity="right"
-        android:orderInCategory="1"
+        android:orderInCategory="2"
         android:visible="false"
+        android:title="@string/toggle_map"
         android:icon="@drawable/ic_action_cloud_off"
         android:showAsAction="always"/>
    

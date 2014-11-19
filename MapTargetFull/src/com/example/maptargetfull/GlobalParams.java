@@ -34,6 +34,8 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.maptargetfull.PointsDBAccess.Point;
 import com.google.android.gms.maps.model.LatLng;
@@ -75,7 +77,7 @@ public class GlobalParams {
 	public static String targetFileName;
 	public int height;
 	public int width;
-
+	
 	public static boolean isExist(String markerName) {
 		for (Point point : GlobalParams.getInstance().mPoints) {
 			if (point.first_name.equals(markerName)) {
@@ -170,9 +172,14 @@ public class GlobalParams {
 		View.inflate(inflaterContext, R.layout.fragment_offlinemap, viewGroup);
 		
 		mCurrMap.set(mCurrMap);
-		mCurrMap.addMBTilesMap("offline", targetFileName, "grayGrid",
-				ImageDataType.kImageDataTypePNG, false, 2,
-				MapLoadingStrategy.kLowestDetailFirst);
+		
+		try {
+			mCurrMap.addMBTilesMap("offline", "/storage/emulated/0/Download/SagiBigMap.mbtiles", "grayGrid",
+					ImageDataType.kImageDataTypePNG, false, 2,
+					MapLoadingStrategy.kLowestDetailFirst);
+		} catch (Exception e) {
+			Toast.makeText(GlobalParams.getInstance().inflaterContext, "קובץ המפות לא נמצא", Toast.LENGTH_LONG).show();
+		}
 	}
 	
 	public static void setMenu(android.view.Menu menu) {

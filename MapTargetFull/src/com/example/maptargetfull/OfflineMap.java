@@ -63,13 +63,13 @@ public class OfflineMap extends us.ba3.me.MapView {
 		if (GlobalParams.getInstance().height > 1080) {
 			marker.anchorPoint = new PointF(100, 50);
 	    }
-	    else if (GlobalParams.getInstance().height > 800) {
-			marker.anchorPoint = new PointF(32, 18);
+	    else if (GlobalParams.getInstance().height >= 800) {
+			marker.anchorPoint = new PointF(26, 14);
 	    }
 	    else {
 			marker.anchorPoint = new PointF(32, 18);
 	    }
-		
+//		Add Target
 		marker.location.longitude = longitude;
 		marker.location.latitude = latitude;
 		
@@ -194,7 +194,7 @@ public class OfflineMap extends us.ba3.me.MapView {
 						
 						FragmentManager fm = GlobalParams.getFragment();
 						AddTargetOnLocationDialog addTargetDialog = AddTargetOnLocationDialog
-								.newInstance("Add Target", loc1.latitude, loc1.longitude, TAG);
+								.newInstance(GlobalParams.getInstance().currActivity.getString(R.string.title_add), loc1.latitude, loc1.longitude, TAG);
 						addTargetDialog.setStyle(R.style.cust_dialog,addTargetDialog.getTheme());
 //						Window window = addTargetDialog.getActivity().getWindow();
 //						window.setLayout(200, 50);

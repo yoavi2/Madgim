@@ -1,8 +1,25 @@
 package com.example.maptargetfull;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -11,6 +28,9 @@ import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.MqttSecurityException;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -31,12 +51,15 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings.Secure;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.maptargetfull.PointsDBAccess.Point;
+import com.example.maptargetfull.PointsDBAccess.PointForSync;
+import com.example.maptargetfull.SQLiteDB.Points;
 
 public class MainActivity extends AbstractNavDrawerActivity implements
 		MqttCallback, IMqttActionListener {
@@ -54,7 +77,7 @@ public class MainActivity extends AbstractNavDrawerActivity implements
 
 	public String currFragment;
 	public static String originFragment;
-	private boolean didSyncFailed;
+	public static boolean didSyncFailed;
 	private MqttAndroidClient c;
 	private OfflineMap mOfflineMapView;
 
@@ -64,44 +87,45 @@ public class MainActivity extends AbstractNavDrawerActivity implements
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		GlobalParams.getInstance().currActivity = this;
-		
+
 		DisplayMetrics dm = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(dm);
 
 		GlobalParams.getInstance().height = dm.heightPixels;
 		GlobalParams.getInstance().width = dm.widthPixels;
-			
+
 		// Create the dummy account
 		mAccount = CreateSyncAccount(this);
 
 		GlobalParams.getInstance().PointsDBaccess = new PointsDBAccess(this);
 
 		if (savedInstanceState == null) {
-//			FirstFragment first = new FirstFragment();
-//			getFragmentManager().beginTransaction()
-//					.replace(R.id.content_frame, first, FirstFragment.TAG)
-//					.commit();
-//			GlobalParams.getInstance().setProgress(first);
-//			this.currFragment = FirstFragment.TAG;
-//			originFragment = FirstFragment.TAG;
+			// FirstFragment first = new FirstFragment();
+			// getFragmentManager().beginTransaction()
+			// .replace(R.id.content_frame, first, FirstFragment.TAG)
+			// .commit();
+			// GlobalParams.getInstance().setProgress(first);
+			// this.currFragment = FirstFragment.TAG;
+			// originFragment = FirstFragment.TAG;
 			OfflineMapFragment offline = new OfflineMapFragment();
-			getFragmentManager().beginTransaction()
-					.replace(R.id.content_frame, offline, OfflineMapFragment.TAG)
-					.commit();
-			
+			getFragmentManager()
+					.beginTransaction()
+					.replace(R.id.content_frame, offline,
+							OfflineMapFragment.TAG).commit();
+
 			SecondFragment list = new SecondFragment();
 			getFragmentManager().beginTransaction()
-			.replace(R.id.list_frame, list, "list_frame")
-			.commit();
-			
+					.replace(R.id.list_frame, list, "list_frame").commit();
+
 			GlobalParams.getInstance().setProgress(offline);
 			this.currFragment = OfflineMapFragment.TAG;
 			originFragment = OfflineMapFragment.TAG;
 		}
 
-		c = new MqttAndroidClient(this, "tcp://176.12.133.50:1883", UUID.randomUUID().toString());
+		c = new MqttAndroidClient(this, "tcp://192.168.43.69:1883", UUID
+				.randomUUID().toString());
 
 		try {
 			c.setCallback(new mqtthandler(this, c));
@@ -135,8 +159,7 @@ public class MainActivity extends AbstractNavDrawerActivity implements
 		navDrawerActivityConfiguration.setDrawerLayoutId(R.id.drawer_layout);
 		navDrawerActivityConfiguration.setLeftDrawerId(R.id.left_drawer);
 		navDrawerActivityConfiguration.setNavItems(menu);
-		navDrawerActivityConfiguration
-				.setDrawerShadow(R.drawable.x);
+		navDrawerActivityConfiguration.setDrawerShadow(R.drawable.x);
 		navDrawerActivityConfiguration.setDrawerOpenDesc(R.string.drawer_open);
 		navDrawerActivityConfiguration
 				.setDrawerCloseDesc(R.string.drawer_close);
@@ -292,35 +315,35 @@ public class MainActivity extends AbstractNavDrawerActivity implements
 			break;
 		case R.id.action_refresh:
 			this.refresh(true);
-			
+
 			// Reload current fragment
 			Fragment frg = null;
 			frg = GlobalParams.getFragment().findFragmentByTag("list_frame");
-			final FragmentTransaction ft = GlobalParams.getFragment().beginTransaction();
+			final FragmentTransaction ft = GlobalParams.getFragment()
+					.beginTransaction();
 			ft.detach(frg);
 			ft.attach(frg);
 			ft.commit();
-			
+
 			break;
 		case R.id.action_online_map_toggle:
-			 if (GlobalParams.getInstance().isOffline) {
-				 item.setIcon(R.drawable.ic_action_cloud_on);
-				 GlobalParams.getInstance().isOffline = false;
-				 
-				 GlobalParams.goToOnlineMap();
-				 GlobalParams.addMarkersFromDB();
-				 
-				 Toast.makeText(this, "Online map", Toast.LENGTH_SHORT).show();
-			 }
-			 else {
-				 item.setIcon(R.drawable.ic_action_cloud_off);
-				 GlobalParams.getInstance().isOffline = true;
-				 
-				 GlobalParams.goToOfflineMap();
-				 GlobalParams.addMarkersFromDB();
-				 
-				 Toast.makeText(this, "Offline map", Toast.LENGTH_SHORT).show();
-			 }
+			if (GlobalParams.getInstance().isOffline) {
+				item.setIcon(R.drawable.ic_action_cloud_on);
+				GlobalParams.getInstance().isOffline = false;
+
+				GlobalParams.goToOnlineMap();
+				GlobalParams.addMarkersFromDB();
+
+				Toast.makeText(this, "Online map", Toast.LENGTH_SHORT).show();
+			} else {
+				item.setIcon(R.drawable.ic_action_cloud_off);
+				GlobalParams.getInstance().isOffline = true;
+
+				GlobalParams.goToOfflineMap();
+				GlobalParams.addMarkersFromDB();
+
+				Toast.makeText(this, "Offline map", Toast.LENGTH_SHORT).show();
+			}
 			break;
 		case R.id.action_connect:
 			Toast.makeText(
@@ -332,54 +355,37 @@ public class MainActivity extends AbstractNavDrawerActivity implements
 		return super.onOptionsItemSelected(item);
 	}
 
-	public void refreshThis(Boolean withDialog) {
-		// Pass the settings flags by inserting them in a bundle
-		Bundle settingsBundle = new Bundle();
-		settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
-		settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
-		/*
-		 * Request the sync for the default account, authority, and manual sync
-		 * settings
-		 */
-		if (withDialog) {
-			pdialog = new ProgressDialog(this);
-			pdialog.setTitle("Refreshing data...");
-			pdialog.show();
-		}
-
-		if (!this.isConnected()) {
-			
-		} else {
-//			ContentResolver.requestSync(mAccount, AUTHORITY, settingsBundle);
-		}
-	}
-	
 	public void refresh(Boolean withDialog) {
 		// Pass the settings flags by inserting them in a bundle
-		Bundle settingsBundle = new Bundle();
-		settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
-		settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
-		/*
-		 * Request the sync for the default account, authority, and manual sync
-		 * settings
-		 */
+		// Bundle settingsBundle = new Bundle();
+		// settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
+		// settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED,
+		// true);
+		// /*
+		// * Request the sync for the default account, authority, and manual
+		// sync
+		// * settings
+		// */
 		if (withDialog) {
 			pdialog = new ProgressDialog(this);
 			pdialog.setTitle("Refreshing data...");
 			pdialog.show();
 		}
+		
+		new refreshAsync().execute(pdialog);
 
-		if (!this.isConnected()) {
-			refresh_view();
-		} else {
-			ContentResolver.requestSync(mAccount, AUTHORITY, settingsBundle);
-		}
+		// if (!this.isConnected()) {
+		// refresh_view();
+		// } else {
+		// ContentResolver.requestSync(mAccount, AUTHORITY, settingsBundle);
+		// }
+
 	}
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 
-		if (!this.isConnected() || this.didSyncFailed) {
+		if (this.didSyncFailed) {
 			menu.findItem(R.id.action_connect).setVisible(true);
 		} else {
 			menu.findItem(R.id.action_connect).setVisible(false);
@@ -405,26 +411,27 @@ public class MainActivity extends AbstractNavDrawerActivity implements
 	@Override
 	protected void onResume() {
 		super.onResume();
-		registerReceiver(syncFinishedReceiver,
-				new IntentFilter(GlobalParams.getInstance().syncFinished));
+		// registerReceiver(syncFinishedReceiver,
+		// new IntentFilter(GlobalParams.getInstance().syncFinished));
 	}
 
 	@Override
 	protected void onPause() {
 		super.onPause();
-		unregisterReceiver(syncFinishedReceiver);
+		// unregisterReceiver(syncFinishedReceiver);
 	}
 
-	private BroadcastReceiver syncFinishedReceiver = new BroadcastReceiver() {
-
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			didSyncFailed = !intent.getExtras().getBoolean(
-					GlobalParams.getInstance().syncSucceeded);
-
-			refresh_view();
-		}
-	};
+	// private BroadcastReceiver syncFinishedReceiver = new BroadcastReceiver()
+	// {
+	//
+	// @Override
+	// public void onReceive(Context context, Intent intent) {
+	// didSyncFailed = !intent.getExtras().getBoolean(
+	// GlobalParams.getInstance().syncSucceeded);
+	//
+	// refresh_view();
+	// }
+	// };
 
 	public void refresh_view() {
 		invalidateOptionsMenu();
@@ -433,7 +440,7 @@ public class MainActivity extends AbstractNavDrawerActivity implements
 				.findFragmentByTag(currFragment);
 
 		if (currFragment.equals(FirstFragment.TAG)) {
-			new refreshAsync().execute(pdialog);
+			new refreshAsyncFirstFragment().execute(pdialog);
 		} else if (currFragment.equals(SecondFragment.TAG)) {
 			((SecondFragment) currFrag).new callservice(
 					SecondFragment.ACTION_GET, pdialog).execute();
@@ -449,7 +456,206 @@ public class MainActivity extends AbstractNavDrawerActivity implements
 		}
 	}
 
-	static public class refreshAsync extends AsyncTask<Dialog, Void, Void> {
+	public class refreshAsync extends AsyncTask<Dialog, Void, Void> {
+		private Dialog pdialog;
+		private final String url = "http://192.168.43.69:3000/friends";
+		private Boolean succeeded = true;
+
+		@Override
+		protected Void doInBackground(Dialog... params) {
+
+			pdialog = params[0];
+
+			PointsDBAccess pointsDB = new PointsDBAccess(MainActivity.this);
+			ArrayList<PointForSync> arrayPoint = pointsDB.getPointsForSync();
+			// create HttpClient
+			HttpClient httpclient = new DefaultHttpClient();
+			int timeout = 60; // seconds
+			HttpParams httpParams = httpclient.getParams();
+			HttpConnectionParams.setConnectionTimeout(httpParams,
+					timeout * 1000); // http.connection.timeout
+			HttpConnectionParams.setSoTimeout(httpParams, timeout * 1000); // http.socket.timeout
+			// Sync device to server
+			for (int i = 0; i < arrayPoint.size(); i++) {
+				JSONObject json = new JSONObject();
+				try {
+					json.put(Points.Columns.first_name,
+							arrayPoint.get(i).first_name);
+					json.put(Points.Columns.last_name,
+							arrayPoint.get(i).last_name);
+					json.put(Points.Columns.longitude,
+							arrayPoint.get(i).longitude);
+					json.put(Points.Columns.langitude,
+							arrayPoint.get(i).langitude);
+
+					json.put(Points.Columns.is_deleted,
+							arrayPoint.get(i).is_deleted);
+					json.put(Points.Columns.is_google,
+							arrayPoint.get(i).is_google);
+					json.put(Points.Columns.point_type,
+							arrayPoint.get(i).pointType);
+
+					if (arrayPoint.get(i).server_id == null) {
+						HttpPost httpPost = new HttpPost(url);
+
+						httpPost.setHeader("Accept", "application/json");
+						httpPost.setHeader("Content-Type",
+								"application/json;charset=UTF-8");
+
+						StringEntity se = new StringEntity(json.toString(),
+								"UTF-8");
+
+						httpPost.setEntity(se);
+						ResponseHandler responseHandler = new BasicResponseHandler();
+						httpclient.execute(httpPost, responseHandler);
+					} else {
+
+						HttpPut httpPut = new HttpPut(url + "/"
+								+ arrayPoint.get(i).server_id);
+
+						httpPut.setHeader("Accept", "application/json");
+						httpPut.setHeader("Content-Type",
+								"application/json;charset=UTF-8");
+
+						httpPut.setEntity(new StringEntity(json.toString(),
+								"UTF-8"));
+
+						ResponseHandler responseHandler = new BasicResponseHandler();
+						httpclient.execute(httpPut, responseHandler);
+					}
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					Log.w("___JSONException0___", e.getMessage());
+					succeeded = false;
+					break;
+				} catch (UnsupportedEncodingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					Log.w("___UnsupportedEncodingException0___", e.getMessage());
+					succeeded = false;
+					break;
+				} catch (ClientProtocolException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					Log.w("___ClientProtocolException0___", e.getMessage());
+					succeeded = false;
+					break;
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+
+					succeeded = false;
+					break;
+				}
+			}
+			if (succeeded == true) {
+				// Sync server to device
+				HttpGet httpGet = new HttpGet(url);
+				HttpResponse httpResponse;
+
+				try {
+					httpResponse = httpclient.execute(httpGet);
+
+					// receive response as inputStream
+					InputStream inputStream = httpResponse.getEntity()
+							.getContent();
+
+					String result = convertInputStreamToString(inputStream);
+
+					JSONObject json = new JSONObject(result);
+
+					JSONArray friends = json.getJSONArray("friends");
+
+					arrayPoint.clear();
+
+					// Run over all the friends, create an instance and add them
+					// to
+					// the array in global class
+					for (int i = 0; i < friends.length(); i++) {
+						if (friends.getJSONObject(i).getInt(
+								Points.Columns.is_deleted) == SQLiteDB
+								.convertBoolean(false)) {
+							PointForSync ps = pointsDB.new PointForSync();
+							ps.first_name = friends.getJSONObject(i).getString(
+									Points.Columns.first_name);
+							ps.last_name = friends.getJSONObject(i).getString(
+									Points.Columns.last_name);
+							ps.longitude = friends.getJSONObject(i).getDouble(
+									Points.Columns.longitude);
+							ps.langitude = friends.getJSONObject(i).getDouble(
+									Points.Columns.langitude);
+							ps.is_google = friends.getJSONObject(i).getInt(
+									Points.Columns.is_google);
+							ps.server_id = friends.getJSONObject(i).getString(
+									"_id");
+							ps.pointType = friends.getJSONObject(i).getInt(
+									Points.Columns.point_type);
+							arrayPoint.add(ps);
+						}
+					}
+
+				} catch (ClientProtocolException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					Log.w("__ClientProtocolException___", e.getMessage());
+					succeeded = false;
+
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					Log.w("___IOException___", e.getMessage());
+					succeeded = false;
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					Log.w("___JSONException___", e.getMessage());
+					succeeded = false;
+				}
+			}
+			if (succeeded == true) {
+				pointsDB.deletePointsForSync();
+
+				for (int i = 0; i < arrayPoint.size(); i++) {
+					long rowID = pointsDB.createPoint(
+							arrayPoint.get(i).first_name,
+							arrayPoint.get(i).last_name,
+							arrayPoint.get(i).longitude,
+							arrayPoint.get(i).langitude,
+							arrayPoint.get(i).is_google == 1 ? true : false,
+							arrayPoint.get(i).pointType);
+					pointsDB.SetServerID(rowID, arrayPoint.get(i).server_id);
+					pointsDB.SetSynched(rowID);
+				}
+			}
+
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(Void result) {
+			pdialog.hide();
+			MainActivity.didSyncFailed = !succeeded;
+			refresh_view();
+		}
+
+		private String convertInputStreamToString(InputStream inputStream)
+				throws IOException {
+			BufferedReader bufferedReader = new BufferedReader(
+					new InputStreamReader(inputStream));
+			String line = "";
+			String result = "";
+			while ((line = bufferedReader.readLine()) != null)
+				result += line;
+
+			inputStream.close();
+			return result;
+
+		}
+	}
+
+	static public class refreshAsyncFirstFragment extends
+			AsyncTask<Dialog, Void, Void> {
 		Dialog pdialog;
 
 		@Override
@@ -558,15 +764,16 @@ public class MainActivity extends AbstractNavDrawerActivity implements
 
 	@Override
 	public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-//		while (!c.isConnected())
-//		{
-//			try {
-//				c.connect();
-//			} catch (MqttException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//		}
-		Toast.makeText(GlobalParams.getInstance().currActivity, "FAIL", Toast.LENGTH_LONG).show();
-	}	
+		// while (!c.isConnected())
+		// {
+		// try {
+		// c.connect();
+		// } catch (MqttException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
+		// }
+		Toast.makeText(GlobalParams.getInstance().currActivity, "FAIL",
+				Toast.LENGTH_LONG).show();
+	}
 }

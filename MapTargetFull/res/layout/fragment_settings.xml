@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?><RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
@@ -35,13 +34,6 @@
         android:layout_marginTop="22dp"
         android:orientation="horizontal" >
 
-        <RadioButton
-            android:id="@+id/rb_friend"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checked="true"
-            android:drawableRight="@drawable/tank" />
-
         <Space
             android:layout_width="wrap_content"
             android:layout_height="match_parent" />
@@ -49,37 +41,68 @@
         <Space
             android:layout_width="wrap_content"
             android:layout_height="match_parent" />
-
-        <RadioButton
-            android:id="@+id/rb_enemy"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawableRight="@drawable/truck" />
 
     </RadioGroup>
 
     <EditText
-        android:id="@+id/et_name"
-        android:layout_width="200dp"
+		android:id="@+id/timeout"
+		android:layout_width="60dp"
+		android:layout_height="wrap_content"
+		android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="84dp"
+		android:ems="10"
+		android:inputType="number" />
+    
+    <EditText
+		android:id="@+id/ipm"
+		android:layout_width="180dp"
+		android:layout_height="wrap_content"
+		android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="44dp"
+		android:ems="10"
+		android:inputType="textPersonName" />
+    
+    <EditText
+        android:id="@+id/ipb"
+        android:layout_width="180dp"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="22dp"
+        android:layout_marginTop="4dp"
         android:ems="10"
-        android:inputType="textPersonName"
-        android:onClick="onNameFieldClick" >
+        android:inputType="textPersonName" />
 
-    </EditText>
-
+    <TextView
+        android:id="@+id/tv_name3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/timeout"
+        android:layout_alignBottom="@+id/timeout"
+        android:layout_toLeftOf="@+id/timeout"
+        android:textSize="18sp"
+        android:text="Time Out: " />
+    
+    <TextView
+        android:id="@+id/tv_name2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/ipm"
+        android:layout_alignBottom="@+id/ipm"
+        android:layout_toLeftOf="@+id/ipm"
+        android:textSize="18sp"
+        android:text="IP M: " />
+    
     <TextView
         android:id="@+id/tv_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/et_name"
-        android:layout_alignBottom="@+id/et_name"
-        android:layout_toRightOf="@+id/et_name"
+        android:layout_alignBaseline="@+id/ipb"
+        android:layout_alignBottom="@+id/ipb"
+        android:layout_toLeftOf="@+id/ipb"
         android:textSize="18sp"
-        android:text="@string/text_name" />
+        android:text="IP B: " />
 
    <LinearLayout
         android:layout_width="wrap_content"
@@ -100,7 +123,8 @@
             android:shadowDx="0"
             android:shadowDy="0"
             android:shadowRadius="0"
-            android:text="@string/text_accept"/>
+            android:layout_marginTop="90dp"
+            android:text="שמור"/>
  
         <Button
             android:id="@+id/btn_cancel"
@@ -114,7 +138,8 @@
             android:shadowDx="0"
             android:shadowDy="0"
             android:shadowRadius="0"
-            android:text="@string/text_cancel" />
+            android:layout_marginTop="90dp"
+            android:text="ביטול" />
     </LinearLayout>
 
 </RelativeLayout>

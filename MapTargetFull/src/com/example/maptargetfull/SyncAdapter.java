@@ -34,6 +34,7 @@ import android.content.Intent;
 import android.content.SyncResult;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.maptargetfull.PointsDBAccess.PointForSync;
@@ -52,8 +53,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		// TODO Auto-generated constructor stub
 	}
 	
-	
-
 	@Override
 	public void onPerformSync(Account account, Bundle extras, String authority,
 			ContentProviderClient provider, SyncResult syncResult) {
@@ -63,7 +62,11 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			ArrayList<PointForSync> arrayPoint = pointsDB.getPointsForSync();
 			// create HttpClient
 			HttpClient httpclient = new DefaultHttpClient();
-			int timeout = 60; // seconds
+			int timeout = 10; // seconds
+			
+			android.os.Debug.waitForDebugger();
+			Log.w("_sagi_", "start sync");
+
 			HttpParams httpParams = httpclient.getParams();
 			HttpConnectionParams.setConnectionTimeout(httpParams,
 					timeout * 1000); // http.connection.timeout
@@ -98,10 +101,13 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 						
 						httpPost.setEntity(se);
 						ResponseHandler responseHandler = new BasicResponseHandler();
+						Log.w("_sagi_", "before calling");
+
 						httpclient.execute(httpPost, responseHandler);
 					} else {
 						
 						HttpPut httpPut = new HttpPut(url + "/" + arrayPoint.get(i).server_id);
+						Log.w("_sagi_", "before calling2");
 
 						httpPut.setHeader("Accept", "application/json");
 						httpPut.setHeader("Content-Type", "application/json;charset=UTF-8");
@@ -114,19 +120,19 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-					Log.w("___JSONException0___", e.getMessage());
+					Log.w("_sagi_", e.getMessage());
 					succeeded = false;
 					break;
 				} catch (UnsupportedEncodingException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-					Log.w("___UnsupportedEncodingException0___", e.getMessage());
+					Log.w("_sagi__", e.getMessage());
 					succeeded = false;
 					break;
 				} catch (ClientProtocolException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-					Log.w("___ClientProtocolException0___", e.getMessage());
+					Log.w("_sagi_", e.getMessage());
 					succeeded = false;
 					break;
 				} catch (IOException e) {
@@ -143,7 +149,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 				HttpResponse httpResponse;
 
 				try {
+					Log.w("_sagi_", "before get");
+
 					httpResponse = httpclient.execute(httpGet);
+					Log.w("_sagi_", "after get");
 
 					// receive response as inputStream
 					InputStream inputStream = httpResponse.getEntity()
@@ -185,18 +194,18 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 				} catch (ClientProtocolException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-					Log.w("__ClientProtocolException___", e.getMessage());
+					Log.w("_sagi_", e.getMessage());
 					succeeded = false;
 
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-					Log.w("___IOException___", e.getMessage());
+					Log.w("_sagi_", e.getMessage());
 					succeeded = false;
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-					Log.w("___JSONException___", e.getMessage());
+					Log.w("_sagi_", e.getMessage());
 					succeeded = false;
 				}
 			}
