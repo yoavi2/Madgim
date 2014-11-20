@@ -324,16 +324,16 @@ public class MainActivity extends AbstractNavDrawerActivity implements
 			this.invalidateOptionsMenu();
 			break;
 		case R.id.action_refresh:
-			this.refresh(true);
+			this.refresh(false);
 
 			// Reload current fragment
-			Fragment frg = null;
-			frg = GlobalParams.getFragment().findFragmentByTag("list_frame");
-			final FragmentTransaction ft = GlobalParams.getFragment()
-					.beginTransaction();
-			ft.detach(frg);
-			ft.attach(frg);
-			ft.commit();
+//			Fragment frg = null;
+//			frg = GlobalParams.getFragment().findFragmentByTag("list_frame");
+//			final FragmentTransaction ft = GlobalParams.getFragment()
+//					.beginTransaction();
+//			ft.detach(frg);
+//			ft.attach(frg);
+//			ft.commit();
 
 			break;
 		case R.id.action_online_map_toggle:

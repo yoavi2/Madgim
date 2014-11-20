@@ -6,7 +6,9 @@ import us.ba3.me.ConvertPointCallback;
 import us.ba3.me.Location;
 import us.ba3.me.markers.DynamicMarker;
 import us.ba3.me.markers.DynamicMarkerMapInfo;
+import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -199,7 +201,7 @@ public class OfflineMap extends us.ba3.me.MapView {
 //						Window window = addTargetDialog.getActivity().getWindow();
 //						window.setLayout(200, 50);
 						addTargetDialog.show(fm, AddTargetOnLocationDialog.TAG);
-//						
+						
 //						addTargetDialog.getDialog().getWindow().setLayout(20, 20);
 
 					}

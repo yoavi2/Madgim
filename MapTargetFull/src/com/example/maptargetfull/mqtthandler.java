@@ -10,6 +10,8 @@ import org.json.JSONObject;
 
 import us.ba3.me.Location;
 
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.widget.Toast;
 
@@ -111,6 +113,14 @@ public class mqtthandler implements MqttCallback
 			// Add the marker to the markers list
 			GlobalParams.getInstance().AddMarker(ps.first_name, new Location(ps.langitude, ps.longitude));
 			
+			// Reload current fragment
+			Fragment frg = null;
+			frg = GlobalParams.getFragment().findFragmentByTag("list_frame");
+			final FragmentTransaction ft = GlobalParams.getFragment().beginTransaction();
+			ft.detach(frg);
+			ft.attach(frg);
+			ft.commit();
+			
 			Toast.makeText(this.context, ps.first_name + " נוסף", Toast.LENGTH_SHORT).show();
 		}
 		else if (topic.equals("update")) 
@@ -151,6 +161,16 @@ public class mqtthandler implements MqttCallback
 				
 				// Remove the marker from the markers list
 				GlobalParams.getInstance().RemoveMarker(ps.first_name);
+				GlobalParams.getCurrMap().deletePoint(ps.first_name);
+				
+				// Reload current fragment
+				Fragment frg = null;
+				frg = GlobalParams.getFragment().findFragmentByTag("list_frame");
+				final FragmentTransaction ft = GlobalParams.getFragment().beginTransaction();
+				ft.detach(frg);
+				ft.attach(frg);
+				ft.commit();
+				
 				Toast.makeText(this.context, ps.first_name + " נמחק", Toast.LENGTH_SHORT).show();
 			}
 			else
@@ -165,6 +185,14 @@ public class mqtthandler implements MqttCallback
 				
 				// Update the markers list
 				GlobalParams.getInstance().UpdateMarker(ps.first_name, new Location(ps.langitude, ps.longitude));
+				
+				// Reload current fragment
+				Fragment frg = null;
+				frg = GlobalParams.getFragment().findFragmentByTag("list_frame");
+				final FragmentTransaction ft = GlobalParams.getFragment().beginTransaction();
+				ft.detach(frg);
+				ft.attach(frg);
+				ft.commit();
 				
 				Toast.makeText(this.context, ps.first_name + " updated!", Toast.LENGTH_SHORT).show();
 			}
