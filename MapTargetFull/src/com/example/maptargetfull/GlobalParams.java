@@ -213,6 +213,14 @@ public class GlobalParams {
 	public void AddMarker(String strName, Location loc){
 		myList.put(strName, loc);
 	}
+	
+	public void UpdateMarker(String strName, Location loc){
+		myList.put(strName, loc);
+	}
+	
+	public void RemoveMarker(String strName){
+		myList.remove(strName);
+	}
 
 	public Fragment getf() {
 		return this.frag;

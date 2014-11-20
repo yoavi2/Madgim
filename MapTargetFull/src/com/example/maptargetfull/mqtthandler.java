@@ -8,6 +8,8 @@ import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONObject;
 
+import us.ba3.me.Location;
+
 import android.content.Context;
 import android.widget.Toast;
 
@@ -105,7 +107,11 @@ public class mqtthandler implements MqttCallback
 					ps.pointType == 1 ? markerType.Tank
 							: markerType.Truck, ps.langitude,
 					ps.longitude);
-			Toast.makeText(this.context, ps.first_name + " added!", Toast.LENGTH_SHORT).show();
+			
+			// Add the marker to the markers list
+			GlobalParams.getInstance().AddMarker(ps.first_name, new Location(ps.langitude, ps.longitude));
+			
+			Toast.makeText(this.context, ps.first_name + " נוסף", Toast.LENGTH_SHORT).show();
 		}
 		else if (topic.equals("update")) 
 		{
@@ -142,7 +148,10 @@ public class mqtthandler implements MqttCallback
 			{
 				GlobalParams.getInstance().deletePointByRowid(rowid);
 				GlobalParams.getInstance().mCurrMap.removeMarkerOnLocationOffline(ps.first_name);
-				Toast.makeText(this.context, ps.first_name + " deleted!", Toast.LENGTH_SHORT).show();
+				
+				// Remove the marker from the markers list
+				GlobalParams.getInstance().RemoveMarker(ps.first_name);
+				Toast.makeText(this.context, ps.first_name + " נמחק", Toast.LENGTH_SHORT).show();
 			}
 			else
 			{
@@ -153,6 +162,10 @@ public class mqtthandler implements MqttCallback
 				p.pointType	= ps.pointType;
 				p.rowID = rowid;
 				GlobalParams.getInstance().updatePoint(p);
+				
+				// Update the markers list
+				GlobalParams.getInstance().UpdateMarker(ps.first_name, new Location(ps.langitude, ps.longitude));
+				
 				Toast.makeText(this.context, ps.first_name + " updated!", Toast.LENGTH_SHORT).show();
 			}
 		}
