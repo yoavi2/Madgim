@@ -174,7 +174,7 @@ public class GlobalParams {
 		mCurrMap.set(mCurrMap);
 		
 		try {
-			mCurrMap.addMBTilesMap("offline", "/storage/emulated/0/Download/SagiBigMap.mbtiles", "grayGrid",
+			mCurrMap.addMBTilesMap("offline", "/storage/emulated/0/Download/IsraelMap.mbtiles", "grayGrid",
 					ImageDataType.kImageDataTypePNG, false, 2,
 					MapLoadingStrategy.kLowestDetailFirst);
 		} catch (Exception e) {

@@ -25,6 +25,7 @@ import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.MqttSecurityException;
@@ -136,14 +137,22 @@ public class MainActivity extends AbstractNavDrawerActivity implements
 				.randomUUID().toString());
 
 		try {
+			Log.d("_sagi_", "tcp://" + ipb + ":1883");
 			c.setCallback(new mqtthandler(this, c));
-			c.connect(this, this);
+			
+			MqttConnectOptions opt = new MqttConnectOptions();
+			int timeout = Integer.parseInt(shar.getString("TIMEOUT", "30"));
+			opt.setConnectionTimeout(timeout);
+			
+			c.connect(opt, this, this);
 		} catch (MqttSecurityException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			Log.d("_sagi_", e.getMessage());
 		} catch (MqttException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			Log.d("_sagi_", e.getMessage());
 		}
 
 		this.refresh(true);
@@ -431,6 +440,14 @@ public class MainActivity extends AbstractNavDrawerActivity implements
 		// unregisterReceiver(syncFinishedReceiver);
 	}
 
+//	@Override
+//	protected void onStop() {
+//		super.onStop();
+//
+//		if(pdialog!= null)
+//			pdialog.dismiss();
+//	}
+	
 	// private BroadcastReceiver syncFinishedReceiver = new BroadcastReceiver()
 	// {
 	//
@@ -554,25 +571,25 @@ public class MainActivity extends AbstractNavDrawerActivity implements
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-					Log.w("___JSONException0___", e.getMessage());
+					Log.e("___JSONException0___", e.getMessage());
 					succeeded = false;
 					break;
 				} catch (UnsupportedEncodingException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-					Log.w("___UnsupportedEncodingException0___", e.getMessage());
+					Log.e("___UnsupportedEncodingException0___", e.getMessage());
 					succeeded = false;
 					break;
 				} catch (ClientProtocolException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-					Log.w("___ClientProtocolException0___", e.getMessage());
+					Log.e("___ClientProtocolException0___", e.getMessage());
 					succeeded = false;
 					break;
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-
+					Log.e("___ClientProtocolException0___", e.getMessage());
 					succeeded = false;
 					break;
 				}
@@ -626,18 +643,18 @@ public class MainActivity extends AbstractNavDrawerActivity implements
 				} catch (ClientProtocolException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-					Log.w("__ClientProtocolException___", e.getMessage());
+					Log.e("__ClientProtocolException___", e.getMessage());
 					succeeded = false;
 
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-					Log.w("___IOException___", e.getMessage());
+					Log.e("___IOException___", e.getMessage());
 					succeeded = false;
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-					Log.w("___JSONException___", e.getMessage());
+					Log.e("___JSONException___", e.getMessage());
 					succeeded = false;
 				}
 			}

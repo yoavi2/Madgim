@@ -188,7 +188,7 @@ public class OfflineMapFragment extends Fragment implements EditTargetListener {
 
 			mapView.set(mapView);
 			try {
-				mapView.addMBTilesMap("offline", "/storage/emulated/0/Download/SagiBigMap.mbtiles", "grayGrid",
+				mapView.addMBTilesMap("offline", "/storage/emulated/0/Download/IsraelMap.mbtiles", "grayGrid",
 						ImageDataType.kImageDataTypePNG, false, 2,
 						MapLoadingStrategy.kLowestDetailFirst);
 			} catch (Exception e) {
