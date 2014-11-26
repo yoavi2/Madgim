@@ -176,7 +176,7 @@ public class MainActivity extends AbstractNavDrawerActivity implements
 		navDrawerActivityConfiguration.setDrawerLayoutId(R.id.drawer_layout);
 		navDrawerActivityConfiguration.setLeftDrawerId(R.id.left_drawer);
 		navDrawerActivityConfiguration.setNavItems(menu);
-		navDrawerActivityConfiguration.setDrawerShadow(R.drawable.x);
+		navDrawerActivityConfiguration.setDrawerShadow(R.drawable.drawer_shadow);
 		navDrawerActivityConfiguration.setDrawerOpenDesc(R.string.drawer_open);
 		navDrawerActivityConfiguration
 				.setDrawerCloseDesc(R.string.drawer_close);

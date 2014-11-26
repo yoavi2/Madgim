@@ -54,5 +54,10 @@
     <style name="dialog_title_style" parent="android:Widget.TextView">
         <item name="android:background">@color/friend</item>
     </style>
+    
+    <style name="Dialog_No_Border">
+    	<item name="android:windowIsFloating">true</item>
+    	<item name="android:windowBackground">@color/transparent</item>
+	</style>
 
 </resources>

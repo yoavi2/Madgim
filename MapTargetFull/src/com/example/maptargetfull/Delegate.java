@@ -8,6 +8,10 @@ import us.ba3.me.markers.DynamicMarkerMapDelegate;
 import android.graphics.Color;
 import android.graphics.PointF;
 import android.util.DisplayMetrics;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
+import android.widget.PopupWindow;
 
 public class Delegate implements DynamicMarkerMapDelegate {
 private OfflineMap currMap;
@@ -60,6 +64,8 @@ private OfflineMap currMap;
 		    else {
 		    	GlobalParams.getInstance().currMarkerType = GlobalParams.markerType.Truck;
 		    }
+		    
+		    
 		}
 	}
 

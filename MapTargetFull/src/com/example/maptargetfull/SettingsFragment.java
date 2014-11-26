@@ -90,6 +90,7 @@ public class SettingsFragment extends DialogFragment {
 			}
 		});
 		
+		getDialog().setTitle("הגדרות");
 		return rootView;
 	}
 

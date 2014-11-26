@@ -7,11 +7,13 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.example.maptargetfull.DetailsFragment;
 import com.example.maptargetfull.EditTargetDialog;
 import com.example.maptargetfull.GlobalParams;
 import com.example.maptargetfull.OfflineMapFragment;
 import com.example.maptargetfull.R;
 import com.example.maptargetfull.SecondFragment;
+import com.example.maptargetfull.SettingsFragment;
 
 public class ActionModeCallback implements ActionMode.Callback {
 
@@ -58,14 +60,13 @@ public class ActionModeCallback implements ActionMode.Callback {
 	        	EditTargetDialog editTargetDialog = EditTargetDialog
 						.newInstance(GlobalParams.getInstance().currMarkerName, rowId, OfflineMapFragment.TAG);
 				editTargetDialog.show(GlobalParams.getFragment(), EditTargetDialog.TAG);
-//	        	Toast.makeText(GlobalParams.getInstance().currActivity, GlobalParams.getInstance().currMarkerName, Toast.LENGTH_LONG).show();
-	        	
+////	        	Toast.makeText(GlobalParams.getInstance().currActivity, GlobalParams.getInstance().currMarkerName, Toast.LENGTH_LONG).show();
 	        	
 	            return true;
 	            
 	        case R.id.item_list:
-	        	SecondFragment list = new SecondFragment();
-	        	list.show(GlobalParams.getFragment(), "list");
+	        	DetailsFragment details = new DetailsFragment();
+	        	details.show(GlobalParams.getFragment(), "details");
 	        default:
 	            return false;
 	    }

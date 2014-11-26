@@ -96,6 +96,16 @@ public class GlobalParams {
 		}
 	}
 	
+	public boolean doesLocationExist(double longtitude, double latitude) {
+		for (Point point : GlobalParams.getInstance().mPoints) {
+			if (point.longitude == longtitude && point.langitude == latitude) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
 	public void adjustMap() {
 
 		android.location.Location location = this.mLocationService

@@ -86,6 +86,12 @@ public class mqtthandler implements MqttCallback
 					"_id");
 			ps.pointType = json.getInt(
 					Points.Columns.point_type);
+			
+//			if (GlobalParams.getInstance().doesLocationExist(ps.longitude, ps.langitude))
+//			{
+//				return;
+//			}
+			
 			long rowID = pointsDB.createPoint(
 					ps.first_name,
 		 			ps.last_name,
@@ -149,6 +155,12 @@ public class mqtthandler implements MqttCallback
 			ps.pointType = json.getInt(
 					Points.Columns.point_type);
 			ps.is_deleted = json.getInt(Points.Columns.is_deleted);
+			
+//			if (GlobalParams.getInstance().doesLocationExist(ps.longitude, ps.langitude))
+//			{
+//			 	return;
+//			}
+			
 			long rowid = pointsDB.getRowIdbyServerId(ps.server_id);
 			pointsDB.updatePoint(rowid, ps.first_name, ps.last_name, ps.longitude, ps.langitude, ps.is_google==1?true:false, ps.pointType);
 			pointsDB.SetServerID(rowid, ps.server_id);
