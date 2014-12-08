@@ -36,6 +36,8 @@ import org.json.JSONObject;
 import android.R.integer;
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningServiceInfo;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -154,7 +156,13 @@ public class MainActivity extends AbstractNavDrawerActivity implements
 			e.printStackTrace();
 			Log.d("_sagi_", e.getMessage());
 		}
-
+		
+		if (!isMyServiceRunning(mqtt_notification.class)) {
+			Intent serviceStartIntent = new Intent();
+			serviceStartIntent.setClassName(this, "com.example.maptargetfull.mqtt_notification");
+			this.startService(serviceStartIntent);
+		}
+		
 		this.refresh(true);
 	}
 
@@ -490,7 +498,7 @@ public class MainActivity extends AbstractNavDrawerActivity implements
 
 		@Override
 		protected Void doInBackground(Dialog... params) {
-
+			android.os.Debug.waitForDebugger();
 			pdialog = params[0];
 
 			PointsDBAccess pointsDB = new PointsDBAccess(MainActivity.this);
@@ -820,5 +828,15 @@ public class MainActivity extends AbstractNavDrawerActivity implements
 		// }
 		Toast.makeText(GlobalParams.getInstance().currActivity, "FAIL",
 				Toast.LENGTH_LONG).show();
+	}
+	
+	private boolean isMyServiceRunning(Class<?> serviceClass) {
+	    ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+	    for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+	        if (serviceClass.getName().equals(service.service.getClassName())) {
+	            return true;
+	        }
+	    }
+	    return false;
 	}
 }
